@@ -2,18 +2,18 @@ import argparse
 import eel
 
 
-class GefragtGejagd(object):
-    """docstring for GefragtGejagd."""
+class GefragtGejagt(object):
+    """docstring for GefragtGejagt."""
 
     def __init__(self, storage):
-        super(GefragtGejagd, self).__init__()
+        super(GefragtGejagt, self).__init__()
         self.storage = storage
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description='Run the GefragtGejagd-Server',
-        prog='python -m gefragd-gejagd')
+        description='Run the GefragtGejagt-Server',
+        prog='python -m gefragt-gejagt')
     parser.add_argument('-c', '--continue', action='store_true',
                         help="Continue the last-saved Game")
     parser.add_argument('-l', '--listen', default="127.0.0.1:8080",
@@ -38,6 +38,6 @@ if __name__ == '__main__':
     eel.init('web', allowed_extensions=['.js', '.html'])
     print('Listening on {}'.format(self.config.listen))
 
-    game = GefragtGejagd(config)
+    game = GefragtGejagt(config)
 
     eel.start('index.html')
