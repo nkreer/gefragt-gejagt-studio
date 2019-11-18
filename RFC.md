@@ -21,15 +21,15 @@ Vom Backend werden die Daten aus einem Order eingelesen, sie liegen im dokumenti
 
 Spieler und ihre Properties sind Objekte eines Teams
 
-```json
+```js
 {
 	"players": [
 		{
 			"name": "Vorname?Nickname",
-			"level": 5,	# value from 1-10
+			"level": 5,	// value from 1-10
 			"played": false,
 			"points": 0,
-			"won": false,	# Jagdrunde gewonnen?
+			"won": false,	// Jagdrunde gewonnen?
 			"rounds": []
 		}	
 	],
@@ -45,13 +45,13 @@ Fragen sind für das tool readonly. Bestenfalls sollte es die bereits gespielten
 
 Es werden nur 3 Antwortmöglichkeiten gespielt, wenn das level der Spielenden mindestens 5 unter dem level der Frage liegt.
 
-```json
+```js
 [
 	{
 		"text": "Wie lautet die Frage?",
 		"correctAnswer": "So!",
 		"wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
-		"level": "5",	# value from 1-10
+		"level": "5",	// value from 1-10
 		"category": "Kategorie"
 	}
 ]
@@ -63,17 +63,17 @@ Die Runden spezifizieren die einzelnen Spielrunden, von denen die Spieler teil w
 
 Die Generation findet, wie bereits oben angemerkt, komplett vor der tatsächlichen Runde statt, aber nicht so, als dass durch die Spielleitung Einfluss genommen werden kann.
 
-```json
+```js
 [
 	{
-		"level": 5,	# most skilled player (available) team
+		"level": 5,	// most skilled player (available) team
 		"players": [],
 		"questions": [],
-		"type": 1, 	# 1=Schnellrate, 2=Jagd, 3=Finale
+		"type": 1, 	// 1=Schnellrate, 2=Jagd, 3=Finale
 		"won": false,
-		"chaser": "Jägername", 	# null bei 1
-		"value": null	# null bei 1, player[points] oder suggested bei 2, Teampunktzahl bei 3,
-		"suggestedValues": [5, 20], # nur bei 2, das niedrigere und das höhere Angebot des Jägers
+		"chaser": "Jägername", 	// null bei 1
+		"value": null	// null bei 1, player[points] oder suggested bei 2, Teampunktzahl bei 3,
+		"suggestedValues": [5, 20], // nur bei 2, das niedrigere und das höhere Angebot des Jägers
 	}
 ]
 ```
