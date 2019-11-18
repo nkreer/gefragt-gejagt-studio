@@ -20,5 +20,4 @@ pip install -r requirements.txt
 
 ### Server starten
 
-Um den Server zu starten, benutze `python -m gefragt-gejagt`. Wenn du Informationen zu den verfügbaren Optionen brauchst, verwende den optionalen Parameter `-h`.
-
+Um den Server zu starten, benutze `python -m gefragt_gejagt`. Hierzu musst du dich allerding im VirtualEnv befinden: `source .venv/bin/activate` Wenn du Informationen zu den verfügbaren Optionen brauchst, verwende den optionalen Parameter `-h`.

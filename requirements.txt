@@ -1,2 +1,1 @@
-eel
-argparse
+git+https://github.com/samuelhwilliams/Eel.git@fix-211
