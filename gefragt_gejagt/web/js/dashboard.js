@@ -1,4 +1,7 @@
 $(function() {
+    // let teams = await eel.list_teams()()
+    // teams[0].players[0].name
+
     eel.expose(dashboard_set_heading); // Expose this function to Python
     function dashboard_set_heading(x) {
         $('#heading').text(x.value);

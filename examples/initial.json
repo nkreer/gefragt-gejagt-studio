@@ -1,7 +1,9 @@
 {
     "teams": [{
+            "id": 0,
             "name": "Teamname",
             "players": [{
+                    "id": 0,
                     "name": "Plater1",
                     "level": 5,
                     "played": false,
@@ -10,34 +12,38 @@
                     "rounds": []
                 },
                 {
+                    "id": 1,
                     "name": "Player2",
                     "level": 5,
                     "played": false,
                     "points": 0,
                     "won": false,
                     "rounds": []
-                },
+                }
             ]
         },
         {
+            "id": 1,
             "name": "Team2name",
             "players": [{
+                    "id": 2,
                     "name": "Plater3",
                     "level": 5,
-                    "played": false,
+                    "played": 5,
                     "points": 0,
                     "won": false,
                     "rounds": []
                 },
                 {
+                    "id": 2,
                     "name": "Player4",
                     "level": 5,
                     "played": false,
                     "points": 0,
                     "won": false,
                     "rounds": []
-                },
+                }
             ]
-        },
+        }
     ]
 }
