@@ -4,15 +4,24 @@ import os
 import eel
 import json
 import bottle
+import random
 import argparse
 from typing import List
+from enum import IntEnum, unique
 
 import gefragt_gejagt.team as team
 
+@unique
+class GameState(IntEnum):
+    PREPARATION = 0
+
+    def __str__(self):
+        return str(self.value)
 
 class GefragtGejagt(object):
     """docstring for GefragtGejagt."""
     teams: List[Team]
+    state: GameState = GameState.PREPARATION
 
     def __init__(self, storage):
         super(GefragtGejagt, self).__init__()
@@ -22,6 +31,12 @@ class GefragtGejagt(object):
         with open(os.path.join(self.storage, 'initial.json'), 'r') as fp:
             obj = json.load(fp)
         self.teams = team.load(obj['teams'])
+
+    def get_team_by_id(self, id) -> Team:
+        for team in self.teams:
+            if team.id == id:
+                return team
+        raise IndexError
 
 
 def parse_arguments():
@@ -63,8 +78,24 @@ if __name__ == '__main__':
         # eel.js_set_url('https://nwng.eu/36c3-gg/')
         return team.save(game.teams)
 
+    @eel.expose
+    def game_state():
+        return game.state
+
+    @eel.expose
+    def random_team():
+        team = random.choice(game.teams)
+        start_team(team.id)
+
+    @eel.expose
+    def start_team(id):
+        team = game.get_team_by_id(id)
+        eel.beamer_set_subheading('Team {} bitte auf die Bühne!'.format(team.name))
+        eel.dashboard_set_subheading('Team {} wurde gewählt.'.format(team.name))
+
     # Page-Close Handler
     def onclose(page, sockets):
+        # This does nothing for the reason, that the eel-server keeps running
         pass
 
     # Auxillary bottle routes
