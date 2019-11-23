@@ -14,13 +14,16 @@ import gefragt_gejagt.team as team
 @unique
 class GameState(IntEnum):
     PREPARATION = 0
+    WAITING = 1 # Waiting for Team
+    RUNNING = 2
 
     def __str__(self):
         return str(self.value)
 
 class GefragtGejagt(object):
     """docstring for GefragtGejagt."""
-    teams: List[Team]
+    teams: List[Team] = []
+    current_team: Team = None
     state: GameState = GameState.PREPARATION
 
     def __init__(self, storage):
@@ -37,6 +40,16 @@ class GefragtGejagt(object):
             if team.id == id:
                 return team
         raise IndexError
+
+    def save(self, include_team=False) -> Dict:
+        game_obj = {}
+        game_obj['state'] = self.state
+        game_obj['teams'] = team.save(self.teams)
+        if self.current_team:
+            game_obj['current_team'] = self.current_team.save()
+        else:
+            game_obj['current_team'] = None
+        return game_obj
 
 
 def parse_arguments():
@@ -83,15 +96,27 @@ if __name__ == '__main__':
         return game.state
 
     @eel.expose
-    def random_team():
-        team = random.choice(game.teams)
-        start_team(team.id)
+    def get_game():
+        return game.save()
 
     @eel.expose
-    def start_team(id):
+    def random_team():
+        team = random.choice(game.teams)
+        choose_team(team.id)
+
+    @eel.expose
+    def choose_team(id):
+        game.state = GameState.WAITING
         team = game.get_team_by_id(id)
+        game.current_team = team
+
+        eel.all_change_gamestate(game.state)
         eel.beamer_set_subheading('Team {} bitte auf die Bühne!'.format(team.name))
-        eel.dashboard_set_subheading('Team {} wurde gewählt.'.format(team.name))
+
+    @eel.expose
+    def start_game():
+        game.state = GameState.RUNNING
+        eel.all_change_gamestate(game.state)
 
     # Page-Close Handler
     def onclose(page, sockets):
@@ -112,4 +137,5 @@ if __name__ == '__main__':
         host=config.address,
         port=config.port,
         close_callback=onclose,
-        app=app)
+        app=app,
+        reloader=True)

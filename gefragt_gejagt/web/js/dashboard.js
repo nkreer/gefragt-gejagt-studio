@@ -1,14 +1,64 @@
-async function fill_team_table() {
+async function team_table(visible) {
     var tbl = document.getElementById('teamtable');
-    let teams = await eel.list_teams()()
-    for (var i = 0; i < teams.length; i++) {
-        var team = teams[i];
-        team.players[0].name
+    if (visible) {
+        tbl.style.display = "";
 
-        var row = tbl.insertRow(tbl.rows.length);
-        row.insertCell(0).innerHTML = "<input type='button' id='start_team' onclick='eel.start_team("+team.id+")' value='Spielen'>";
-        row.insertCell(1).innerHTML = team.id;
-        row.insertCell(2).innerHTML = team.name;
+        if (tbl.rows.length <= 1) {
+            let teams = await eel.list_teams()()
+            for (var i = 0; i < teams.length; i++) {
+                var team = teams[i];
+                team.players[0].name
+
+                var row = tbl.insertRow(tbl.rows.length);
+                row.insertCell(0).innerHTML = "<input type='button' id='choose_team' class='button is-link' onclick='eel.choose_team("+team.id+")' value='Spielen'>";
+                row.insertCell(1).innerHTML = team.id;
+                row.insertCell(2).innerHTML = team.name;
+                var playerNames = '';
+                team.players.forEach(function(player){
+                    playerNames += player.name;
+                    playerNames += ', '
+                });
+                row.insertCell(3).innerHTML = playerNames.slice(0,-2);
+            }
+        }
+    } else {
+        tbl.style.display = "none";
+    }
+}
+
+function notification(visible, text) {
+    var notification = document.getElementById('notification');
+    notification.innerHTML = text;
+    if (visible) {
+        notification.style.display = "";
+    } else {
+        notification.style.display = "none";
+    }
+};
+
+function team_message(visible, text) {
+    var message = document.getElementById('team-message');
+    message.children[1].innerHTML = text;
+    if (visible) {
+        message.style.display = "";
+    } else {
+        message.style.display = "none";
+    }
+};
+
+async function process_gamestate() {
+    let game = await eel.get_game()();
+    if (game.state == 0){
+        // PREPARATION
+        team_table(true);
+        team_message(false);
+    } else if (game.state == 1) {
+        // wAITING
+        team_table(true);
+        team_message(true, game.current_team.name + '<br><button class="button is-success" onclick="eel.start_game()">Starten</button>');
+    } else {
+        team_table(false);
+        team_message(false);
     }
 }
 
@@ -20,9 +70,9 @@ $(async function() {
         $('#heading').text(x);
     }
 
-    eel.expose(dashboard_set_subheading);
-    function dashboard_set_subheading(x) {
-        $('#subheading').text(x);
+    eel.expose(all_change_gamestate);
+    function all_change_gamestate(x) {
+        process_gamestate();
     }
 
     eel.expose(dashboard_set_url);
@@ -38,13 +88,5 @@ $(async function() {
     });
 
     // onload functionallity
-    let state = await eel.game_state()();
-    if (state == 0){
-        // PREPARATION
-        fill_team_table()
-    } else if (state == 1) {
-
-    } else {
-    }
-
+    process_gamestate();
 });

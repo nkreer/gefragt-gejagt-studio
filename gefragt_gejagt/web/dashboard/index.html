@@ -6,22 +6,37 @@
         <script src="/eel.js"></script>
         <script src="/js/common.js"></script>
         <script src="/js/dashboard.js"></script>
+        <link rel="stylesheet" href="/css/bulma.css"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>GefragtGejagt - Dashboard</title>
     </head>
-    <body>
-        <h1 id='heading'>Dashboard: Team auswählen</h1>
-        <h2 id='subheading'>Test</h2>
-        <div>
-            <input type='button' id='btn' class='btn btn-primary' value='Zufälliges Team auswählen'>
+    <body class="has-navbar-fixed-top">
+        <nav class="navbar is-fixed-top header" role="navigation" aria-label="main navigation">
+            <div class="container">
+                <div class="navbar-brand">
+                    <h1 id='heading' class="title navbar-item">Dashboard</h1>
+                </div>
+            </div>
+        </nav>
+        <br>
+        <div class="container">
+            <div id='notification' class="notification" style="display: none;">
+            </div>
+            <article class="message is-info" id="team-message" style="display: none;">
+                <div class="message-header">
+                    <p>Team gewählt</p>
+                </div>
+                <div class="message-body">
+                </div>
+            </article>
+            <table id='teamtable' class="table is-striped is-hoverable is-fullwidth" style="display: none;">
+                <thead>
+                    <th><input type='button' id='btn' class='button is-primary' value='Zufälliges Team auswählen'></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Players</th>
+                </thead>
+            </table>
         </div>
-        <table id='teamtable' border="1" cellpadding="2">
-            <tr>
-                <b>
-                    <td></td>
-                    <td>ID</td>
-                    <td>Name</td>
-                </b>
-            </tr>
-        </table>
     </body>
 </html>
