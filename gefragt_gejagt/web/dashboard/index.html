@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="">
     <head>
         <meta charset="utf-8">
         <script src="/js/jquery-3.4.1.min.js"></script>
@@ -14,27 +14,63 @@
         <nav class="navbar is-fixed-top header" role="navigation" aria-label="main navigation">
             <div class="container">
                 <div class="navbar-brand">
-                    <h1 id='heading' class="title navbar-item">Dashboard</h1>
+                    <h1 id="heading" class="title navbar-item">Dashboard</h1>
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item" id="status">
+                    </div>
+                    <a class="navbar-item" onclick="set_modal(true, 'reset-modal')">Zurücksetzen</a>
                 </div>
             </div>
         </nav>
         <br>
-        <div class="container">
-            <div id='notification' class="notification" style="display: none;">
+        <div id="reset-modal" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Wirklich abbrechen?</p>
+                    <button class="delete" aria-label="close" onclick="set_modal(false, 'reset-modal')"></button>
+                </header>
+                <section class="modal-card-body">
+                    Hierdurch geht der aktuelle Spielstand verloren!
+                </section>
+                <footer class="modal-card-foot">
+                    <button class="button is-danger" onclick="eel.reset_game(); set_modal(false, 'reset-modal')">Spiel abbrechen</button>
+                    <button class="button" onclick="set_modal(false, 'reset-modal')">Cancel</button>
+                </footer>
             </div>
-            <article class="message is-info" id="team-message" style="display: none;">
-                <div class="message-header">
-                    <p>Team gewählt</p>
+        </div>
+        <div class="container">
+            <div id="notification" class="notification" style="display: none;">
+            </div>
+            <div class="card column is-one-third" id="team-message" style="display: none;">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Team gewählt
+                    </p>
+                </header>
+                <div class="card-content">
                 </div>
-                <div class="message-body">
-                </div>
-            </article>
-            <table id='teamtable' class="table is-striped is-hoverable is-fullwidth" style="display: none;">
+                <footer class="card-footer">
+                    <a onclick="eel.start_game()" class="card-footer-item">Starten</a>
+                    <a onclick="eel.reset_game()" class="card-footer-item">Abbrechen</a>
+                </footer>
+            </div>
+            <table id="teamtable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
-                    <th><input type='button' id='btn' class='button is-primary' value='Zufälliges Team auswählen'></th>
+                    <th><input type="button" id="random-team-btn" class="button is-primary" value="Zufälliges Team auswählen"  onclick="eel.random_team()"></th>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Players</th>
+                </thead>
+            </table>
+            <table id="questiontable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
+                <thead>
+                    <th><input type="button" id="random-question-btn" class="button is-primary" value="Zufällige Frage auswählen" onclick="eel.random_team()" ></th>
+                    <th>ID</th>
+                    <th>Text</th>
+                    <th>Antwort</th>
+                    <th>Falsche Antworten</th>
                 </thead>
             </table>
         </div>

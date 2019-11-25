@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from typing import List, Dict
 
 import gefragt_gejagt.player as player

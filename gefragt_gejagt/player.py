@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import json
-from typing import List
+from typing import List, Dict
 
 import gefragt_gejagt.team as team
 from .round import RoundType
@@ -34,7 +33,7 @@ class Player:
         self.points = obj['points']
         self.played = obj['played']
         if obj.get('team'):
-            self.team = Team()
+            self.team = team.Team()
             self.team.load(obj['team'])
         else:
             self.team = set_team

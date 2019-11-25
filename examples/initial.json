@@ -1,5 +1,6 @@
 {
-    "teams": [{
+    "teams": [
+        {
             "id": 0,
             "name": "Teamname",
             "players": [{
@@ -45,5 +46,23 @@
                 }
             ]
         }
+    ],
+    "questions": [
+    	{
+            "id": 0,
+    		"text": "Wie lautet die Frage?",
+    		"correctAnswer": "So!",
+    		"wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
+    		"level": "5",
+    		"category": "Kategorie"
+    	},
+    	{
+            "id": 1,
+    		"text": "Wie lautet diese weitere Frage?",
+    		"correctAnswer": "So!",
+    		"wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
+    		"level": "7",
+    		"category": "Kategorie2"
+    	}
     ]
 }

@@ -6,23 +6,27 @@ import json
 import bottle
 import random
 import argparse
-from typing import List
+from typing import List, Dict
 from enum import IntEnum, unique
 
-import gefragt_gejagt.team as team
+import gefragt_gejagt.team
+import gefragt_gejagt.question
+
 
 @unique
 class GameState(IntEnum):
     PREPARATION = 0
-    WAITING = 1 # Waiting for Team
-    RUNNING = 2
+    WAITING = 1   # Waiting for Team
+    NEXT_STATE = 2
 
     def __str__(self):
         return str(self.value)
 
+
 class GefragtGejagt(object):
     """docstring for GefragtGejagt."""
     teams: List[Team] = []
+    questions: List[Question] = []
     current_team: Team = None
     state: GameState = GameState.PREPARATION
 
@@ -30,10 +34,11 @@ class GefragtGejagt(object):
         super(GefragtGejagt, self).__init__()
         self.storage = storage
 
-    def load_json_state(self):
-        with open(os.path.join(self.storage, 'initial.json'), 'r') as fp:
+    def load_json_state(self, filename='initial.json'):
+        with open(os.path.join(self.storage, filename), 'r') as fp:
             obj = json.load(fp)
-        self.teams = team.load(obj['teams'])
+        self.teams = gefragt_gejagt.team.load(obj['teams'])
+        self.questions = gefragt_gejagt.question.load(obj['questions'])
 
     def get_team_by_id(self, id) -> Team:
         for team in self.teams:
@@ -44,7 +49,8 @@ class GefragtGejagt(object):
     def save(self, include_team=False) -> Dict:
         game_obj = {}
         game_obj['state'] = self.state
-        game_obj['teams'] = team.save(self.teams)
+        game_obj['teams'] = gefragt_gejagt.team.save(self.teams)
+        game_obj['questions'] = gefragt_gejagt.question.save(self.questions)
         if self.current_team:
             game_obj['current_team'] = self.current_team.save()
         else:
@@ -89,7 +95,7 @@ if __name__ == '__main__':
     @eel.expose
     def list_teams():
         # eel.js_set_url('https://nwng.eu/36c3-gg/')
-        return team.save(game.teams)
+        return gefragt_gejagt.team.save(game.teams)
 
     @eel.expose
     def game_state():
@@ -111,11 +117,18 @@ if __name__ == '__main__':
         game.current_team = team
 
         eel.all_change_gamestate(game.state)
-        eel.beamer_set_subheading('Team {} bitte auf die Bühne!'.format(team.name))
+        eel.beamer_set_subheading(
+            'Team {} bitte auf die Bühne!'.format(team.name))
 
     @eel.expose
     def start_game():
-        game.state = GameState.RUNNING
+        game.state = GameState.NEXT_STATE
+        eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def reset_game():
+        game.state = GameState.PREPARATION
+        game.current_team = None
         eel.all_change_gamestate(game.state)
 
     # Page-Close Handler

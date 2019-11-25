@@ -7,10 +7,9 @@ async function team_table(visible) {
             let teams = await eel.list_teams()()
             for (var i = 0; i < teams.length; i++) {
                 var team = teams[i];
-                team.players[0].name
-
                 var row = tbl.insertRow(tbl.rows.length);
-                row.insertCell(0).innerHTML = "<input type='button' id='choose_team' class='button is-link' onclick='eel.choose_team("+team.id+")' value='Spielen'>";
+
+                row.insertCell(0).innerHTML = "<input type='button' id='choose_team"+team.id+"' class='button is-link' onclick='eel.choose_team("+team.id+")' value='Spielen'>";
                 row.insertCell(1).innerHTML = team.id;
                 row.insertCell(2).innerHTML = team.name;
                 var playerNames = '';
@@ -19,6 +18,35 @@ async function team_table(visible) {
                     playerNames += ', '
                 });
                 row.insertCell(3).innerHTML = playerNames.slice(0,-2);
+            }
+        }
+    } else {
+        tbl.style.display = "none";
+    }
+}
+
+async function question_table(visible) {
+    var tbl = document.getElementById('questiontable');
+    if (visible) {
+        tbl.style.display = "";
+
+        if (tbl.rows.length <= 1) {
+            let game = await eel.get_game()()
+            for (var i = 0; i < game.questions.length; i++) {
+                var question = game.questions[i];
+                var row = tbl.insertRow(tbl.rows.length);
+
+                row.insertCell(0).innerHTML = "<input type='button' id='choose_question"+question.id+"' class='button is-link' onclick='eel.choose_question("+question.id+")' value='Spielen'>";
+                row.insertCell(1).innerHTML = question.id;
+                row.insertCell(2).innerHTML = question.text;
+                row.insertCell(3).innerHTML = question.correctAnswer;
+
+                var wrongAnswers = '';
+                question.wrongAnswers.forEach(function(wrongAnswer){
+                    wrongAnswers += wrongAnswer;
+                    wrongAnswers += ', '
+                });
+                row.insertCell(4).innerHTML = wrongAnswers.slice(0,-2);
             }
         }
     } else {
@@ -52,13 +80,19 @@ async function process_gamestate() {
         // PREPARATION
         team_table(true);
         team_message(false);
+        question_table(false);
+        document.getElementById("status").innerHTML = "Status: Vorbereitung";
     } else if (game.state == 1) {
         // wAITING
         team_table(true);
-        team_message(true, game.current_team.name + '<br><button class="button is-success" onclick="eel.start_game()">Starten</button>');
+        team_message(true, game.current_team.name);
+        question_table(false);
+        document.getElementById("status").innerHTML = "Status: Warten";
     } else {
         team_table(false);
         team_message(false);
+        question_table(true);
+        document.getElementById("status").innerHTML = "Status: Sonstiges";
     }
 }
 
@@ -84,7 +118,6 @@ $(async function() {
     $("#btn").click(function() {
         //eel.handleinput($("#inp").val());
         $('#inp').val('');
-        eel.random_team()
     });
 
     // onload functionallity
