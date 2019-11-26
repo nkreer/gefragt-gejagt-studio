@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import List, Dict
 from enum import IntEnum, unique
 
+import gefragt_gejagt.player as player
+import gefragt_gejagt.question as question
 
 @unique
 class RoundType(IntEnum):
@@ -18,18 +20,13 @@ class Round(object):
     """docstring for Round."""
     id: int
     type: RoundType
-    won: bool
+    won: bool = False
     time: int
-    players: List[Player]
-    questions: List[Question]
+    players: List[Player] = []
+    questions: List[Question] = []
 
     def __init__(self):
         super(Round, self).__init__()
-
-    def __serialize__(self):
-        return self.__dict__.update({
-            'type': int(self.type)
-        })
 
     @property
     def level(self) -> int:
@@ -37,6 +34,15 @@ class Round(object):
         for player in self.players:
             levels.append(player.level)
         return max(levels)
+
+    def save(self) -> Dict:
+        round_obj = {}
+        round_obj['id'] = self.id
+        round_obj['type'] = self.type
+        round_obj['won'] = self.won
+        round_obj['players'] = player.save(self.players)
+        round_obj['questions'] = question.save(self.questions)
+        return round_obj
 
 
 def load(json_str: str) -> List[Round]:

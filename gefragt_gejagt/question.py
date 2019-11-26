@@ -1,35 +1,50 @@
 from __future__ import annotations
 
 from typing import List, Dict
+from enum import IntEnum, unique
 
+
+@unique
+class QuestionType(IntEnum):
+    SIMPLE = 1
+    CHASE = 2
+
+    def __str__(self):
+        return str(self.value)
 
 class Question(object):
     """docstring for Question."""
     id: int
+    type: QuestionType = QuestionType.CHASE
     level: int
     text: str
     correctAnswer: str
     wrongAnswers: List[str] = []
     category: str
+    played: bool = False
 
     def __init__(self):
         super(Question, self).__init__()
 
-    def load(self, obj: dict, set_team: Team = None):
+    def load(self, obj: dict):
         self.id = obj['id']
+        self.type = obj['type']
         self.level = obj['level']
         self.text = obj['text']
         self.correctAnswer = obj['correctAnswer']
         self.category = obj['category']
         self.wrongAnswers = obj['wrongAnswers']
+        self.played = obj.get('played', False)
 
-    def save(self, include_team=False) -> Dict:
+    def save(self) -> Dict:
         question_obj = {}
         question_obj['id'] = self.id
+        question_obj['type'] = self.type
         question_obj['level'] = self.level
         question_obj['text'] = self.text
         question_obj['correctAnswer'] = self.correctAnswer
         question_obj['wrongAnswers'] = self.wrongAnswers
+        question_obj['played'] = self.played
         return question_obj
 
 

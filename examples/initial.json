@@ -50,14 +50,16 @@
     "questions": [
     	{
             "id": 0,
+            "type": 1,
     		"text": "Wie lautet die Frage?",
     		"correctAnswer": "So!",
-    		"wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
+    		"wrongAnswers": [],
     		"level": "5",
     		"category": "Kategorie"
     	},
     	{
             "id": 1,
+            "type": 2,
     		"text": "Wie lautet diese weitere Frage?",
     		"correctAnswer": "So!",
     		"wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],

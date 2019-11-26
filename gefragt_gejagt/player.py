@@ -11,8 +11,8 @@ class Player:
     id: int = None
     level: int = None
     name: str = None
-    points: int = None
-    played: bool = None
+    points: int = 0
+    played: bool = False
     team: Team = None
     rounds: List[Round] = []
 
@@ -30,7 +30,7 @@ class Player:
         self.id = obj['id']
         self.name = obj['name']
         self.level = obj['level']
-        self.points = obj['points']
+        self.points = obj.get('points', 0)
         self.played = obj['played']
         if obj.get('team'):
             self.team = team.Team()

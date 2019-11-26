@@ -16,8 +16,11 @@ import gefragt_gejagt.question
 @unique
 class GameState(IntEnum):
     PREPARATION = 0
-    WAITING = 1   # Waiting for Team
-    NEXT_STATE = 2
+    TEAM_CHOSEN = 1
+    GAME_STARTED = 2
+    PLAYER_CHOSEN = 3
+    FAST_GUESS = 4
+    QUESTIONING = 5
 
     def __str__(self):
         return str(self.value)
@@ -27,7 +30,11 @@ class GefragtGejagt(object):
     """docstring for GefragtGejagt."""
     teams: List[Team] = []
     questions: List[Question] = []
+    rounds: List[Round] = []
     current_team: Team = None
+    current_round: Round = None
+    current_player: Player = None
+    current_question: Question = None
     state: GameState = GameState.PREPARATION
 
     def __init__(self, storage):
@@ -46,15 +53,40 @@ class GefragtGejagt(object):
                 return team
         raise IndexError
 
+    def get_player_by_id(self, id) -> Player:
+        for player in self.current_team.players:
+            if player.id == id:
+                return player
+        raise IndexError
+
+    def get_question_by_id(self, id) -> Question:
+        for question in self.questions:
+            if question.id == id:
+                return question
+        raise IndexError
+
     def save(self, include_team=False) -> Dict:
         game_obj = {}
         game_obj['state'] = self.state
-        game_obj['teams'] = gefragt_gejagt.team.save(self.teams)
+        game_obj['teams'] = gefragt_gejagt.team.save(self.teams, include_players=True)
+        game_obj['rounds'] = gefragt_gejagt.round.save(self.rounds)
         game_obj['questions'] = gefragt_gejagt.question.save(self.questions)
         if self.current_team:
-            game_obj['current_team'] = self.current_team.save()
+            game_obj['current_team'] = self.current_team.save(include_players=True)
         else:
             game_obj['current_team'] = None
+        if self.current_round:
+            game_obj['current_round'] = self.current_round.save()
+        else:
+            game_obj['current_round'] = None
+        if self.current_player:
+            game_obj['current_player'] = self.current_player.save()
+        else:
+            game_obj['current_player'] = None
+        if self.current_question:
+            game_obj['current_question'] = self.current_question.save()
+        else:
+            game_obj['current_question'] = None
         return game_obj
 
 
@@ -112,7 +144,7 @@ if __name__ == '__main__':
 
     @eel.expose
     def choose_team(id):
-        game.state = GameState.WAITING
+        game.state = GameState.TEAM_CHOSEN
         team = game.get_team_by_id(id)
         game.current_team = team
 
@@ -122,8 +154,77 @@ if __name__ == '__main__':
 
     @eel.expose
     def start_game():
-        game.state = GameState.NEXT_STATE
+        game.state = GameState.GAME_STARTED
         eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def random_player():
+        player = random.choice(game.current_team.players)
+        choose_player(player.id)
+
+    @eel.expose
+    def choose_player(id):
+        game.state = GameState.PLAYER_CHOSEN
+        player = game.get_player_by_id(id)
+        game.current_player = player
+
+        eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def reset_player():
+        game.state = GameState.GAME_STARTED
+        game.current_player = None
+
+        eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def start_round():
+        game.state = GameState.FAST_GUESS
+        game.current_round = gefragt_gejagt.round.Round()
+        game.current_round.id = 1
+        game.current_round.type = gefragt_gejagt.round.RoundType.FAST
+        game.current_round.player = game.current_player
+
+        eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def random_question():
+        question = random.choice(game.questions)
+        choose_question(question.id)
+
+    @eel.expose
+    def choose_question(id):
+        game.state = GameState.QUESTIONING
+        question = game.get_question_by_id(id)
+        game.current_question = question
+        game.current_round.questions.append(question)
+
+        eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def stop_question():
+        if game.current_round.type == gefragt_gejagt.round.RoundType.FAST:
+            game.state = GameState.FAST_GUESS
+            game.current_question = None
+            game.current_round.questions.pop()
+
+            eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def question_answered(answer_id):
+        if answer_id == 0:
+            game.current_player.points += 1
+            print(game.current_player.points)
+        else:
+            pass
+        game.current_question.played = True
+        if game.current_round.type == gefragt_gejagt.round.RoundType.FAST:
+            game.state = GameState.FAST_GUESS
+            game.current_question = None
+
+        eel.all_change_gamestate(game.state)
+
+
 
     @eel.expose
     def reset_game():

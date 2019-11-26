@@ -38,8 +38,8 @@ def load(obj: Dict) -> List[Team]:
     return teams
 
 
-def save(teams: List[Team]) -> List:
+def save(teams: List[Team], include_players=True) -> List:
     obj = []
     for team in teams:
-        obj.append(team.save(include_players=True))
+        obj.append(team.save(include_players=include_players))
     return obj

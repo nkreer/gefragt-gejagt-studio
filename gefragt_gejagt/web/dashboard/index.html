@@ -53,25 +53,79 @@
                 </div>
                 <footer class="card-footer">
                     <a onclick="eel.start_game()" class="card-footer-item">Starten</a>
-                    <a onclick="eel.reset_game()" class="card-footer-item">Abbrechen</a>
+                    <a onclick="eel.reset_game()" class="card-footer-item is-warning">Abbrechen</a>
                 </footer>
             </div>
+            <div class="card column is-one-third" id="player-message" style="display: none;">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Spieler gewählt
+                    </p>
+                </header>
+                <div class="card-content">
+                </div>
+                <footer class="card-footer">
+                    <a onclick="eel.start_round()" class="card-footer-item">Starten</a>
+                    <a onclick="eel.reset_player()" class="card-footer-item is-warning">Abbrechen</a>
+                </footer>
+            </div>
+            <div class="card" id="question-message" style="display: none;">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Aktuelle Frage:
+                    </p>
+                    <a onclick="eel.stop_question()" class="card-header-icon" aria-label="close">
+                      <span class="icon">
+                        <i class="delete" aria-hidden="true"></i>
+                      </span>
+                    </a>
+                </header>
+                <div class="card-content">
+                </div>
+                <footer class="card-footer">
+                </footer>
+            </div>
+            <br>
             <table id="teamtable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
                     <th><input type="button" id="random-team-btn" class="button is-primary" value="Zufälliges Team auswählen"  onclick="eel.random_team()"></th>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Players</th>
+                    <th>Spieler</th>
                 </thead>
+                <tbody>
+                    <tr style="display: none;">
+                    </tr>
+                </tbody>
+            </table>
+            <table id="playertable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
+                <thead>
+                    <th><input type="button" id="random-team-btn" class="button is-primary" value="Zufälligen Spieler auswählen"  onclick="eel.random_player()"></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Punktzahl</th>
+                    <th>Level</th>
+                    <th>Gespielt</th>
+                </thead>
+                <tbody>
+                    <tr style="display: none;">
+                    </tr>
+                </tbody>
             </table>
             <table id="questiontable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
-                    <th><input type="button" id="random-question-btn" class="button is-primary" value="Zufällige Frage auswählen" onclick="eel.random_team()" ></th>
+                    <th><input type="button" id="random-question-btn" class="button is-primary" value="Zufällige Frage auswählen" onclick="eel.random_question()" ></th>
                     <th>ID</th>
                     <th>Text</th>
+                    <th>Level</th>
+                    <th>Gespielt</th>
                     <th>Antwort</th>
                     <th>Falsche Antworten</th>
                 </thead>
+                <tbody>
+                    <tr style="display: none;">
+                    </tr>
+                </tbody>
             </table>
         </div>
     </body>
