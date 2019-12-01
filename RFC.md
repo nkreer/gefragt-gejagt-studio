@@ -17,44 +17,52 @@ Backend ist die single source of truth, das Frontend der slave.
 
 Vom Backend werden die Daten aus einem Order eingelesen, sie liegen im dokumentierten JSON-Format vor. Ein Export soll ggfs. ebenfalls erfolgen, dafür wird aber eine neue Datei mit Zeitstempel angelegt, aus der widerrum gelesen und damit der State recovered werden kann.
 
+Die ID bei den Objekten muss innerhalb dieser Objekte eindeutig sein und sollte aufeinanderfolgend sein.
+
 ### Team und Spieler
 
 Spieler und ihre Properties sind Objekte eines Teams
 
 ```js
-{
-	"players": [
-		{
-			"name": "Vorname?Nickname",
-			"level": 5,	// value from 1-10
-			"played": false,
-			"points": 0,
-			"won": false,	// Jagdrunde gewonnen?
-			"rounds": []
-		}	
-	],
-	"name": "Teamname"
-}
+"teams": [
+	{
+		"id": 0,
+		"name": "Teamname",
+		"players": [
+			{
+				"id": 0,
+				"name": "Player1",
+				"level": 5, // value from 1-10
+				"played": false,
+				"points": 0,
+				"won": false, // Jagdrunde gewonnen?
+				"rounds": []
+			},
+		]
+	},
+],
 ```
 
 Properties wie Punktzahl des gesamten Teams müss errechnet werden, basierend auf "won" == true und points.
 
 ### Fragen
 
-Fragen sind für das tool readonly. Bestenfalls sollte es die bereits gespielten Fragen (zumindest ihre IDs) mit den jeweiligen Runden assoziiert abspeichern, damit dieselbe Frage nicht mehrfach auftaucht. Bereits vor einem Spiel sollen für einen Spieler die besten Fragen basierend auf dem level und per Zufall ausgewählt werden. Die Antwortmöglichkeiten müssen in jedem Fall geshuffled werden. 
+Fragen sind für das tool readonly. Bestenfalls sollte es die bereits gespielten Fragen (zumindest ihre IDs) mit den jeweiligen Runden assoziiert abspeichern, damit dieselbe Frage nicht mehrfach auftaucht. Bereits vor einem Spiel sollen für einen Spieler die besten Fragen basierend auf dem level und per Zufall ausgewählt werden. Die Antwortmöglichkeiten müssen in jedem Fall geshuffled werden.
 
 Es werden nur 3 Antwortmöglichkeiten gespielt, wenn das level der Spielenden mindestens 5 unter dem level der Frage liegt.
 
 ```js
-[
+"questions": [
 	{
-		"text": "Wie lautet die Frage?",
+		"id": 0,
+		"type": 2,  // SIMPLE = 1, CHASE = 2
+		"text": "Wie lautet diese weitere Frage?",
 		"correctAnswer": "So!",
 		"wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
-		"level": "5",	// value from 1-10
+		"level": "7",	// value from 1-10
 		"category": "Kategorie"
-	}
-]
+	},
+],
 ```
 
 ### Runden

@@ -3,7 +3,8 @@
         {
             "id": 0,
             "name": "Teamname",
-            "players": [{
+            "players": [
+                {
                     "id": 0,
                     "name": "Plater1",
                     "level": 5,
@@ -26,7 +27,8 @@
         {
             "id": 1,
             "name": "Team2name",
-            "players": [{
+            "players": [
+                {
                     "id": 2,
                     "name": "Plater3",
                     "level": 5,
@@ -48,23 +50,41 @@
         }
     ],
     "questions": [
-    	{
+        {
             "id": 0,
             "type": 1,
-    		"text": "Wie lautet die Frage?",
-    		"correctAnswer": "So!",
-    		"wrongAnswers": [],
-    		"level": "5",
-    		"category": "Kategorie"
-    	},
-    	{
+            "text": "Wie lautet die Frage?",
+            "correctAnswer": "So!",
+            "wrongAnswers": [],
+            "level": "5",
+            "category": "Kategorie"
+        },
+        {
             "id": 1,
             "type": 2,
-    		"text": "Wie lautet diese weitere Frage?",
-    		"correctAnswer": "So!",
-    		"wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
-    		"level": "7",
-    		"category": "Kategorie2"
-    	}
+            "text": "Wie lautet diese weitere Frage?",
+            "correctAnswer": "So!",
+            "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
+            "level": "7",
+            "category": "Kategorie2"
+        },
+        {
+            "id": 2,
+            "type": 1,
+            "text": "Wie lautet die andere Frage?",
+            "correctAnswer": "So!",
+            "wrongAnswers": [],
+            "level": "5",
+            "category": "Kategorie"
+        },
+        {
+            "id": 3,
+            "type": 2,
+            "text": "Wie lautet diese eine weitere Frage?",
+            "correctAnswer": "So!",
+            "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
+            "level": "7",
+            "category": "Kategorie2"
+        }
     ]
 }
