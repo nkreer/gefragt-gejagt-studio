@@ -189,7 +189,18 @@ if __name__ == '__main__':
 
     @eel.expose
     def random_question():
-        question = random.choice(game.questions)
+        if game.current_round.type == gefragt_gejagt.round.RoundType.CHASE:
+            round_questiontype = gefragt_gejagt.question.QuestionType.CHASE
+        else:
+            round_questiontype = gefragt_gejagt.question.QuestionType.SIMPLE
+
+
+        questions = []
+        for question in game.questions:
+            if not question.played and question.type == round_questiontype:
+                questions.append(question)
+        question = random.choice(questions)
+
         choose_question(question.id)
 
     @eel.expose
@@ -230,6 +241,13 @@ if __name__ == '__main__':
     def reset_game():
         game.state = GameState.PREPARATION
         game.current_team = None
+        game.current_round = None
+        game.current_player = None
+        game.current_question = None
+
+        for question in game.questions:
+            question.played = False
+
         eel.all_change_gamestate(game.state)
 
     # Page-Close Handler

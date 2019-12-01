@@ -24,7 +24,7 @@ async function team_table(visible) {
     }
 }
 
-async function question_table(visible) {
+async function question_table(visible, include_all) {
     var tbl = document.getElementById('questiontable');
     if (visible) {
         tbl.style.display = "";
@@ -33,22 +33,41 @@ async function question_table(visible) {
         let game = await eel.get_game()()
         for (var i = 0; i < game.questions.length; i++) {
             var question = game.questions[i];
+            if (question.type == 1 && (game.current_round.type == 1 || game.current_round.type == 3)) {
+                var question_matches_round = true;
+            } else if (question.type == 2 && game.current_round.type == 2) {
+                var question_matches_round = true;
+            } else {
+                var question_matches_round = false;
+            }
+            if ((question.played || !question_matches_round) && include_all != true) {
+                continue;
+            }
             var row = tbl.insertRow(-1);
 
             //$('#myTable > tbody:last').append()
-            row.insertCell(0).innerHTML = "<input type='button' id='choose_question"+question.id+"' class='button is-link' onclick='eel.choose_question("+question.id+")' value='Spielen'>";
-            row.insertCell(1).innerHTML = question.id;
-            row.insertCell(2).innerHTML = question.text;
-            row.insertCell(3).innerHTML = question.level;
-            row.insertCell(4).innerHTML = question.played;
-            row.insertCell(5).innerHTML = question.correctAnswer;
+            row.insertCell(-1).innerHTML = "<input type='button' id='choose_question"+question.id+"' class='button is-link' onclick='eel.choose_question("+question.id+")' value='Spielen'>";
+            row.insertCell(-1).innerHTML = question.id;
+            switch (question.type) {
+                case 1:
+                    var typetext = "Einfach";
+                    break;
+                default:
+                    var typetext = "Jagd";
+                    break;
+            }
+            row.insertCell(-1).innerHTML = typetext;
+            row.insertCell(-1).innerHTML = question.text;
+            row.insertCell(-1).innerHTML = question.level;
+            row.insertCell(-1).innerHTML = question.played;
+            row.insertCell(-1).innerHTML = question.correctAnswer;
 
             var wrongAnswers = '';
             question.wrongAnswers.forEach(function(wrongAnswer){
                 wrongAnswers += wrongAnswer;
                 wrongAnswers += ', '
             });
-            row.insertCell(6).innerHTML = wrongAnswers.slice(0,-2);
+            row.insertCell(-1).innerHTML = wrongAnswers.slice(0,-2);
         }
     } else {
         tbl.style.display = "none";
@@ -109,6 +128,7 @@ function player_message(visible, text) {
 };
 
 function question_message(visible, question) {
+    // TODO: Add keyboard shortcuts
     var message = document.getElementById('question-message');
     if (visible) {
         message.children[1].innerHTML = question.text;
