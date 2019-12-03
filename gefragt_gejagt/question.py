@@ -12,6 +12,7 @@ class QuestionType(IntEnum):
     def __str__(self):
         return str(self.value)
 
+
 class Question(object):
     """docstring for Question."""
     id: int

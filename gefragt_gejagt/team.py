@@ -14,6 +14,13 @@ class Team(object):
     def __init__(self):
         super(Team, self).__init__()
 
+    @property
+    def level(self) -> int:
+        levels = []
+        for player in self.players:
+            levels.append(player.level)
+        return max(levels)
+
     def load(self, obj: Dict):
         self.id = obj['id']
         self.name = obj['name']

@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 import eel
 import json
-import time
 import bottle
 import random
 import argparse
@@ -14,6 +13,14 @@ from enum import IntEnum, unique
 import gefragt_gejagt.team
 import gefragt_gejagt.question
 import gefragt_gejagt.round
+import gefragt_gejagt.offer
+
+
+POINTS_PER_QUESTION = 1
+SECONDS_PER_FASTROUND = 60
+DEFAULT_OFFER_HIGH_FACTOR = 3
+DEFAULT_OFFER_LOW_FACTOR = 0.2
+
 
 @unique
 class GameState(IntEnum):
@@ -195,17 +202,40 @@ if __name__ == '__main__':
 
     def fastround_timer():
         starttime = datetime.datetime.now()
-        endtime = starttime + datetime.timedelta(minutes=1)
+        endtime = starttime + datetime.timedelta(seconds=SECONDS_PER_FASTROUND)
 
         while datetime.datetime.now() < endtime:
-            eel.sleep(1.0)
             seconds_played = (datetime.datetime.now() - starttime).seconds
-            eel.all_fast_tick(seconds_played)
+            seconds_remaining = SECONDS_PER_FASTROUND - seconds_played
+            eel.all_fast_tick(seconds_played, seconds_remaining)
+            eel.sleep(1.0)
 
         eel.all_fast_timeout()
 
         game.state = GameState.CHASE_PREPARATION
         game.current_question = None
+
+        high_offer = gefragt_gejagt.offer.Offer()
+        high_offer.type = gefragt_gejagt.offer.OfferType.HIGH
+        high_offer.amount = round(
+            game.current_player.points *
+            DEFAULT_OFFER_HIGH_FACTOR)
+
+        normal_offer = gefragt_gejagt.offer.Offer()
+        normal_offer.type = gefragt_gejagt.offer.OfferType.NORMAL
+        normal_offer.amount = game.current_player.points
+
+        low_offer = gefragt_gejagt.offer.Offer()
+        low_offer.type = gefragt_gejagt.offer.OfferType.LOW
+        low_offer.amount = round(
+            game.current_player.points *
+            DEFAULT_OFFER_LOW_FACTOR)
+
+        game.current_round.offers = [
+            high_offer,
+            normal_offer,
+            low_offer
+        ]
 
         eel.all_change_gamestate(game.state)
 
@@ -215,7 +245,6 @@ if __name__ == '__main__':
             round_questiontype = gefragt_gejagt.question.QuestionType.CHASE
         else:
             round_questiontype = gefragt_gejagt.question.QuestionType.SIMPLE
-
 
         questions = []
         for question in game.questions:
@@ -246,7 +275,7 @@ if __name__ == '__main__':
     @eel.expose
     def question_answered(answer_id):
         if answer_id == 0:
-            game.current_player.points += 1
+            game.current_player.points += POINTS_PER_QUESTION
             print(game.current_player.points)
         else:
             pass
@@ -256,14 +285,24 @@ if __name__ == '__main__':
 
         eel.all_change_gamestate(game.state)
 
-    # TODO: eel.set_offer
-    # TODO: eel.accept_offer
+    @eel.expose
+    def set_offer(offer_num, offer_amount):
+        game.current_round.offers[offer_num].amount = offer_amount
+        eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def accept_offer(offer_num):
+        game.current_round.offers[offer_num].accepted = True
+        eel.all_change_gamestate(game.state)
 
     @eel.expose
     def reset_game():
+        global game
+        del game
+
         game = GefragtGejagt(config.storage)
         game.load_json_state()
-        
+
         eel.all_change_gamestate(game.state)
 
     # Page-Close Handler
@@ -272,7 +311,7 @@ if __name__ == '__main__':
         pass
 
     # Auxillary bottle routes
-    @app.route('/<path><:re:((\/\w+)+|\/?)$>')
+    @app.route(r'/<path><:re:((\/\w+)+|\/?)$>')
     def redirect_to_index(path):
         bottle.redirect('/{}/index.html'.format(path))
 

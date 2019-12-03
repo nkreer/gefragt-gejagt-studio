@@ -156,9 +156,9 @@ function offer_card(visible, game) {
     if (visible) {
         card.style.display = "";
 
-        $('#offer-high-points').val(game.current_player.points*3);
-        $('#offer-normal-points').val(game.current_player.points);
-        $('#offer-low-points').val(Math.round(game.current_player.points/5));
+        $('#offer-high-points').val(game.current_round.offers[0].amount);
+        $('#offer-normal-points').val(game.current_round.offers[1].amount);
+        $('#offer-low-points').val(game.current_round.offers[2].amount);
     } else {
         card.style.display = "none";
     }
@@ -257,8 +257,8 @@ $(async function() {
     }
 
     eel.expose(all_fast_tick);
-    function all_fast_tick(time) {
-        $('#timer').text(60-time + " Sekunden verbleibend");
+    function all_fast_tick(time_played, time_remaining) {
+        $('#timer').text(time_remaining + " Sekunden verbleibend");
     }
 
     eel.expose(all_fast_timeout);
