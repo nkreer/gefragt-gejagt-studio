@@ -261,15 +261,9 @@ if __name__ == '__main__':
 
     @eel.expose
     def reset_game():
-        game.state = GameState.PREPARATION
-        game.current_team = None
-        game.current_round = None
-        game.current_player = None
-        game.current_question = None
-
-        for question in game.questions:
-            question.played = False
-
+        game = GefragtGejagt(config.storage)
+        game.load_json_state()
+        
         eel.all_change_gamestate(game.state)
 
     # Page-Close Handler
