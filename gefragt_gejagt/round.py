@@ -6,23 +6,12 @@ from enum import IntEnum, unique
 import gefragt_gejagt.player as player
 import gefragt_gejagt.question as question
 
-@unique
-class RoundType(IntEnum):
-    FAST = 1
-    CHASE = 2
-    FINAL = 3
-
-    def __str__(self):
-        return str(self.value)
-
-
 class Round(object):
     """docstring for Round."""
     id: int
-    type: RoundType
     won: bool = False
     time: int
-    players: List[Player] = []
+    player: Player = None
     questions: List[Question] = []
 
     def __init__(self):
@@ -38,9 +27,8 @@ class Round(object):
     def save(self) -> Dict:
         round_obj = {}
         round_obj['id'] = self.id
-        round_obj['type'] = self.type
         round_obj['won'] = self.won
-        round_obj['players'] = player.save(self.players)
+        round_obj['players'] = self.player.save
         round_obj['questions'] = question.save(self.questions)
         return round_obj
 

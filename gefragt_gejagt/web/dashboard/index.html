@@ -17,6 +17,9 @@
                     <h1 id="heading" class="title navbar-item">Dashboard</h1>
                 </div>
                 <div class="navbar-end">
+                    <div class="navbar-item">
+                        <p id="timer"></p>
+                    </div>
                     <div class="navbar-item" id="status">
                     </div>
                     <a class="navbar-item" onclick="set_modal(true, 'reset-modal')">Zurücksetzen</a>
@@ -84,6 +87,89 @@
                 </div>
                 <footer class="card-footer">
                 </footer>
+            </div>
+            <div class="card column is-one-third" id="offer-card" style="display: none;">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Angebote:
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="field is-horizontal">
+                        <div class="field-label is-small">
+                            <label class="label">Hohes Angebot</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <input class="input" type="number" id="offer-high-points" value="200">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-info" onclick="set_offer(0)">
+                                        Setzen
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <a class="button is-danger" onclick="eel.accept_offer(0)">
+                                        Annehmen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="field is-horizontal">
+                        <div class="field-label is-small">
+                            <label class="label">Aktueller Punktestand</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <input class="input" type="number" id="offer-normal-points" value="200">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-primary" onclick="set_offer(1)">
+                                        Setzen
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <a class="button is-danger" onclick="eel.accept_offer(1)">
+                                        Annehmen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="field is-horizontal">
+                        <div class="field-label is-small">
+                            <label class="label">Niedriges Angebot</label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <input class="input" type="number" id="offer-low-points" value="200">
+                                </div>
+                                <div class="control">
+                                    <a class="button is-warning" onclick="set_offer(2)">
+                                        Setzen
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="control">
+                                    <a class="button is-danger" onclick="eel.accept_offer(2)">
+                                        Annehmen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <br>
             <table id="teamtable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">

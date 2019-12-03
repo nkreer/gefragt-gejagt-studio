@@ -22,6 +22,8 @@ class Question(object):
     wrongAnswers: List[str] = []
     category: str
     played: bool = False
+    answerChaser: int = None
+    answerPlayer: int = None
 
     def __init__(self):
         super(Question, self).__init__()
@@ -45,6 +47,8 @@ class Question(object):
         question_obj['correctAnswer'] = self.correctAnswer
         question_obj['wrongAnswers'] = self.wrongAnswers
         question_obj['played'] = self.played
+        question_obj['answerChaser'] = self.answerChaser
+        question_obj['answerPlayer'] = self.answerPlayer
         return question_obj
 
 

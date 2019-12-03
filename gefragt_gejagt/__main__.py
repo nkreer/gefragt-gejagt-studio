@@ -3,24 +3,28 @@ from __future__ import annotations
 import os
 import eel
 import json
+import time
 import bottle
 import random
 import argparse
+import datetime
 from typing import List, Dict
 from enum import IntEnum, unique
 
 import gefragt_gejagt.team
 import gefragt_gejagt.question
-
+import gefragt_gejagt.round
 
 @unique
 class GameState(IntEnum):
-    PREPARATION = 0
-    TEAM_CHOSEN = 1
-    GAME_STARTED = 2
-    PLAYER_CHOSEN = 3
-    FAST_GUESS = 4
-    QUESTIONING = 5
+    PREPARATION         = 0
+    TEAM_CHOSEN         = 1
+    GAME_STARTED        = 2
+    PLAYER_CHOSEN       = 3
+    FAST_GUESS          = 4
+    CHASE_PREPARATION   = 5
+    CHASE_QUESTIONING   = 6
+    CHASE_SOLVE         = 7
 
     def __str__(self):
         return str(self.value)
@@ -182,14 +186,32 @@ if __name__ == '__main__':
         game.state = GameState.FAST_GUESS
         game.current_round = gefragt_gejagt.round.Round()
         game.current_round.id = 1
-        game.current_round.type = gefragt_gejagt.round.RoundType.FAST
         game.current_round.player = game.current_player
+
+        random_question()
+
+        eel.spawn(fastround_timer)
+        eel.all_change_gamestate(game.state)
+
+    def fastround_timer():
+        starttime = datetime.datetime.now()
+        endtime = starttime + datetime.timedelta(minutes=1)
+
+        while datetime.datetime.now() < endtime:
+            eel.sleep(1.0)
+            seconds_played = (datetime.datetime.now() - starttime).seconds
+            eel.all_fast_tick(seconds_played)
+
+        eel.all_fast_timeout()
+
+        game.state = GameState.CHASE_PREPARATION
+        game.current_question = None
 
         eel.all_change_gamestate(game.state)
 
     @eel.expose
     def random_question():
-        if game.current_round.type == gefragt_gejagt.round.RoundType.CHASE:
+        if game.state >= GameState.CHASE_PREPARATION and game.state <= GameState.CHASE_SOLVE:
             round_questiontype = gefragt_gejagt.question.QuestionType.CHASE
         else:
             round_questiontype = gefragt_gejagt.question.QuestionType.SIMPLE
@@ -205,7 +227,8 @@ if __name__ == '__main__':
 
     @eel.expose
     def choose_question(id):
-        game.state = GameState.QUESTIONING
+        if game.state >= GameState.CHASE_PREPARATION and game.state <= GameState.CHASE_SOLVE:
+            game.state = GameState.CHASE_QUESTIONING
         question = game.get_question_by_id(id)
         game.current_question = question
         game.current_round.questions.append(question)
@@ -214,12 +237,11 @@ if __name__ == '__main__':
 
     @eel.expose
     def stop_question():
-        if game.current_round.type == gefragt_gejagt.round.RoundType.FAST:
-            game.state = GameState.FAST_GUESS
-            game.current_question = None
+        if game.state == GameState.FAST_GUESS:
             game.current_round.questions.pop()
+            random_question()
 
-            eel.all_change_gamestate(game.state)
+        eel.all_change_gamestate(game.state)
 
     @eel.expose
     def question_answered(answer_id):
@@ -229,13 +251,13 @@ if __name__ == '__main__':
         else:
             pass
         game.current_question.played = True
-        if game.current_round.type == gefragt_gejagt.round.RoundType.FAST:
-            game.state = GameState.FAST_GUESS
-            game.current_question = None
+        if game.state == GameState.FAST_GUESS:
+            random_question()
 
         eel.all_change_gamestate(game.state)
 
-
+    # TODO: eel.set_offer
+    # TODO: eel.accept_offer
 
     @eel.expose
     def reset_game():

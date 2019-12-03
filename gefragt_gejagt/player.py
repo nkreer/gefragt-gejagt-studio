@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import List, Dict
 
 import gefragt_gejagt.team as team
-from .round import RoundType
 
 
 class Player:
@@ -14,16 +13,16 @@ class Player:
     points: int = 0
     played: bool = False
     team: Team = None
-    rounds: List[Round] = []
+    qualified: bool = False
+    round: Round = None
 
     def __init__(self):
         super(Player, self).__init__
 
     @property
     def won(self) -> bool:
-        for round in self.rounds:
-            if round.Type == RoundType.CHASE:
-                return round.won
+        if self.round:
+            return self.round.won
         return False
 
     def load(self, obj: dict, set_team: Team = None):
@@ -46,6 +45,7 @@ class Player:
         player_obj['points'] = self.points
         player_obj['played'] = self.played
         player_obj['won'] = self.won
+        player_obj['qualified'] = self.qualified
         if include_team:
             player_obj['players'] = self.team.save()
         return player_obj

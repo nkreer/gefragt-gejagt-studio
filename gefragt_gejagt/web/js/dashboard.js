@@ -33,9 +33,9 @@ async function question_table(visible, include_all) {
         let game = await eel.get_game()()
         for (var i = 0; i < game.questions.length; i++) {
             var question = game.questions[i];
-            if (question.type == 1 && (game.current_round.type == 1 || game.current_round.type == 3)) {
+            if (question.type == 1 && (game.state == 4 || game.state == 8)) {
                 var question_matches_round = true;
-            } else if (question.type == 2 && game.current_round.type == 2) {
+            } else if (question.type == 2 && (game.state >= 5 && game.state <= 7)) {
                 var question_matches_round = true;
             } else {
                 var question_matches_round = false;
@@ -150,6 +150,36 @@ function question_message(visible, question) {
     }
 };
 
+function offer_card(visible, game) {
+    var card = document.getElementById('offer-card');
+    // offer-high-points
+    if (visible) {
+        card.style.display = "";
+
+        $('#offer-high-points').val(game.current_player.points*3);
+        $('#offer-normal-points').val(game.current_player.points);
+        $('#offer-low-points').val(Math.round(game.current_player.points/5));
+    } else {
+        card.style.display = "none";
+    }
+};
+
+function set_offer(input_nr) {
+    var input_amount = 0;
+    switch (input_nr) {
+        case 0:
+            input_amount = $("#offer-high-points").val();
+            break;
+        case 2:
+            input_amount = $("#offer-low-points").val();
+            break;
+        default:
+            input_amount = $("#offer-normal-points").val();
+            break;
+    }
+    eel.set_offer(input_nr, input_amount);
+}
+
 async function process_gamestate() {
     let game = await eel.get_game()();
 
@@ -159,6 +189,7 @@ async function process_gamestate() {
     player_message(false);
     question_table(false);
     question_message(false);
+    offer_card(false);
 
     set_modal(false, 'reset-modal');
 
@@ -183,12 +214,22 @@ async function process_gamestate() {
             break;
         case 4:  // FAST_GUESS
             question_table(true);
+            question_message(true, game.current_question);
             document.getElementById("status").innerHTML = "Status: Schnellraterunde";
             break;
-        case 5:  // QUESTIONING
+        case 5:  // CHASE_PREPARATION
+            offer_card(true, game);
+            document.getElementById("status").innerHTML = "Status: Jagd Vorbereitung";
+            break;
+        case 6:  // CHASE_QUESTIONING
             question_table(true);
             question_message(true, game.current_question);
-            document.getElementById("status").innerHTML = "Status: Fragenstellung";
+            document.getElementById("status").innerHTML = "Status: Jagd Fragenstellung";
+            break;
+        case 7:  // CHASE_SOLVE
+            question_table(true);
+            question_message(true, game.current_question);
+            document.getElementById("status").innerHTML = "Status: Jagd Auflösung";
             break;
         default:
             question_table(true);
@@ -215,11 +256,15 @@ $(async function() {
         window.location.href = url;
     }
 
-    // on-site event handlers
-    $("#btn").click(function() {
-        //eel.handleinput($("#inp").val());
-        $('#inp').val('');
-    });
+    eel.expose(all_fast_tick);
+    function all_fast_tick(time) {
+        $('#timer').text(60-time + " Sekunden verbleibend");
+    }
+
+    eel.expose(all_fast_timeout);
+    function all_fast_timeout(time) {
+        $('#timer').text("");
+    }
 
     // onload functionallity
     process_gamestate();
