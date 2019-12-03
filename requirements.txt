@@ -1,1 +1,1 @@
-git+https://github.com/samuelhwilliams/Eel.git@fix-211
+eel==0.11.1
