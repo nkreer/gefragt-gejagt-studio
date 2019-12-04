@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Dict
 
-import gefragt_gejagt.question as question
+import gefragt_gejagt.question
 import gefragt_gejagt.offer as offer
 
 
@@ -36,7 +36,7 @@ class Round(object):
     def correctAnswersChaser(self) -> int:
         count = 0
         for question in self.questions:
-            if question.answerChaser == 0:
+            if question.answerChaser == 0 and question.type == gefragt_gejagt.question.QuestionType.CHASE:
                 count += 1
         return count
 
@@ -44,22 +44,37 @@ class Round(object):
     def correctAnswersPlayer(self) -> int:
         count = 0
         for question in self.questions:
-            if question.answerPlayer == 0:
+            if question.answerPlayer == 0 and question.type == gefragt_gejagt.question.QuestionType.CHASE:
                 count += 1
         return count
+
+    @property
+    def playerStartOffset(self) -> int:
+        if len(self.offers) != 0:
+            if self.offers[0].accepted:
+                return 2
+            if self.offers[2].accepted:
+                return 4
+        return 3
+
+    @property
+    def questionsLeftForPlayer(self) -> int:
+        return 7 - self.correctAnswersPlayer - self.playerStartOffset
 
     def save(self) -> Dict:
         round_obj = {}
         round_obj['id'] = self.id
         round_obj['won'] = self.won
         round_obj['player'] = self.player.save
-        round_obj['questions'] = question.save(self.questions)
+        round_obj['questions'] = gefragt_gejagt.question.save(self.questions)
         round_obj['offers'] = offer.save(self.offers)
         if self.acceptedOffer:
             round_obj['acceptedOffer'] = self.acceptedOffer.save
 
         round_obj['correctAnswersChaser'] = self.correctAnswersChaser
         round_obj['correctAnswersPlayer'] = self.correctAnswersPlayer
+        round_obj['playerStartOffset'] = self.playerStartOffset
+        round_obj['questionsLeftForPlayer'] = self.questionsLeftForPlayer
         return round_obj
 
 

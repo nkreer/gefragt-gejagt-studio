@@ -45,7 +45,6 @@ async function question_table(visible, include_all) {
             }
             var row = tbl.insertRow(-1);
 
-            //$('#myTable > tbody:last').append()
             row.insertCell(-1).innerHTML = "<input type='button' id='choose_question"+question.id+"' class='button is-link' onclick='eel.choose_question("+question.id+")' value='Spielen'>";
             row.insertCell(-1).innerHTML = question.id;
             switch (question.type) {
@@ -107,6 +106,16 @@ function notification(visible, text) {
     }
 };
 
+function endtext(visible, text) {
+    var endtext = document.getElementById('endtext');
+    endtext.innerHTML = text;
+    if (visible) {
+        endtext.style.display = "";
+    } else {
+        endtext.style.display = "none";
+    }
+};
+
 function team_message(visible, text) {
     var message = document.getElementById('team-message');
     message.children[1].innerHTML = text;
@@ -132,18 +141,27 @@ function question_message(visible, question) {
     var message = document.getElementById('question-message');
     if (visible) {
         message.children[1].innerHTML = question.text;
+
+        var buttons2 = '';
         if (question.type == 1) {
             // FAST
             var buttons = '<a onclick="eel.question_answered(0)" class="card-footer-item">'+question.correctAnswer+'</a><a onclick="eel.question_answered(1)" class="card-footer-item is-warning">Falche Antwort</a>'
+
+            message.children[3].display = "none";
         } else {
             // NORMAL
-            var buttons = '<a onclick="eel.question_answered(0)" class="card-footer-item">'+question.correctAnswer+'</a>';
+            var buttons = '<p class="card-footer-item">Spieler</p><a onclick="eel.question_answered(0,0)" class="card-footer-item">'+question.correctAnswer+'</a>';
+            var buttons2 = '<p class="card-footer-item">Jäger</p><a onclick="eel.question_answered(0,1)" class="card-footer-item">'+question.correctAnswer+'</a>';
             for (var i = 0; i < question.wrongAnswers.length; i++) {
                 var answer = question.wrongAnswers[i];
-                buttons += '<a onclick="eel.question_answered('+ (i+1) +')" class="card-footer-item">'+answer+'</a>'
+                buttons += '<a onclick="eel.question_answered('+ (i+1) +',0)" class="card-footer-item">'+answer+'</a>'
+                buttons2 += '<a onclick="eel.question_answered('+ (i+1) +',1)" class="card-footer-item">'+answer+'</a>'
             }
+            message.children[3].style.display = "";
         }
         message.children[2].innerHTML = buttons;
+        message.children[3].innerHTML = buttons2;
+
         message.style.display = "";
     } else {
         message.style.display = "none";
@@ -159,6 +177,33 @@ function offer_card(visible, game) {
         $('#offer-high-points').val(game.current_round.offers[0].amount);
         $('#offer-normal-points').val(game.current_round.offers[1].amount);
         $('#offer-low-points').val(game.current_round.offers[2].amount);
+    } else {
+        card.style.display = "none";
+    }
+};
+
+function solution_card(visible, game) {
+    var card = document.getElementById('solution-card');
+    // offer-high-points
+    if (visible) {
+        card.style.display = "";
+        card.children[1].children[0].innerHTML = "<strong>Richtige Antwort:</strong> "+game.current_question.correctAnswer+"<br>";
+        if (game.current_question.answerPlayer == 0) {
+            var playerAnswerText = game.current_question.correctAnswer;
+            var playerAnswerRating = '<span class="tag is-success">Richtig</span>';
+        } else {
+            var playerAnswerText = game.current_question.wrongAnswers[game.current_question.answerPlayer-1];
+            var playerAnswerRating = '<span class="tag is-danger">Falsch</span>';
+        }
+        card.children[1].children[0].innerHTML += "<strong>Spielerantwort:</strong> "+playerAnswerText+" "+playerAnswerRating+"<br>";
+        if (game.current_question.answerChaser == 0) {
+            var chaserAnswerText = game.current_question.correctAnswer;
+            var chaserAnswerRating = '<span class="tag is-success">Richtig</span>';
+        } else {
+            var chaserAnswerText = game.current_question.wrongAnswers[game.current_question.answerChaser-1];
+            var chaserAnswerRating = '<span class="tag is-danger">Falsch</span>';
+        }
+        card.children[1].children[0].innerHTML += "<strong>Jägerantwort:</strong> "+chaserAnswerText+"  "+chaserAnswerRating+"<br>";
     } else {
         card.style.display = "none";
     }
@@ -190,6 +235,8 @@ async function process_gamestate() {
     question_table(false);
     question_message(false);
     offer_card(false);
+    solution_card(false);
+    endtext(false);
 
     set_modal(false, 'reset-modal');
 
@@ -228,11 +275,27 @@ async function process_gamestate() {
             break;
         case 7:  // CHASE_SOLVE
             question_table(true);
-            question_message(true, game.current_question);
+            solution_card(true, game);
             document.getElementById("status").innerHTML = "Status: Jagd Auflösung";
             break;
+        case 8:  // ROUND_ENDED
+            document.getElementById("status").innerHTML = "Status: Runde beendet, "+game.current_round.won;
+            if (game.current_player.won) {
+                endtext(true,game.current_player.name + ` hat gewonnen!
+                    <a class="button is-info" onclick="eel.end_round()">
+                    Runde beenden
+                    </a>
+                `);
+            } else {
+                endtext(true,game.current_player.name + ` hat verloren!
+                    <br>
+                    <a class="button is-info" onclick="eel.end_round()">
+                    Runde beenden
+                    </a>
+                `);
+            }
+            break;
         default:
-            question_table(true);
             document.getElementById("status").innerHTML = "Status: Unbekannt";
             break;
     }
@@ -263,6 +326,16 @@ $(async function() {
 
     eel.expose(all_fast_timeout);
     function all_fast_timeout(time) {
+        $('#timer').text("");
+    }
+
+    eel.expose(all_chase_tick);
+    function all_chase_tick(time_played, time_remaining) {
+        $('#timer').text(time_remaining + " Sekunden verbleibend");
+    }
+
+    eel.expose(all_chase_timeout);
+    function all_chase_timeout(time) {
         $('#timer').text("");
     }
 

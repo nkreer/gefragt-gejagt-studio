@@ -18,20 +18,22 @@ import gefragt_gejagt.offer
 
 POINTS_PER_QUESTION = 1
 SECONDS_PER_FASTROUND = 60
+SECONDS_CHASE_TIMEOUT = 5
 DEFAULT_OFFER_HIGH_FACTOR = 3
 DEFAULT_OFFER_LOW_FACTOR = 0.2
 
 
 @unique
 class GameState(IntEnum):
-    PREPARATION         = 0
-    TEAM_CHOSEN         = 1
-    GAME_STARTED        = 2
-    PLAYER_CHOSEN       = 3
-    FAST_GUESS          = 4
-    CHASE_PREPARATION   = 5
-    CHASE_QUESTIONING   = 6
-    CHASE_SOLVE         = 7
+    PREPARATION = 0
+    TEAM_CHOSEN = 1
+    GAME_STARTED = 2
+    PLAYER_CHOSEN = 3
+    FAST_GUESS = 4
+    CHASE_PREPARATION = 5
+    CHASE_QUESTIONING = 6
+    CHASE_SOLVE = 7
+    ROUND_ENDED = 8
 
     def __str__(self):
         return str(self.value)
@@ -79,11 +81,13 @@ class GefragtGejagt(object):
     def save(self, include_team=False) -> Dict:
         game_obj = {}
         game_obj['state'] = self.state
-        game_obj['teams'] = gefragt_gejagt.team.save(self.teams, include_players=True)
+        game_obj['teams'] = gefragt_gejagt.team.save(
+            self.teams, include_players=True)
         game_obj['rounds'] = gefragt_gejagt.round.save(self.rounds)
         game_obj['questions'] = gefragt_gejagt.question.save(self.questions)
         if self.current_team:
-            game_obj['current_team'] = self.current_team.save(include_players=True)
+            game_obj['current_team'] = self.current_team.save(
+                include_players=True)
         else:
             game_obj['current_team'] = None
         if self.current_round:
@@ -170,7 +174,11 @@ if __name__ == '__main__':
 
     @eel.expose
     def random_player():
-        player = random.choice(game.current_team.players)
+        players = []
+        for player in game.current_team.players:
+            if not player.played:
+                players.append(player)
+        player = random.choice(players)
         choose_player(player.id)
 
     @eel.expose
@@ -194,6 +202,8 @@ if __name__ == '__main__':
         game.current_round = gefragt_gejagt.round.Round()
         game.current_round.id = 1
         game.current_round.player = game.current_player
+
+        game.current_player.played = True
 
         random_question()
 
@@ -259,6 +269,7 @@ if __name__ == '__main__':
         if game.state >= GameState.CHASE_PREPARATION and game.state <= GameState.CHASE_SOLVE:
             game.state = GameState.CHASE_QUESTIONING
         question = game.get_question_by_id(id)
+        question.played = True
         game.current_question = question
         game.current_round.questions.append(question)
 
@@ -267,23 +278,51 @@ if __name__ == '__main__':
     @eel.expose
     def stop_question():
         if game.state == GameState.FAST_GUESS:
+            game.current_question.played = True
             game.current_round.questions.pop()
             random_question()
 
         eel.all_change_gamestate(game.state)
 
     @eel.expose
-    def question_answered(answer_id):
-        if answer_id == 0:
-            game.current_player.points += POINTS_PER_QUESTION
-            print(game.current_player.points)
-        else:
-            pass
-        game.current_question.played = True
+    def question_answered(answer_id, player_id=0):
         if game.state == GameState.FAST_GUESS:
+            if answer_id == 0:
+                game.current_player.points += POINTS_PER_QUESTION
+            else:
+                pass
+            game.current_question.played = True
             random_question()
 
-        eel.all_change_gamestate(game.state)
+            eel.all_change_gamestate(game.state)
+        else:
+            if player_id == 0:  # Player
+                game.current_question.answerPlayer = answer_id
+                already_answered = (not game.current_question.answerChaser is None)
+            else:  # Chaser
+                game.current_question.answerChaser = answer_id
+                already_answered = (not game.current_question.answerPlayer is None)
+            if not already_answered:
+                starttime = datetime.datetime.now()
+                endtime = starttime + \
+                    datetime.timedelta(seconds=SECONDS_CHASE_TIMEOUT)
+
+                timedout = False
+
+                while (
+                        game.current_question.answerChaser is None or game.current_question.answerPlayer is None) and not timedout:
+                    timedout = datetime.datetime.now() > endtime
+                    seconds_played = (
+                        datetime.datetime.now() - starttime
+                    ).seconds
+                    seconds_remaining = SECONDS_PER_FASTROUND - seconds_played
+                    eel.all_chase_tick(seconds_played, seconds_remaining)
+                    eel.sleep(1.0)
+                if timedout:
+                    eel.all_chase_timeout()
+
+                game.state = GameState.CHASE_SOLVE
+                eel.all_change_gamestate(game.state)
 
     @eel.expose
     def set_offer(offer_num, offer_amount):
@@ -293,6 +332,30 @@ if __name__ == '__main__':
     @eel.expose
     def accept_offer(offer_num):
         game.current_round.offers[offer_num].accepted = True
+
+        game.state = GameState.CHASE_QUESTIONING
+        random_question()
+
+        eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def all_show_solution():
+        round = game.current_round
+        if round.questionsLeftForPlayer == 0:
+            round.won = True
+            game.state = GameState.ROUND_ENDED
+            eel.all_change_gamestate(game.state)
+        elif (round.correctAnswersPlayer + round.playerStartOffset) == round.correctAnswersChaser:
+            game.state = GameState.ROUND_ENDED
+            eel.all_change_gamestate(game.state)
+
+    @eel.expose
+    def end_round():
+        game.current_round = None
+        game.current_player = None
+        game.current_question = None
+
+        game.state = GameState.GAME_STARTED
         eel.all_change_gamestate(game.state)
 
     @eel.expose

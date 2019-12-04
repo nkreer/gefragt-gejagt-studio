@@ -32,7 +32,7 @@
                     "id": 2,
                     "name": "Plater3",
                     "level": 5,
-                    "played": 5,
+                    "played": false,
                     "points": 0,
                     "won": false,
                     "rounds": []
@@ -81,6 +81,24 @@
             "id": 3,
             "type": 2,
             "text": "Wie lautet diese eine weitere Frage?",
+            "correctAnswer": "So!",
+            "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
+            "level": "7",
+            "category": "Kategorie2"
+        },
+        {
+            "id": 4,
+            "type": 2,
+            "text": "Wie lautet diese andere Frage?",
+            "correctAnswer": "So!",
+            "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
+            "level": "7",
+            "category": "Kategorie2"
+        },
+        {
+            "id": 5,
+            "type": 2,
+            "text": "Wie lautet diese ganz andere Frage?",
             "correctAnswer": "So!",
             "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
             "level": "7",

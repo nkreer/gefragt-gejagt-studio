@@ -85,7 +85,9 @@
                 </header>
                 <div class="card-content">
                 </div>
-                <footer class="card-footer">
+                <footer class="card-footer" id="question-message-first-footer">
+                </footer>
+                <footer class="card-footer" id="question-message-second-footer" style="display: none;">
                 </footer>
             </div>
             <div class="card column is-one-third" id="offer-card" style="display: none;">
@@ -171,6 +173,23 @@
                     </div>
                 </div>
             </div>
+            <div class="card" id="solution-card" style="display: none;">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Auflösung:
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a class="card-footer-item" onclick="eel.all_show_playerresponse();">Spielerantwort anzeigen</a>
+                    <a class="card-footer-item" onclick="eel.all_show_solution();">Lösung anzeigen</a>
+                    <a class="card-footer-item" onclick="eel.all_show_chaserresponse();">Jägerantwort anzeigen</a>
+                </footer>
+            </div>
             <br>
             <table id="teamtable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
@@ -214,6 +233,7 @@
                     </tr>
                 </tbody>
             </table>
+            <p id="endtext" style="display: none;"></p>
         </div>
     </body>
 </html>
