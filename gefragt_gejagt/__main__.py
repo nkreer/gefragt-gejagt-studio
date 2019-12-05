@@ -315,7 +315,7 @@ if __name__ == '__main__':
                     seconds_played = (
                         datetime.datetime.now() - starttime
                     ).seconds
-                    seconds_remaining = SECONDS_PER_FASTROUND - seconds_played
+                    seconds_remaining = SECONDS_CHASE_TIMEOUT - seconds_played
                     eel.all_chase_tick(seconds_played, seconds_remaining)
                     eel.sleep(1.0)
                 if timedout:

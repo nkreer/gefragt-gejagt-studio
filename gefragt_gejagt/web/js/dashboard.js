@@ -29,8 +29,8 @@ async function question_table(visible, include_all) {
     if (visible) {
         tbl.style.display = "";
 
-        $("#questiontable tbody tr :visible").remove();
         let game = await eel.get_game()()
+        $("#questiontable tbody tr :visible").remove();
         for (var i = 0; i < game.questions.length; i++) {
             var question = game.questions[i];
             if (question.type == 1 && (game.state == 4 || game.state == 8)) {
