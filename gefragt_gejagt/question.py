@@ -14,20 +14,19 @@ class QuestionType(IntEnum):
 
 
 class Question(object):
-    """docstring for Question."""
-    id: int
-    type: QuestionType = QuestionType.CHASE
-    level: int
-    text: str
-    correctAnswer: str
-    wrongAnswers: List[str] = []
-    category: str
-    played: bool = False
-    answerChaser: int = None
-    answerPlayer: int = None
-
     def __init__(self):
         super(Question, self).__init__()
+
+        self.id: int
+        self.type: QuestionType = QuestionType.CHASE
+        self.level: int
+        self.text: str
+        self.correctAnswer: str
+        self.wrongAnswers: List[str] = []
+        self.category: str
+        self.played: bool = False
+        self.answerChaser: int = None
+        self.answerPlayer: int = None
 
     def load(self, obj: dict):
         self.id = obj['id']

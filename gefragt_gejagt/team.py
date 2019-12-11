@@ -6,13 +6,12 @@ import gefragt_gejagt.player as player
 
 
 class Team(object):
-    """docstring for Team."""
-    id: int = None
-    name: str = None
-    players: List[Player] = []
-
     def __init__(self):
         super(Team, self).__init__()
+
+        self.id: int = None
+        self.name: str = None
+        self.players: List[Player] = []
 
     @property
     def level(self) -> int:
@@ -20,6 +19,13 @@ class Team(object):
         for player in self.players:
             levels.append(player.level)
         return max(levels)
+
+    @property
+    def played(self) -> bool:
+        for player in self.players:
+            if player.played:
+                return True
+        return False
 
     def load(self, obj: Dict):
         self.id = obj['id']
@@ -31,6 +37,7 @@ class Team(object):
         team_obj = {}
         team_obj['id'] = self.id
         team_obj['name'] = self.name
+        team_obj['played'] = self.played
         if include_players:
             team_obj['players'] = player.save(self.players)
         return team_obj

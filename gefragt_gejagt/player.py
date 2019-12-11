@@ -6,18 +6,17 @@ import gefragt_gejagt.team as team
 
 
 class Player:
-    """docstring for Player."""
-    id: int = None
-    level: int = None
-    name: str = None
-    points: int = 0
-    played: bool = False
-    team: Team = None
-    qualified: bool = False
-    round: Round = None
-
     def __init__(self):
         super(Player, self).__init__
+
+        self.id: int = None
+        self.level: int = None
+        self.name: str = None
+        self.points: int = 0
+        self.played: bool = False
+        self.team: Team = None
+        self.qualified: bool = False
+        self.round: Round = None
 
     @property
     def won(self) -> bool:

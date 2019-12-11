@@ -9,15 +9,16 @@ async function team_table(visible) {
             var team = teams[i];
             var row = tbl.insertRow(tbl.rows.length);
 
-            row.insertCell(0).innerHTML = "<input type='button' id='choose_team"+team.id+"' class='button is-link' onclick='eel.choose_team("+team.id+")' value='Spielen'>";
-            row.insertCell(1).innerHTML = team.id;
-            row.insertCell(2).innerHTML = team.name;
+            row.insertCell(-1).innerHTML = "<input type='button' id='choose_team"+team.id+"' class='button is-link' onclick='eel.choose_team("+team.id+")' value='Spielen'>";
+            row.insertCell(-1).innerHTML = team.id;
+            row.insertCell(-1).innerHTML = team.name;
+            row.insertCell(-1).innerHTML = team.played;
             var playerNames = '';
             team.players.forEach(function(player){
                 playerNames += player.name;
                 playerNames += ', '
             });
-            row.insertCell(3).innerHTML = playerNames.slice(0,-2);
+            row.insertCell(-1).innerHTML = playerNames.slice(0,-2);
         }
     } else {
         tbl.style.display = "none";
@@ -279,15 +280,18 @@ async function process_gamestate() {
             document.getElementById("status").innerHTML = "Status: Jagd Auflösung";
             break;
         case 8:  // ROUND_ENDED
-            document.getElementById("status").innerHTML = "Status: Runde beendet, "+game.current_round.won;
-            if (game.current_player.won) {
+            document.getElementById("status").innerHTML = "Status: Runde beendet";
+            if (game.current_player.qualified) {
                 endtext(true,game.current_player.name + ` hat gewonnen!
+                    <br>
+                    <br>
                     <a class="button is-info" onclick="eel.end_round()">
                     Runde beenden
                     </a>
                 `);
             } else {
                 endtext(true,game.current_player.name + ` hat verloren!
+                    <br>
                     <br>
                     <a class="button is-info" onclick="eel.end_round()">
                     Runde beenden

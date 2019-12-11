@@ -16,12 +16,13 @@ class OfferType(IntEnum):
 
 class Offer(object):
     """docstring for Round."""
-    type: OfferType = OfferType.NORMAL
-    accepted: bool = False
-    amount: int = 0
 
     def __init__(self):
         super(Offer, self).__init__()
+
+        self.type: OfferType = OfferType.NORMAL
+        self.accepted: bool = False
+        self.amount: int = 0
 
     def save(self) -> Dict:
         offer_obj = {}

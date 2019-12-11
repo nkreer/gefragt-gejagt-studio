@@ -7,16 +7,16 @@ import gefragt_gejagt.offer as offer
 
 
 class Round(object):
-    """docstring for Round."""
-    id: int
-    won: bool = False
-    time: int
-    player: Player = None
-    questions: List[Question] = []
-    offers: List[Offer] = []
-
     def __init__(self):
         super(Round, self).__init__()
+
+        self.id: int
+        self.won: bool = False
+        self.time: int
+        self.player: Player = None
+        self.team: Team = None
+        self.questions: List[Question] = []
+        self.offers: List[Offer] = []
 
     @property
     def level(self) -> int:
@@ -65,7 +65,10 @@ class Round(object):
         round_obj = {}
         round_obj['id'] = self.id
         round_obj['won'] = self.won
-        round_obj['player'] = self.player.save
+        if self.player:
+            round_obj['player'] = self.player.save
+        if self.team:
+            round_obj['team'] = self.team.save
         round_obj['questions'] = gefragt_gejagt.question.save(self.questions)
         round_obj['offers'] = offer.save(self.offers)
         if self.acceptedOffer:
