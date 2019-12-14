@@ -6,6 +6,10 @@ import gefragt_gejagt.question
 import gefragt_gejagt.offer as offer
 
 
+DEFAULT_OFFER_HIGH_FACTOR = 3
+DEFAULT_OFFER_LOW_FACTOR = 0.2
+
+
 class Round(object):
     def __init__(self):
         super(Round, self).__init__()
@@ -60,6 +64,27 @@ class Round(object):
     @property
     def questionsLeftForPlayer(self) -> int:
         return 7 - self.correctAnswersPlayer - self.playerStartOffset
+
+    def setup_offers(self, points: int):
+        high_offer = offer.Offer()
+        high_offer.type = offer.OfferType.HIGH
+        high_offer.amount = round(
+            points * DEFAULT_OFFER_HIGH_FACTOR)
+
+        normal_offer = offer.Offer()
+        normal_offer.type = offer.OfferType.NORMAL
+        normal_offer.amount = points
+
+        low_offer = offer.Offer()
+        low_offer.type = offer.OfferType.LOW
+        low_offer.amount = round(
+            points * DEFAULT_OFFER_LOW_FACTOR)
+
+        self.offers = [
+            high_offer,
+            normal_offer,
+            low_offer
+        ]
 
     def save(self) -> Dict:
         round_obj = {}
