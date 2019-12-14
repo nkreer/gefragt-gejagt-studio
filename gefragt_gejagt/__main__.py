@@ -85,7 +85,10 @@ if __name__ == '__main__':
 
     @eel.expose
     def random_player():
-        game.choose_player(game.random_player())
+        try:
+            game.choose_player(game.random_player())
+        except:
+            game.state = GameState.FINAL_PREPARATION
         resend_gamestate()
 
     @eel.expose
@@ -130,6 +133,7 @@ if __name__ == '__main__':
     @eel.expose
     def choose_question(id):
         game.choose_question(game.get_question_by_id())
+        eel.all_new_question(game.current_question.save())
         resend_gamestate()
 
     @eel.expose
@@ -168,6 +172,8 @@ if __name__ == '__main__':
                     eel.sleep(1.0)
                 if timedout:
                     eel.all_chase_timeout()
+                else:
+                    eel.all_chase_both_answered()
 
                 game.state = GameState.CHASE_SOLVE
         resend_gamestate()
@@ -187,7 +193,7 @@ if __name__ == '__main__':
         resend_gamestate()
 
     @eel.expose
-    def all_show_solution():
+    def all_show_chaserresponse():
         game.check_round_end()
         resend_gamestate()
 

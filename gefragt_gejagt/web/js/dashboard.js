@@ -74,10 +74,18 @@ async function question_table(visible, include_all) {
     }
 }
 
-async function player_table(visible) {
+async function player_table(visible, disable_buttons) {
     var tbl = document.getElementById('playertable');
     if (visible) {
         tbl.style.display = "";
+
+        var button = document.getElementById('random-player-btn');
+
+        if (disable_buttons == true) {
+            button.style.display = "none";
+        } else {
+            button.style.display = "";
+        }
 
         $("#playertable tbody tr :visible").remove();
         let game = await eel.get_game()()
@@ -85,12 +93,17 @@ async function player_table(visible) {
             var player = game.current_team.players[i];
             var row = tbl.insertRow(tbl.rows.length);
 
-            row.insertCell(0).innerHTML = "<input type='button' id='choose_player"+player.id+"' class='button is-link' onclick='eel.choose_player("+player.id+")' value='Spielen'>";
-            row.insertCell(1).innerHTML = player.id;
-            row.insertCell(2).innerHTML = player.name;
-            row.insertCell(3).innerHTML = player.points;
-            row.insertCell(4).innerHTML = player.level;
-            row.insertCell(5).innerHTML = player.played;
+            if (disable_buttons == true) {
+                row.insertCell(-1).innerHTML = "";
+            } else {
+                row.insertCell(-1).innerHTML = "<input type='button' id='choose_player"+player.id+"' class='button is-link' onclick='eel.choose_player("+player.id+")' value='Spielen'>";
+            }
+            row.insertCell(-1).innerHTML = player.id;
+            row.insertCell(-1).innerHTML = player.name;
+            row.insertCell(-1).innerHTML = player.points;
+            row.insertCell(-1).innerHTML = player.level;
+            row.insertCell(-1).innerHTML = player.played;
+            row.insertCell(-1).innerHTML = player.qualified;
         }
     } else {
         tbl.style.display = "none";
@@ -169,6 +182,25 @@ function question_message(visible, question) {
     }
 };
 
+function final_start_message(visible, game) {
+    var message = document.getElementById('final-start-message');
+
+    if (visible) {
+        var playerNames = '';
+        game.current_team.players.forEach(function(player){
+            if (player.qualified) {
+                playerNames += player.name;
+                playerNames += ', ';
+            }
+        });
+        message.children[1].innerHTML = 'Mit ' + playerNames.slice(0,-2);
+
+        message.style.display = "";
+    } else {
+        message.style.display = "none";
+    }
+};
+
 function offer_card(visible, game) {
     var card = document.getElementById('offer-card');
     // offer-high-points
@@ -238,6 +270,7 @@ async function process_gamestate() {
     offer_card(false);
     solution_card(false);
     endtext(false);
+    final_start_message(false);
 
     set_modal(false, 'reset-modal');
 
@@ -252,11 +285,11 @@ async function process_gamestate() {
             document.getElementById("status").innerHTML = "Status: Team ausgewählt";
             break;
         case 2:  // GAME_STARTED
-            player_table(true);
+            player_table(true, false);
             document.getElementById("status").innerHTML = "Status: Spiel gestartet";
             break;
         case 3:  // PLAYER_CHOSEN
-            player_table(true);
+            player_table(true, false);
             player_message(true, game.current_player.name);
             document.getElementById("status").innerHTML = "Status: Spieler ausgewählt";
             break;
@@ -299,8 +332,25 @@ async function process_gamestate() {
                 `);
             }
             break;
+        case 9:  // FINAL_PREPARATION
+            final_start_message(true, game);
+            player_table(true, true);
+            document.getElementById("status").innerHTML = "Status: Finale Vorbereitung";
+            break;
+        case 10:  // FINAL_PLAYERS
+            document.getElementById("status").innerHTML = "Status: Finale Spielende";
+            break;
+        case 11:  // FINAL_CHASER
+            document.getElementById("status").innerHTML = "Status: Finale Jäger*in";
+            break;
+        case 12:  // FINAL_CHASER_WRONG
+            document.getElementById("status").innerHTML = "Status: Finale Jäger*in Falschantwort";
+            break;
+        case 13:  // END
+            document.getElementById("status").innerHTML = "Status: Ende";
+            break;
         default:
-            document.getElementById("status").innerHTML = "Status: Unbekannt";
+            document.getElementById("status").innerHTML = "Status: Unbekannt "+game.state;
             break;
     }
 }
@@ -341,6 +391,16 @@ $(async function() {
     eel.expose(all_chase_timeout);
     function all_chase_timeout(time) {
         $('#timer').text("");
+    }
+
+    eel.expose(all_chase_both_answered);
+    function all_chase_both_answered(time) {
+        $('#timer').text("");
+    }
+
+    eel.expose(all_new_question);
+    function all_new_question() {
+        //nothing
     }
 
     // onload functionallity

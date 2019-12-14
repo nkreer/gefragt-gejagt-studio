@@ -190,6 +190,18 @@
                     <a class="card-footer-item" onclick="eel.all_show_chaserresponse();">Jägerantwort anzeigen</a>
                 </footer>
             </div>
+            <div class="card column is-one-third" id="final-start-message" style="display: none;">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Finalrunde
+                    </p>
+                </header>
+                <div class="card-content">
+                </div>
+                <footer class="card-footer">
+                    <a onclick="eel.start_final_game()" class="card-footer-item">Starten</a>
+                </footer>
+            </div>
             <br>
             <table id="teamtable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
@@ -206,12 +218,13 @@
             </table>
             <table id="playertable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
-                    <th><input type="button" id="random-team-btn" class="button is-primary" value="Zufälligen Spieler auswählen"  onclick="eel.random_player()"></th>
+                    <th id="random-player-btn-col"><input type="button" id="random-player-btn" class="button is-primary" value="Zufälligen Spieler auswählen"  onclick="eel.random_player()" style="display: none;"></th>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Punktzahl</th>
                     <th>Level</th>
                     <th>Gespielt</th>
+                    <th>Qualifiziert</th>
                 </thead>
                 <tbody>
                     <tr style="display: none;">

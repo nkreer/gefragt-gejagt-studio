@@ -27,6 +27,13 @@ class Team(object):
                 return True
         return False
 
+    @property
+    def qualified(self) -> bool:
+        for player in self.players:
+            if player.qualified:
+                return True
+        return False
+
     def load(self, obj: Dict):
         self.id = obj['id']
         self.name = obj['name']

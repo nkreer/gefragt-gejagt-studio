@@ -21,3 +21,7 @@ pip install -r requirements.txt
 ### Server starten
 
 Um den Server zu starten, benutze `python -m gefragt_gejagt`. Hierzu musst du dich allerding im VirtualEnv befinden: `source .venv/bin/activate` Wenn du Informationen zu den verfügbaren Optionen brauchst, verwende den optionalen Parameter `-h`.
+
+## Aufbau
+Zur verknüpfung zwischen dem Python-Backend und dem Frontend nutzen wir die Bibliothek Eel. Mehr infos dazu unter
+https://github.com/samuelhwilliams/Eel/

@@ -26,6 +26,11 @@ class GameState(IntEnum):
     CHASE_QUESTIONING = 6
     CHASE_SOLVE = 7
     ROUND_ENDED = 8
+    FINAL_PREPARATION = 9
+    FINAL_PLAYERS = 10
+    FINAL_CHASER = 11
+    FINAL_CHASER_WRONG = 12
+    END = 13
 
     def __str__(self):
         return str(self.value)
@@ -37,6 +42,7 @@ class Game(object):
     def __init__(self, storage):
         super(Game, self).__init__()
         self.storage = storage
+
         self.teams: List[Team] = []
         self.questions: List[Question] = []
         self.rounds: List[Round] = []
@@ -81,7 +87,12 @@ class Game(object):
         self.current_team = team
 
     def random_team(self) -> Team:
-        return random.choice(self.teams)
+        teams = []
+        for team in self.teams:
+            if not team.played:
+                teams.append(team)
+        team = random.choice(teams)
+        return team
 
     def start(self):
         self.state = GameState.GAME_STARTED
@@ -103,10 +114,13 @@ class Game(object):
 
     def new_round(self):
         self.state = GameState.FAST_GUESS
-        self.current_round = gefragt_gejagt.round.Round()
-        self.current_round.id = 1
-        self.current_round.player = self.current_player
+        round = gefragt_gejagt.round.Round()
+        round.id = len(self.rounds)
+        round.player = self.current_player
         self.current_player.played = True
+
+        self.current_round = round
+        self.rounds.append(round)
 
     def end_fastround(self):
         self.state = GameState.CHASE_PREPARATION
@@ -123,11 +137,9 @@ class Game(object):
             if not question.played and question.type == round_questiontype:
                 questions.append(question)
         question = random.choice(questions)
-        print("RANDOM!!!", question.text)
         return question
 
     def choose_question(self, question: Question):
-        print("CHOOSE!!!", question.text)
         if self.state >= GameState.CHASE_PREPARATION and self.state <= GameState.CHASE_SOLVE:
             self.state = GameState.CHASE_QUESTIONING
         question.played = True
@@ -146,8 +158,9 @@ class Game(object):
 
     def check_round_end(self):
         round = self.current_round
-        if round.questionsLeftForPlayer == 0:
-            self.won = True
+        if round.questionsLeftForPlayer <= 0:
+            round.won = True
+            self.current_player.qualified = True
             self.state = GameState.ROUND_ENDED
         elif (round.correctAnswersPlayer + round.playerStartOffset) == round.correctAnswersChaser:
             self.state = GameState.ROUND_ENDED
@@ -156,7 +169,20 @@ class Game(object):
         self.current_round = None
         self.current_player = None
         self.current_question = None
-        self.state = GameState.GAME_STARTED
+        not_all_played = False
+
+        for player in self.current_team.players:
+            if not player.played:
+                not_all_played = True
+                break
+
+        if not_all_played:
+            self.state = GameState.GAME_STARTED
+        elif self.current_team.qualified:
+            self.state = GameState.FINAL_PREPARATION
+        else:
+            self.state = GameState.END
+
 
     def save(self, include_team=False) -> Dict:
         game_obj = {}

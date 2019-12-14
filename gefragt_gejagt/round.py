@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import List, Dict
+from enum import IntEnum, unique
 
 import gefragt_gejagt.question
 import gefragt_gejagt.offer as offer
@@ -10,17 +11,28 @@ DEFAULT_OFFER_HIGH_FACTOR = 3
 DEFAULT_OFFER_LOW_FACTOR = 0.2
 
 
+@unique
+class RoundType(IntEnum):
+    PLAYER = 1
+    FINAL = 2
+
+    def __str__(self):
+        return str(self.value)
+
+
 class Round(object):
     def __init__(self):
         super(Round, self).__init__()
 
         self.id: int
         self.won: bool = False
+        self.type: RoundType = RoundType.PLAYER
         self.time: int
         self.player: Player = None
         self.team: Team = None
         self.questions: List[Question] = []
         self.offers: List[Offer] = []
+        self.correctionOffset: int = 0
 
     @property
     def level(self) -> int:
@@ -90,6 +102,7 @@ class Round(object):
         round_obj = {}
         round_obj['id'] = self.id
         round_obj['won'] = self.won
+        round_obj['type'] = self.type
         if self.player:
             round_obj['player'] = self.player.save
         if self.team:
@@ -103,6 +116,7 @@ class Round(object):
         round_obj['correctAnswersPlayer'] = self.correctAnswersPlayer
         round_obj['playerStartOffset'] = self.playerStartOffset
         round_obj['questionsLeftForPlayer'] = self.questionsLeftForPlayer
+        round_obj['correctionOffset'] = self.correctionOffset
         return round_obj
 
 
