@@ -34,7 +34,7 @@ async function question_table(visible, include_all) {
         $("#questiontable tbody tr :visible").remove();
         for (var i = 0; i < game.questions.length; i++) {
             var question = game.questions[i];
-            if (question.type == 1 && (game.state == 4 || game.state == 8)) {
+            if (question.type == 1 && (game.state == 4 || game.state > 9)) {
                 var question_matches_round = true;
             } else if (question.type == 2 && (game.state >= 5 && game.state <= 7)) {
                 var question_matches_round = true;
@@ -182,18 +182,29 @@ function question_message(visible, question) {
     }
 };
 
-function final_start_message(visible, game) {
+function final_start_message(visible, chaser, game) {
     var message = document.getElementById('final-start-message');
+    var button = document.getElementById('final-start-message-button');
 
     if (visible) {
-        var playerNames = '';
-        game.current_team.players.forEach(function(player){
-            if (player.qualified) {
-                playerNames += player.name;
-                playerNames += ', ';
-            }
-        });
-        message.children[1].innerHTML = 'Mit ' + playerNames.slice(0,-2);
+        if (!chaser) {
+            var playerNames = '';
+            game.current_team.players.forEach(function(player){
+                if (player.qualified) {
+                    playerNames += player.name;
+                    playerNames += ', ';
+                }
+            });
+            message.children[1].innerHTML = 'Mit ' + playerNames.slice(0,-2);
+
+            button.setAttribute('onclick', "eel.start_final_game()")
+        } else {
+            message.children[0].children[0].innerHTML = 'Finalrunde; Jäger*in';
+            message.children[1].innerHTML = 'Spielstand, Spieler: ' + (game.current_round.playerStartOffset +
+                  game.current_round.correctAnswersPlayer);
+
+            button.setAttribute('onclick', "eel.start_final_chaser()")
+        }
 
         message.style.display = "";
     } else {
@@ -220,7 +231,8 @@ function solution_card(visible, game) {
     // offer-high-points
     if (visible) {
         card.style.display = "";
-        card.children[1].children[0].innerHTML = "<strong>Richtige Antwort:</strong> "+game.current_question.correctAnswer+"<br>";
+        card.children[1].children[0].innerHTML = "<strong>Frage:</strong> "+game.current_question.text+"<br><br>";
+        card.children[1].children[0].innerHTML += "<strong>Richtige Antwort:</strong> "+game.current_question.correctAnswer+"<br>";
         if (game.current_question.answerPlayer == 0) {
             var playerAnswerText = game.current_question.correctAnswer;
             var playerAnswerRating = '<span class="tag is-success">Richtig</span>';
@@ -276,41 +288,41 @@ async function process_gamestate() {
 
     switch (game.state) {
         case 0:  // PREPARATION
-            team_table(true);
             document.getElementById("status").innerHTML = "Status: Vorbereitung";
+            team_table(true);
             break;
         case 1:  // TEAM_CHOSEN
+            document.getElementById("status").innerHTML = "Status: Team ausgewählt";
             team_table(true);
             team_message(true, game.current_team.name);
-            document.getElementById("status").innerHTML = "Status: Team ausgewählt";
             break;
         case 2:  // GAME_STARTED
-            player_table(true, false);
             document.getElementById("status").innerHTML = "Status: Spiel gestartet";
+            player_table(true, false);
             break;
         case 3:  // PLAYER_CHOSEN
+            document.getElementById("status").innerHTML = "Status: Spieler ausgewählt";
             player_table(true, false);
             player_message(true, game.current_player.name);
-            document.getElementById("status").innerHTML = "Status: Spieler ausgewählt";
             break;
         case 4:  // FAST_GUESS
+            document.getElementById("status").innerHTML = "Status: Schnellraterunde";
             question_table(true);
             question_message(true, game.current_question);
-            document.getElementById("status").innerHTML = "Status: Schnellraterunde";
             break;
         case 5:  // CHASE_PREPARATION
-            offer_card(true, game);
             document.getElementById("status").innerHTML = "Status: Jagd Vorbereitung";
+            offer_card(true, game);
             break;
         case 6:  // CHASE_QUESTIONING
+            document.getElementById("status").innerHTML = "Status: Jagd Fragenstellung";
             question_table(true);
             question_message(true, game.current_question);
-            document.getElementById("status").innerHTML = "Status: Jagd Fragenstellung";
             break;
         case 7:  // CHASE_SOLVE
+            document.getElementById("status").innerHTML = "Status: Jagd Auflösung";
             question_table(true);
             solution_card(true, game);
-            document.getElementById("status").innerHTML = "Status: Jagd Auflösung";
             break;
         case 8:  // ROUND_ENDED
             document.getElementById("status").innerHTML = "Status: Runde beendet";
@@ -333,21 +345,32 @@ async function process_gamestate() {
             }
             break;
         case 9:  // FINAL_PREPARATION
-            final_start_message(true, game);
-            player_table(true, true);
             document.getElementById("status").innerHTML = "Status: Finale Vorbereitung";
+            final_start_message(true, false, game);
+            player_table(true, true);
             break;
         case 10:  // FINAL_PLAYERS
-            document.getElementById("status").innerHTML = "Status: Finale Spielende";
+            document.getElementById("status").innerHTML = "Status: Finale Spieler*in";
+            question_table(true);
+            question_message(true, game.current_question);
             break;
-        case 11:  // FINAL_CHASER
+        case 11:  // FINAL_BETWEEN
+            document.getElementById("status").innerHTML = "Status: Finale Zwischenpause";
+            final_start_message(true, true, game);
+            break;
+        case 12:  // FINAL_CHASER
             document.getElementById("status").innerHTML = "Status: Finale Jäger*in";
+            question_table(true);
+            question_message(true, game.current_question);
             break;
-        case 12:  // FINAL_CHASER_WRONG
+        case 13:  // FINAL_CHASER_WRONG
             document.getElementById("status").innerHTML = "Status: Finale Jäger*in Falschantwort";
             break;
-        case 13:  // END
+        case 14:  // FINAL_END
             document.getElementById("status").innerHTML = "Status: Ende";
+            break;
+        case 15:  // EVALUATION
+            document.getElementById("status").innerHTML = "Status: Auswertung";
             break;
         default:
             document.getElementById("status").innerHTML = "Status: Unbekannt "+game.state;
@@ -395,6 +418,21 @@ $(async function() {
 
     eel.expose(all_chase_both_answered);
     function all_chase_both_answered(time) {
+        $('#timer').text("");
+    }
+
+    eel.expose(all_final_tick);
+    function all_final_tick(time_played, time_remaining) {
+        $('#timer').text(time_remaining + " Sekunden verbleibend");
+    }
+
+    eel.expose(all_final_pause);
+    function all_final_pause(time_played, time_remaining) {
+        $('#timer').text("Frage pausiert; " + time_remaining + " Sekunden verbleibend");
+    }
+
+    eel.expose(all_final_timeout);
+    function all_final_timeout(time) {
         $('#timer').text("");
     }
 

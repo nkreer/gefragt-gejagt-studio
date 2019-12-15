@@ -52,7 +52,9 @@ class Round(object):
     def correctAnswersChaser(self) -> int:
         count = 0
         for question in self.questions:
-            if question.answerChaser == 0 and question.type == gefragt_gejagt.question.QuestionType.CHASE:
+            if question.answerChaser == 0 and (
+                    question.type == gefragt_gejagt.question.QuestionType.CHASE or (
+                    self.team is not None and question.type == gefragt_gejagt.question.QuestionType.SIMPLE)):
                 count += 1
         return count
 
@@ -60,18 +62,22 @@ class Round(object):
     def correctAnswersPlayer(self) -> int:
         count = 0
         for question in self.questions:
-            if question.answerPlayer == 0 and question.type == gefragt_gejagt.question.QuestionType.CHASE:
+            if (self.type == RoundType.PLAYER and question.answerPlayer == 0 and question.type == gefragt_gejagt.question.QuestionType.CHASE) or (
+                    self.type == RoundType.FINAL and question.answerPlayer == 0 and question.answerChaser is None and question.type == gefragt_gejagt.question.QuestionType.SIMPLE):
                 count += 1
         return count
 
     @property
     def playerStartOffset(self) -> int:
-        if len(self.offers) != 0:
-            if self.offers[0].accepted:
-                return 2
-            if self.offers[2].accepted:
-                return 4
-        return 3
+        if self.type == RoundType.FINAL:
+            return len(self.team.qualified_players)
+        else:
+            if len(self.offers) != 0:
+                if self.offers[0].accepted:
+                    return 2
+                if self.offers[2].accepted:
+                    return 4
+            return 3
 
     @property
     def questionsLeftForPlayer(self) -> int:

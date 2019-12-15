@@ -34,6 +34,14 @@ class Team(object):
                 return True
         return False
 
+    @property
+    def qualified_players(self) -> List[Player]:
+        output = []
+        for player in self.players:
+            if player.qualified:
+                output.append(player)
+        return output
+
     def load(self, obj: Dict):
         self.id = obj['id']
         self.name = obj['name']

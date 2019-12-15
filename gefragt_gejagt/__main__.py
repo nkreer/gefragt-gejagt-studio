@@ -1,25 +1,21 @@
 from __future__ import annotations
 
-import os
 import eel
-import json
 import bottle
-import random
 import argparse
 import datetime
-from typing import List, Dict
-from enum import IntEnum, unique
 
 import gefragt_gejagt.game
 import gefragt_gejagt.team
 import gefragt_gejagt.question
 import gefragt_gejagt.round
 import gefragt_gejagt.offer
-from  gefragt_gejagt.game import GameState
+from gefragt_gejagt.game import GameState
 
 
-SECONDS_PER_FASTROUND = 6
+SECONDS_PER_FASTROUND = 60
 SECONDS_CHASE_TIMEOUT = 5
+SECONDS_PER_FINALROUND = 120
 
 
 def parse_arguments():
@@ -147,13 +143,15 @@ if __name__ == '__main__':
         if game.state == GameState.FAST_GUESS:
             game.answer_fast_question(answer_id)
             game.choose_question(game.random_question())
-        else:
+        elif game.state >= GameState.CHASE_PREPARATION and game.state <= GameState.CHASE_SOLVE:
             if player_id == 0:  # Player
                 game.current_question.answerPlayer = answer_id
-                already_answered = (not game.current_question.answerChaser is None)
+                already_answered = (
+                    game.current_question.answerChaser is not None)
             else:  # Chaser
                 game.current_question.answerChaser = answer_id
-                already_answered = (not game.current_question.answerPlayer is None)
+                already_answered = (
+                    game.current_question.answerPlayer is not None)
             if not already_answered:
                 starttime = datetime.datetime.now()
                 endtime = starttime + \
@@ -176,6 +174,26 @@ if __name__ == '__main__':
                     eel.all_chase_both_answered()
 
                 game.state = GameState.CHASE_SOLVE
+        else:
+            if game.state == GameState.FINAL_PLAYERS or game.state == GameState.FINAL_CHASER_WRONG:
+                game.current_question.answerPlayer = answer_id
+                game.choose_question(game.random_question())
+            elif game.state == GameState.FINAL_CHASER:
+                game.current_question.answerChaser = answer_id
+                if answer_id == 0:
+                    game.choose_question(game.random_question())
+                else:
+                    pass
+                    # TODO: Wrong chaser answer, stop timer
+
+            if game.state == GameState.FINAL_CHASER_WRONG:
+                game.state = GameState.FINAL_CHASER
+                # TODO: restart timer
+
+            print("-------------")
+            print('PlayerPos', game.current_round.playerStartOffset +
+                  game.current_round.correctAnswersPlayer)
+            print('ChaserPos', game.current_round.correctAnswersChaser)
         resend_gamestate()
 
     @eel.expose
@@ -187,8 +205,10 @@ if __name__ == '__main__':
     def accept_offer(offer_num):
         game.current_round.offers[offer_num].accepted = True
 
+        game.current_player.points = game.current_round.offers[offer_num].amount
+
         game.state = GameState.CHASE_QUESTIONING
-        game.random_question()
+        game.choose_question(game.random_question())
 
         resend_gamestate()
 
@@ -200,6 +220,51 @@ if __name__ == '__main__':
     @eel.expose
     def end_round():
         game.end_round()
+        resend_gamestate()
+
+    @eel.expose
+    def start_final_game():
+        # TODO: if not team.qualified: team has to choose a player
+
+        game.setup_finalround(players=True)
+        game.choose_question(game.random_question())
+        resend_gamestate()
+
+        starttime = datetime.datetime.now()
+        endtime = starttime + \
+            datetime.timedelta(seconds=SECONDS_PER_FINALROUND)
+
+        while datetime.datetime.now() < endtime:
+            seconds_played = (datetime.datetime.now() - starttime).seconds
+            seconds_remaining = SECONDS_PER_FINALROUND - seconds_played
+            eel.all_final_tick(seconds_played, seconds_remaining)
+            eel.sleep(1.0)
+
+        eel.all_final_timeout()
+
+        game.state = GameState.FINAL_BETWEEN
+        resend_gamestate()
+
+    @eel.expose
+    def start_final_chaser():
+        game.state = GameState.FINAL_CHASER
+        game.choose_question(game.random_question())
+        resend_gamestate()
+
+        starttime = datetime.datetime.now()
+        endtime = starttime + \
+            datetime.timedelta(seconds=SECONDS_PER_FINALROUND)
+
+        # TODO: Handle timer stopped
+        while datetime.datetime.now() < endtime:
+            seconds_played = (datetime.datetime.now() - starttime).seconds
+            seconds_remaining = SECONDS_PER_FINALROUND - seconds_played
+            eel.all_final_tick(seconds_played, seconds_remaining)
+            eel.sleep(1.0)
+
+        eel.all_final_timeout()
+
+        game.state = GameState.FINAL_END
         resend_gamestate()
 
     @eel.expose

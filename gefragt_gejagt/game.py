@@ -28,9 +28,11 @@ class GameState(IntEnum):
     ROUND_ENDED = 8
     FINAL_PREPARATION = 9
     FINAL_PLAYERS = 10
-    FINAL_CHASER = 11
-    FINAL_CHASER_WRONG = 12
-    END = 13
+    FINAL_BETWEEN = 11
+    FINAL_CHASER = 12
+    FINAL_CHASER_WRONG = 13
+    FINAL_END = 14
+    EVALUATION = 15
 
     def __str__(self):
         return str(self.value)
@@ -162,8 +164,21 @@ class Game(object):
             round.won = True
             self.current_player.qualified = True
             self.state = GameState.ROUND_ENDED
-        elif (round.correctAnswersPlayer + round.playerStartOffset) == round.correctAnswersChaser:
+        elif (round.correctAnswersPlayer + round.playerStartOffset) <= round.correctAnswersChaser:
             self.state = GameState.ROUND_ENDED
+
+    def setup_finalround(self, players=False):
+        round = gefragt_gejagt.round.Round()
+        round.id = len(self.rounds)
+        round.type = gefragt_gejagt.round.RoundType.FINAL
+        round.team = self.current_team
+
+        self.current_round = round
+
+        if players:
+            self.state = GameState.FINAL_PLAYERS
+        else:
+            self.state = GameState.FINAL_CHASER
 
     def end_round(self):
         self.current_round = None
@@ -178,11 +193,8 @@ class Game(object):
 
         if not_all_played:
             self.state = GameState.GAME_STARTED
-        elif self.current_team.qualified:
+        else self.current_team.qualified:
             self.state = GameState.FINAL_PREPARATION
-        else:
-            self.state = GameState.END
-
 
     def save(self, include_team=False) -> Dict:
         game_obj = {}
