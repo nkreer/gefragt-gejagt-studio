@@ -278,10 +278,34 @@ if __name__ == '__main__':
             os.path.join(
                 os.path.dirname(
                     config.file),
-                "autosave-test.json"))
+                "save-{}.json".format(datetime.datetime.now().__format__('%Y-%m-%dT%H_%M_%S'))))
+
+    @eel.expose
+    def get_files():
+        path = os.path.dirname(config.file)
+        return [f for f in os.listdir(path) if os.path.isfile(
+            os.path.join(path, f)) and f[-5:] == '.json']
+
+    @eel.expose
+    def load_game(file):
+        save_game()
+
+        global game
+        del game
+
+        game = gefragt_gejagt.game.Game(
+            os.path.join(
+                os.path.dirname(
+                    config.file),
+                file))
+        game.load_json_state()
+
+        resend_gamestate()
 
     @eel.expose
     def reset_game():
+        save_game()
+
         global game
         del game
 

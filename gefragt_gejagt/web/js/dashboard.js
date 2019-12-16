@@ -266,6 +266,23 @@ function set_offer(input_nr) {
     eel.set_offer(input_nr, input_amount);
 }
 
+async function load_filenames() {
+    let files = await eel.get_files()();
+    $("#file-picker option").remove();
+
+    files = files.reverse();
+
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        $("#file-picker").append('<option value=' + file + '>' + file + '</option>');
+    }
+}
+
+function send_load_game() {
+    console.log($("#file-picker").val());
+    eel.load_game($("#file-picker").val());
+}
+
 async function process_gamestate() {
     let game = await eel.get_game()();
 

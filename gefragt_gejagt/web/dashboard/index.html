@@ -6,7 +6,7 @@
         <script src="/eel.js"></script>
         <script src="/js/common.js"></script>
         <script src="/js/dashboard.js"></script>
-        <link rel="stylesheet" href="/css/bulma.css"></script>
+        <link rel="stylesheet" href="/css/bulma.css">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>GefragtGejagt - Dashboard</title>
     </head>
@@ -22,7 +22,7 @@
                     </div>
                     <div class="navbar-item" id="status">
                     </div>
-                    <a class="navbar-item" onclick="set_modal(true, 'save-modal')">In-/Export</a>
+                    <a class="navbar-item" onclick="load_filenames(); set_modal(true, 'save-modal')">In-/Export</a>
                     <a class="navbar-item" onclick="set_modal(true, 'reset-modal')">Zurücksetzen</a>
                 </div>
             </div>
@@ -48,14 +48,34 @@
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">Wirklich speichern?</p>
+                    <p class="modal-card-title">In-/Export des Spielstands</p>
                     <button class="delete" aria-label="close" onclick="set_modal(false, 'save-modal')"></button>
                 </header>
                 <section class="modal-card-body">
-                    Hierdurch wird der aktuelle Spielstand gespeichert...
+                    <b>Achtung:</b> Beim Importieren des Spielstands wird der aktuelle überschrieben!
+                    <hr class="hr">
+                    <div class="field is-horizontal">
+                        <div class="field-label is-small">
+                            <label class="label">
+                                Wähle eine Datei aus:
+                            </label>
+                        </div>
+                        <div class="field-body">
+                            <div class="field">
+                                <p class="control is-expanded">
+                                    <div class="select is-fullwidth">
+                                        <select id="file-picker">
+                                            <option value="Argentina">Argffffffffffffffffffffentina</option>
+                                        </select>
+                                    </div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </section>
                 <footer class="modal-card-foot">
                     <button class="button is-success" onclick="eel.save_game(); set_modal(false, 'save-modal')">Spiel speichern</button>
+                    <button class="button is-danger" onclick="send_load_game(); set_modal(false, 'save-modal')">Spiel laden</button>
                     <button class="button" onclick="set_modal(false, 'save-modal')">Cancel</button>
                 </footer>
             </div>
@@ -95,9 +115,9 @@
                         Aktuelle Frage:
                     </p>
                     <a onclick="eel.stop_question()" class="card-header-icon" aria-label="close">
-                      <span class="icon">
-                        <i class="delete" aria-hidden="true"></i>
-                      </span>
+                        <span class="icon">
+                            <i class="delete" aria-hidden="true"></i>
+                        </span>
                     </a>
                 </header>
                 <div class="card-content">
@@ -222,7 +242,7 @@
             <br>
             <table id="teamtable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
-                    <th><input type="button" id="random-team-btn" class="button is-primary" value="Zufälliges Team auswählen"  onclick="eel.random_team()"></th>
+                    <th><input type="button" id="random-team-btn" class="button is-primary" value="Zufälliges Team auswählen" onclick="eel.random_team()"></th>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Gespielt</th>
@@ -235,7 +255,7 @@
             </table>
             <table id="playertable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
-                    <th id="random-player-btn-col"><input type="button" id="random-player-btn" class="button is-primary" value="Zufälligen Spieler auswählen"  onclick="eel.random_player()" style="display: none;"></th>
+                    <th id="random-player-btn-col"><input type="button" id="random-player-btn" class="button is-primary" value="Zufälligen Spieler auswählen" onclick="eel.random_player()" style="display: none;"></th>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Punktzahl</th>
@@ -250,7 +270,7 @@
             </table>
             <table id="questiontable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
-                    <th><input type="button" id="random-question-btn" class="button is-primary" value="Zufällige Frage auswählen" onclick="eel.random_question()" ></th>
+                    <th><input type="button" id="random-question-btn" class="button is-primary" value="Zufällige Frage auswählen" onclick="eel.random_question()"></th>
                     <th>ID</th>
                     <th>Typ</th>
                     <th>Text</th>
