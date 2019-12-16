@@ -81,15 +81,24 @@ if __name__ == '__main__':
 
     @eel.expose
     def random_player():
+        only_unplayed = game.state != GameState.FINAL_PREPARATION
         try:
-            game.choose_player(game.random_player())
+            player = game.random_player(only_unplayed=only_unplayed)
         except:
             game.state = GameState.FINAL_PREPARATION
+        if game.state == GameState.FINAL_PREPARATION:
+            player.qualified = not player.qualified
+        else:
+            game.choose_player(player)
         resend_gamestate()
 
     @eel.expose
     def choose_player(id):
-        game.choose_player(game.get_player_by_id(id))
+        player = game.get_player_by_id(id)
+        if game.state == GameState.FINAL_PREPARATION:
+            player.qualified = not player.qualified
+        else:
+            game.choose_player(player)
         resend_gamestate()
 
     @eel.expose
@@ -256,7 +265,10 @@ if __name__ == '__main__':
             datetime.timedelta(seconds=SECONDS_PER_FINALROUND)
 
         # TODO: Handle timer stopped
-        while datetime.datetime.now() < endtime:
+        while datetime.datetime.now() < endtime and (
+            game.current_round.correctAnswersChaser < (
+                game.current_round.playerStartOffset +
+                game.current_round.correctAnswersPlayer)):
             seconds_played = (datetime.datetime.now() - starttime).seconds
             seconds_remaining = SECONDS_PER_FINALROUND - seconds_played
             eel.all_final_tick(seconds_played, seconds_remaining)

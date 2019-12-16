@@ -103,11 +103,14 @@ class Game(object):
         self.state = GameState.PLAYER_CHOSEN
         self.current_player = player
 
-    def random_player(self) -> Player:
-        players = []
-        for player in self.current_team.players:
-            if not player.played:
-                players.append(player)
+    def random_player(self, only_unplayed=True) -> Player:
+        if not only_unplayed:
+            players = self.current_team.players
+        else:
+            players = []
+            for player in self.current_team.players:
+                if not player.played:
+                    players.append(player)
         return random.choice(players)
 
     def reset_player():
@@ -193,7 +196,7 @@ class Game(object):
 
         if not_all_played:
             self.state = GameState.GAME_STARTED
-        else self.current_team.qualified:
+        else:
             self.state = GameState.FINAL_PREPARATION
 
     def save(self, include_team=False) -> Dict:

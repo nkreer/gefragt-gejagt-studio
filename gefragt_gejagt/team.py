@@ -53,6 +53,7 @@ class Team(object):
         team_obj['id'] = self.id
         team_obj['name'] = self.name
         team_obj['played'] = self.played
+        team_obj['qualified'] = self.qualified
         if include_players:
             team_obj['players'] = player.save(self.players)
         return team_obj

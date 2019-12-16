@@ -74,18 +74,14 @@ async function question_table(visible, include_all) {
     }
 }
 
-async function player_table(visible, disable_buttons) {
+async function player_table(visible, rename_buttons) {
     var tbl = document.getElementById('playertable');
     if (visible) {
         tbl.style.display = "";
 
         var button = document.getElementById('random-player-btn');
 
-        if (disable_buttons == true) {
-            button.style.display = "none";
-        } else {
-            button.style.display = "";
-        }
+        button.style.display = "";
 
         $("#playertable tbody tr :visible").remove();
         let game = await eel.get_game()()
@@ -93,8 +89,8 @@ async function player_table(visible, disable_buttons) {
             var player = game.current_team.players[i];
             var row = tbl.insertRow(tbl.rows.length);
 
-            if (disable_buttons == true) {
-                row.insertCell(-1).innerHTML = "";
+            if (rename_buttons == true) {
+                row.insertCell(-1).innerHTML = "<input type='button' id='choose_player"+player.id+"' class='button is-link' onclick='eel.choose_player("+player.id+")' value='De-/Qualifizieren'>";
             } else {
                 row.insertCell(-1).innerHTML = "<input type='button' id='choose_player"+player.id+"' class='button is-link' onclick='eel.choose_player("+player.id+")' value='Spielen'>";
             }
@@ -346,8 +342,10 @@ async function process_gamestate() {
             break;
         case 9:  // FINAL_PREPARATION
             document.getElementById("status").innerHTML = "Status: Finale Vorbereitung";
-            final_start_message(true, false, game);
             player_table(true, true);
+            if(game.current_team.qualified) {
+                final_start_message(true, false, game);
+            }
             break;
         case 10:  // FINAL_PLAYERS
             document.getElementById("status").innerHTML = "Status: Finale Spieler*in";
