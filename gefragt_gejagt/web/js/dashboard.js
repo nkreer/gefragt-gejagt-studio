@@ -280,8 +280,6 @@ async function process_gamestate() {
     endtext(false);
     final_start_message(false);
 
-    set_modal(false, 'reset-modal');
-
     switch (game.state) {
         case 0:  // PREPARATION
             document.getElementById("status").innerHTML = "Status: Vorbereitung";

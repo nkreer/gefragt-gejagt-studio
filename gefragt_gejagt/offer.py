@@ -24,6 +24,11 @@ class Offer(object):
         self.accepted: bool = False
         self.amount: int = 0
 
+    def load(self, obj: Dict):
+        self.type = obj.get('type', OfferType.NORMAL)
+        self.accepted = obj.get('accepted', False)
+        self.amount = obj.get('amount', 0)
+
     def save(self) -> Dict:
         offer_obj = {}
         offer_obj['type'] = self.type
@@ -33,8 +38,13 @@ class Offer(object):
         return offer_obj
 
 
-def load(json_str: str) -> List[Offer]:
-    pass
+def load(obj: Dict) -> List[Offer]:
+    offers = []
+    for offer_obj in obj:
+        offer = Offer()
+        offer.load(offer_obj)
+        offers.append(offer)
+    return offers
 
 
 def save(offers: List[Offer]) -> List:

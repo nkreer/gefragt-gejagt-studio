@@ -45,7 +45,7 @@ class Team(object):
     def load(self, obj: Dict):
         self.id = obj['id']
         self.name = obj['name']
-        if obj['players']:
+        if obj.get('players'):
             self.players = player.load(obj['players'], self)
 
     def save(self, include_players=False) -> Dict:

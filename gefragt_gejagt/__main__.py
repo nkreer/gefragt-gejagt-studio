@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import eel
 import bottle
 import argparse
@@ -35,17 +36,16 @@ def parse_arguments():
         default="8000",
         help="The port to listen to")
     parser.add_argument(
-        '-s',
-        '--storage',
-        default="examples",
-        help="""The folder in which the .json files for the questions, teams,
-        players etc. are stored and the current gamestate will be saved to.""")
+        '-f',
+        '--file',
+        default="examples/initial.json",
+        help="""The .json files for the questions, teams, players etc. The current gamestate will be saved to the parent-folder.""")
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     config = parse_arguments()
-    game = gefragt_gejagt.game.Game(config.storage)
+    game = gefragt_gejagt.game.Game(config.file)
     game.load_json_state()
 
     app = bottle.Bottle()
@@ -198,11 +198,6 @@ if __name__ == '__main__':
             if game.state == GameState.FINAL_CHASER_WRONG:
                 game.state = GameState.FINAL_CHASER
                 # TODO: restart timer
-
-            print("-------------")
-            print('PlayerPos', game.current_round.playerStartOffset +
-                  game.current_round.correctAnswersPlayer)
-            print('ChaserPos', game.current_round.correctAnswersChaser)
         resend_gamestate()
 
     @eel.expose
@@ -233,8 +228,6 @@ if __name__ == '__main__':
 
     @eel.expose
     def start_final_game():
-        # TODO: if not team.qualified: team has to choose a player
-
         game.setup_finalround(players=True)
         game.choose_question(game.random_question())
         resend_gamestate()
@@ -280,11 +273,19 @@ if __name__ == '__main__':
         resend_gamestate()
 
     @eel.expose
+    def save_game():
+        game.save_to_file(
+            os.path.join(
+                os.path.dirname(
+                    config.file),
+                "autosave-test.json"))
+
+    @eel.expose
     def reset_game():
         global game
         del game
 
-        game = gefragt_gejagt.game.Game(config.storage)
+        game = gefragt_gejagt.game.Game(config.file)
         game.load_json_state()
 
         resend_gamestate()

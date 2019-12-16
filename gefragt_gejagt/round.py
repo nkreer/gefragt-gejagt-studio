@@ -104,6 +104,25 @@ class Round(object):
             low_offer
         ]
 
+    def load(self, obj: Dict, game):
+        self.id = obj['id']
+        self.won = obj.get('won', False)
+        self.type = obj.get('type', RoundType.PLAYER)
+        self.correctionOffset = obj.get('correctionOffset', 0)
+
+        if obj.get('offers'):
+            self.offers = gefragt_gejagt.offer.load(obj['offers'])
+        if obj.get('team'):
+            self.player = game.get_team_by_id(obj['team']['id'])
+        if obj.get('player'):
+            self.player = game.get_player_by_id(obj['player']['id'])
+        if obj.get('questions'):
+            questions = []
+            for question_obj in obj['questions']:
+                question = game.get_question_by_id(question_obj['id'])
+                questions.append(question)
+            self.questions = questions
+
     def save(self) -> Dict:
         round_obj = {}
         round_obj['id'] = self.id
@@ -126,8 +145,13 @@ class Round(object):
         return round_obj
 
 
-def load(json_str: str) -> List[Round]:
-    pass
+def load(obj: Dict, game) -> List[Round]:
+    rounds = []
+    for round_obj in obj:
+        round = Round()
+        round.load(round_obj, game)
+        rounds.append(round)
+    return rounds
 
 
 def save(rounds: List[Round]) -> List:

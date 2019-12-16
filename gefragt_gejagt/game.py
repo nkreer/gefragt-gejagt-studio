@@ -41,9 +41,9 @@ class GameState(IntEnum):
 class Game(object):
     """docstring for GefragtGejagt."""
 
-    def __init__(self, storage):
+    def __init__(self, file):
         super(Game, self).__init__()
-        self.storage = storage
+        self.file = file
 
         self.teams: List[Team] = []
         self.questions: List[Question] = []
@@ -54,11 +54,30 @@ class Game(object):
         self.current_question: Question = None
         self.state: GameState = GameState.PREPARATION
 
-    def load_json_state(self, filename='initial.json'):
-        with open(os.path.join(self.storage, filename), 'r') as fp:
+    def load_json_state(self, filename=None):
+        if filename is None:
+            filename = self.file
+        with open(filename, 'r') as fp:
             obj = json.load(fp)
+
+        self.state = obj.get('state', GameState.PREPARATION)
         self.teams = gefragt_gejagt.team.load(obj['teams'])
         self.questions = gefragt_gejagt.question.load(obj['questions'])
+
+        if obj.get('current_team'):
+            self.current_team = self.get_team_by_id(obj['current_team']['id'])
+        if obj.get('current_player'):
+            self.current_player = self.get_player_by_id(
+                obj['current_player']['id'])
+        if obj.get('current_question'):
+            self.current_question = self.get_question_by_id(
+                obj['current_question']['id'])
+
+        if obj.get('rounds'):
+            self.rounds = gefragt_gejagt.round.load(obj['rounds'], self)
+            if obj.get('current_round'):
+                self.current_round = self.get_round_by_id(
+                    obj['current_round']['id'])
 
     def get_team_by_id(self, id) -> Team:
         for team in self.teams:
@@ -132,6 +151,7 @@ class Game(object):
         self.current_question = None
 
     def random_question(self) -> Question:
+        # TODO: Fallback if no questions left
         if self.state >= GameState.CHASE_PREPARATION and self.state <= GameState.CHASE_SOLVE:
             round_questiontype = gefragt_gejagt.question.QuestionType.CHASE
         else:
@@ -198,6 +218,15 @@ class Game(object):
             self.state = GameState.GAME_STARTED
         else:
             self.state = GameState.FINAL_PREPARATION
+
+    def save_to_file(self, filename):
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(
+                self.save(),
+                f,
+                ensure_ascii=False,
+                indent=4,
+                default=lambda o: None)
 
     def save(self, include_team=False) -> Dict:
         game_obj = {}

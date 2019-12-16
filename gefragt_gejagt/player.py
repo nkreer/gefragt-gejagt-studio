@@ -30,6 +30,7 @@ class Player:
         self.level = obj['level']
         self.points = obj.get('points', 0)
         self.played = obj.get('played', False)
+        self.qualified = obj.get('qualified', False)
         if obj.get('team'):
             self.team = team.Team()
             self.team.load(obj['team'])

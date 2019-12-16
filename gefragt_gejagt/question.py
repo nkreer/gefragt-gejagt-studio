@@ -34,9 +34,11 @@ class Question(object):
         self.level = obj['level']
         self.text = obj['text']
         self.correctAnswer = obj['correctAnswer']
-        self.category = obj['category']
-        self.wrongAnswers = obj['wrongAnswers']
+        self.wrongAnswers = obj.get('wrongAnswers', [])
+        self.category = obj.get('category', '')
         self.played = obj.get('played', False)
+        self.answerChaser = obj.get('answerChaser', False)
+        self.answerPlayer = obj.get('answerPlayer', False)
 
     def save(self) -> Dict:
         question_obj = {}
@@ -46,6 +48,7 @@ class Question(object):
         question_obj['text'] = self.text
         question_obj['correctAnswer'] = self.correctAnswer
         question_obj['wrongAnswers'] = self.wrongAnswers
+        question_obj['category'] = self.category
         question_obj['played'] = self.played
         question_obj['answerChaser'] = self.answerChaser
         question_obj['answerPlayer'] = self.answerPlayer
