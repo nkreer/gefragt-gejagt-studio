@@ -37,8 +37,8 @@ class Question(object):
         self.wrongAnswers = obj.get('wrongAnswers', [])
         self.category = obj.get('category', '')
         self.played = obj.get('played', False)
-        self.answerChaser = obj.get('answerChaser', False)
-        self.answerPlayer = obj.get('answerPlayer', False)
+        self.answerChaser = obj.get('answerChaser', None)
+        self.answerPlayer = obj.get('answerPlayer', None)
 
     def save(self) -> Dict:
         question_obj = {}

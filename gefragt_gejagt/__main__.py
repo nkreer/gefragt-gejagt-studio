@@ -274,11 +274,15 @@ if __name__ == '__main__':
 
     @eel.expose
     def save_game():
+        timestamp = datetime.datetime.now().__format__('%Y-%m-%dT%H_%M_%S')
+
+        print("created autosave at {}".format(timestamp))
+
         game.save_to_file(
             os.path.join(
                 os.path.dirname(
                     config.file),
-                "save-{}.json".format(datetime.datetime.now().__format__('%Y-%m-%dT%H_%M_%S'))))
+                "save-{}.json".format(timestamp)))
 
     @eel.expose
     def get_files():

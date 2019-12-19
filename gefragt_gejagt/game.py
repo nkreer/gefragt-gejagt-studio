@@ -197,6 +197,7 @@ class Game(object):
         round.team = self.current_team
 
         self.current_round = round
+        self.rounds.append(round)
 
         if players:
             self.state = GameState.FINAL_PLAYERS

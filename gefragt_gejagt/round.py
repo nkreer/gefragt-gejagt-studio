@@ -113,7 +113,7 @@ class Round(object):
         if obj.get('offers'):
             self.offers = gefragt_gejagt.offer.load(obj['offers'])
         if obj.get('team'):
-            self.player = game.get_team_by_id(obj['team']['id'])
+            self.team = game.get_team_by_id(obj['team']['id'])
         if obj.get('player'):
             self.player = game.get_player_by_id(obj['player']['id'])
         if obj.get('questions'):
@@ -129,13 +129,13 @@ class Round(object):
         round_obj['won'] = self.won
         round_obj['type'] = self.type
         if self.player:
-            round_obj['player'] = self.player.save
+            round_obj['player'] = self.player.save()
         if self.team:
-            round_obj['team'] = self.team.save
+            round_obj['team'] = self.team.save()
         round_obj['questions'] = gefragt_gejagt.question.save(self.questions)
         round_obj['offers'] = offer.save(self.offers)
         if self.acceptedOffer:
-            round_obj['acceptedOffer'] = self.acceptedOffer.save
+            round_obj['acceptedOffer'] = self.acceptedOffer.save()
 
         round_obj['correctAnswersChaser'] = self.correctAnswersChaser
         round_obj['correctAnswersPlayer'] = self.correctAnswersPlayer
