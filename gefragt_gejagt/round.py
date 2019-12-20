@@ -83,6 +83,12 @@ class Round(object):
     def questionsLeftForPlayer(self) -> int:
         return 7 - self.correctAnswersPlayer - self.playerStartOffset
 
+    @property
+    def chaserFinalWon(self) -> boolean:
+        return self.correctAnswersChaser >= (
+            self.playerStartOffset +
+            self.correctAnswersPlayer)
+
     def setup_offers(self, points: int):
         high_offer = offer.Offer()
         high_offer.type = offer.OfferType.HIGH

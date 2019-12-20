@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
     @eel.expose
     def choose_question(id):
-        game.choose_question(game.get_question_by_id())
+        game.choose_question(game.get_question_by_id(id))
         eel.all_new_question(game.current_question.save())
         resend_gamestate()
 
@@ -242,8 +242,6 @@ if __name__ == '__main__':
             eel.all_final_tick(seconds_played, seconds_remaining)
             eel.sleep(1.0)
 
-        eel.all_final_timeout()
-
         game.state = GameState.FINAL_BETWEEN
         resend_gamestate()
 
@@ -259,15 +257,16 @@ if __name__ == '__main__':
 
         # TODO: Handle timer stopped
         while datetime.datetime.now() < endtime and (
-            game.current_round.correctAnswersChaser < (
-                game.current_round.playerStartOffset +
-                game.current_round.correctAnswersPlayer)):
+                not game.current_round.chaserFinalWon):
+            timedout = datetime.datetime.now() > endtime
             seconds_played = (datetime.datetime.now() - starttime).seconds
             seconds_remaining = SECONDS_PER_FINALROUND - seconds_played
             eel.all_final_tick(seconds_played, seconds_remaining)
             eel.sleep(1.0)
 
-        eel.all_final_timeout()
+        if timedout:
+            eel.all_final_timeout()
+            game.current_round.won = True
 
         game.state = GameState.FINAL_END
         resend_gamestate()
