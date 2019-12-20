@@ -198,7 +198,7 @@ if __name__ == '__main__':
             if game.state == GameState.FINAL_CHASER_WRONG:
                 game.state = GameState.FINAL_CHASER
                 # TODO: restart timer
-        resend_gamestate()
+        # resend_gamestate()
 
     @eel.expose
     def set_offer(offer_num, offer_amount):
