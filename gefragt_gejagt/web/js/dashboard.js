@@ -381,6 +381,7 @@ async function process_gamestate() {
             break;
         case 13:  // FINAL_CHASER_WRONG
             document.getElementById("status").innerHTML = "Status: Finale Jäger*in Falschantwort";
+            question_message(true, game.current_question);
             break;
         case 14:  // FINAL_END
             document.getElementById("status").innerHTML = "Status: Ende";

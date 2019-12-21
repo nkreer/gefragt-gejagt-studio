@@ -79,6 +79,10 @@ class Game(object):
                 self.current_round = self.get_round_by_id(
                     obj['current_round']['id'])
 
+                if len(
+                        self.current_round.finalTime) > 0 and not self.current_round.finalTime[-1].get('end'):
+                    self.state = GameState.FINAL_CHASER_WRONG
+
     def get_team_by_id(self, id) -> Team:
         for team in self.teams:
             if team.id == id:
