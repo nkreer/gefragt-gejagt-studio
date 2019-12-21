@@ -118,12 +118,16 @@ if __name__ == '__main__':
     def fastround_timer():
         starttime = datetime.datetime.now()
         endtime = starttime + datetime.timedelta(seconds=SECONDS_PER_FASTROUND)
+        i = 0
 
         while datetime.datetime.now() < endtime:
-            seconds_played = (datetime.datetime.now() - starttime).seconds
-            seconds_remaining = SECONDS_PER_FASTROUND - seconds_played
-            eel.all_fast_tick(seconds_played, seconds_remaining)
-            eel.sleep(1.0)
+            if i % 10 == 0:
+                seconds_played = (datetime.datetime.now() - starttime).seconds
+                seconds_remaining = SECONDS_PER_FASTROUND - seconds_played
+                eel.all_fast_tick(seconds_played, seconds_remaining)
+
+            i += 1
+            eel.sleep(0.1)
 
         eel.all_fast_timeout()
         game.end_fastround()
@@ -167,15 +171,19 @@ if __name__ == '__main__':
                     datetime.timedelta(seconds=SECONDS_CHASE_TIMEOUT)
 
                 timedout = False
+                i = 0
 
                 while (
                         game.current_question.answerChaser is None or game.current_question.answerPlayer is None) and not timedout:
-                    timedout = datetime.datetime.now() > endtime
-                    seconds_played = (
-                        datetime.datetime.now() - starttime
-                    ).seconds
-                    seconds_remaining = SECONDS_CHASE_TIMEOUT - seconds_played
-                    eel.all_chase_tick(seconds_played, seconds_remaining)
+                    if i % 10 == 0:
+                        timedout = datetime.datetime.now() > endtime
+                        seconds_played = (
+                            datetime.datetime.now() - starttime
+                        ).seconds
+                        seconds_remaining = SECONDS_CHASE_TIMEOUT - seconds_played
+                        eel.all_chase_tick(seconds_played, seconds_remaining)
+
+                    i += 1
                     eel.sleep(1.0)
                 if timedout:
                     eel.all_chase_timeout()
@@ -236,12 +244,16 @@ if __name__ == '__main__':
         starttime = datetime.datetime.now()
         endtime = starttime + \
             datetime.timedelta(seconds=SECONDS_PER_FINALROUND)
+        i = 0
 
         while datetime.datetime.now() < endtime:
-            seconds_played = (datetime.datetime.now() - starttime).seconds
-            seconds_remaining = SECONDS_PER_FINALROUND - seconds_played
-            eel.all_final_tick(seconds_played, seconds_remaining)
-            eel.sleep(1.0)
+            if i % 10 == 0:
+                seconds_played = (datetime.datetime.now() - starttime).seconds
+                seconds_remaining = SECONDS_PER_FINALROUND - seconds_played
+                eel.all_final_tick(seconds_played, seconds_remaining)
+
+            i += 1
+            eel.sleep(0.1)
 
         game.state = GameState.FINAL_BETWEEN
         resend_gamestate()
