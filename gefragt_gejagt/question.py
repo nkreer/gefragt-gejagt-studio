@@ -31,7 +31,7 @@ class Question(object):
     def load(self, obj: dict):
         self.id = obj['id']
         self.type = obj['type']
-        self.level = obj['level']
+        self.level = int(obj['level'])
         self.text = obj['text']
         self.correctAnswer = obj['correctAnswer']
         self.wrongAnswers = obj.get('wrongAnswers', [])

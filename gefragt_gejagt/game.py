@@ -154,8 +154,7 @@ class Game(object):
         self.state = GameState.CHASE_PREPARATION
         self.current_question = None
 
-    def random_question(self) -> Question:
-        # TODO: Fallback if no questions left
+    def random_question(self, level=None) -> Question:
         if self.state >= GameState.CHASE_PREPARATION and self.state <= GameState.CHASE_SOLVE:
             round_questiontype = gefragt_gejagt.question.QuestionType.CHASE
         else:
@@ -164,9 +163,32 @@ class Game(object):
         questions = []
         for question in self.questions:
             if not question.played and question.type == round_questiontype:
-                questions.append(question)
-        question = random.choice(questions)
-        return question
+                if not level or level - 2 <= question.level <= level + 2:
+                    questions.append(question)
+        try:
+            question = random.choice(questions)
+            return question
+        except:
+            if level:
+                print("No question within levelrange available. Choosing another one...")
+                return self.random_question()
+            elif self.state == GameState.FAST_GUESS:
+                print("No more question available. Ending fast round...")
+                self.fast_thread = False
+            elif GameState.CHASE_PREPARATION <= self.state <= GameState.CHASE_SOLVE:
+                print("No more question available. Ending chase round...")
+                self.current_round.won = True
+                self.current_player.qualified = True
+                self.state = GameState.ROUND_ENDED
+            elif GameState.FINAL_PLAYERS:
+                print("No more question available. Ending final player round...")
+                self.final_player_thread = False
+            elif GameState.FINAL_CHASER:
+                print("No more question available. Ending final chaser round...")
+                self.final_chaser_thread = False
+                game.current_round.won = True
+                game.state = GameState.FINAL_END
+            return(random.choice(self.questions))
 
     def choose_question(self, question: Question):
         if self.state >= GameState.CHASE_PREPARATION and self.state <= GameState.CHASE_SOLVE:

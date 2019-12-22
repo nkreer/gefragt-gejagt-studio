@@ -110,8 +110,11 @@ if __name__ == '__main__':
     def start_round():
         game.new_round()
 
-        game.choose_question(game.random_question())
+        game.choose_question(
+            game.random_question(
+                level=game.current_player.level))
 
+        game.fast_thread = True
         eel.spawn(fastround_timer)
         resend_gamestate()
 
@@ -120,7 +123,7 @@ if __name__ == '__main__':
         endtime = starttime + datetime.timedelta(seconds=SECONDS_PER_FASTROUND)
         i = 0
 
-        while datetime.datetime.now() < endtime:
+        while datetime.datetime.now() < endtime and game.fast_thread:
             if i % 10 == 0:
                 seconds_played = (datetime.datetime.now() - starttime).seconds
                 seconds_remaining = SECONDS_PER_FASTROUND - seconds_played
@@ -136,6 +139,8 @@ if __name__ == '__main__':
 
     @eel.expose
     def random_question():
+        if GameState.CHASE_PREPARATION <= game.state <= GameState.CHASE_SOLVE:
+            game.check_round_end()
         game.choose_question(game.random_question())
         resend_gamestate()
 
@@ -153,10 +158,12 @@ if __name__ == '__main__':
 
     @eel.expose
     def question_answered(answer_id, player_id=0):
+        # TODO: Resturcture Point system
+        # * no player.points! -> will be a param now.
         if game.state == GameState.FAST_GUESS:
             game.answer_fast_question(answer_id)
             game.choose_question(game.random_question())
-        elif game.state >= GameState.CHASE_PREPARATION and game.state <= GameState.CHASE_SOLVE:
+        elif GameState.CHASE_PREPARATION <= game.state <= GameState.CHASE_SOLVE:
             if player_id == 0:  # Player
                 game.current_question.answerPlayer = answer_id
                 already_answered = (
@@ -191,22 +198,21 @@ if __name__ == '__main__':
                     eel.all_chase_both_answered()
 
                 game.state = GameState.CHASE_SOLVE
-        else:
-            if game.state == GameState.FINAL_PLAYERS:
-                game.current_question.answerPlayer = answer_id
+        elif game.state == GameState.FINAL_PLAYERS:
+            game.current_question.answerPlayer = answer_id
+            game.choose_question(game.random_question())
+        elif game.state == GameState.FINAL_CHASER:
+            game.current_question.answerChaser = answer_id
+            if answer_id == 0:
                 game.choose_question(game.random_question())
-            elif game.state == GameState.FINAL_CHASER:
-                game.current_question.answerChaser = answer_id
-                if answer_id == 0:
-                    game.choose_question(game.random_question())
-                else:
-                    game.state = GameState.FINAL_CHASER_WRONG
-                    game.chaser_thread = False
-            elif game.state == GameState.FINAL_CHASER_WRONG:
-                game.current_question.answerPlayer = answer_id
-                game.choose_question(game.random_question())
-                game.state = GameState.FINAL_CHASER
-                start_final_chaser()
+            else:
+                game.state = GameState.FINAL_CHASER_WRONG
+                game.final_chaser_thread = False
+        elif game.state == GameState.FINAL_CHASER_WRONG:
+            game.current_question.answerPlayer = answer_id
+            game.choose_question(game.random_question())
+            game.state = GameState.FINAL_CHASER
+            start_final_chaser()
         resend_gamestate()
 
     @eel.expose
@@ -241,12 +247,17 @@ if __name__ == '__main__':
         game.choose_question(game.random_question())
         resend_gamestate()
 
+        game.final_player_thread = True
+
+        eel.spawn(final_player_thread)
+
+    def final_player_thread():
         starttime = datetime.datetime.now()
         endtime = starttime + \
             datetime.timedelta(seconds=SECONDS_PER_FINALROUND)
         i = 0
 
-        while datetime.datetime.now() < endtime:
+        while datetime.datetime.now() < endtime and game.final_player_thread:
             if i % 10 == 0:
                 seconds_played = (datetime.datetime.now() - starttime).seconds
                 seconds_remaining = SECONDS_PER_FINALROUND - seconds_played
@@ -260,7 +271,7 @@ if __name__ == '__main__':
 
     @eel.expose
     def start_final_chaser():
-        game.chaser_thread = True
+        game.final_chaser_thread = True
 
         game.state = GameState.FINAL_CHASER
         game.choose_question(game.random_question())
@@ -268,13 +279,13 @@ if __name__ == '__main__':
 
         game.current_round.finalTime.append({'start': datetime.datetime.now()})
 
-        eel.spawn(chaser_thread)
+        eel.spawn(final_chaser_thread)
 
-    def chaser_thread():
+    def final_chaser_thread():
         timedout = False
         i = 0
 
-        while game.state == GameState.FINAL_CHASER and not timedout and not game.current_round.chaserFinalWon and game.chaser_thread:
+        while game.state == GameState.FINAL_CHASER and not timedout and not game.current_round.chaserFinalWon and game.final_chaser_thread:
             if i % 10 == 0:
                 seconds_played = game.current_round.timePassed.seconds
                 timedout = seconds_played >= SECONDS_PER_FINALROUND
@@ -284,7 +295,7 @@ if __name__ == '__main__':
             i += 1
             eel.sleep(0.1)
 
-        if not game.chaser_thread:
+        if not game.final_chaser_thread and game.state == GameState.FINAL_CHASER:
             eel.all_final_pause(seconds_played, seconds_remaining)
             game.state = GameState.FINAL_CHASER_WRONG
         elif game.current_round.chaserFinalWon:
