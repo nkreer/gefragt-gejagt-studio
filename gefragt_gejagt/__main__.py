@@ -310,7 +310,7 @@ if __name__ == '__main__':
     @eel.expose
     def start_evaluation():
         save_game()
-        
+
         game.state = GameState.EVALUATION
         resend_gamestate()
 
