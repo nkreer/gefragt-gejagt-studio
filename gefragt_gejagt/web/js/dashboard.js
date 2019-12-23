@@ -386,6 +386,33 @@ async function process_gamestate() {
         case 14:  // FINAL_END
             document.getElementById("status").innerHTML = "Status: Ende";
             $('#timer').text("");
+            if (game.current_round.won) {
+                endtext(true,game.current_team.name + ` hat gewonnen!
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.end_round()">
+                        Runde beenden
+                    </a>
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.start_evaluation()">
+                        Auswertung starten
+                    </a>
+                `);
+            } else {
+                endtext(true,game.current_team.name + ` hat verloren!
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.end_round()">
+                        Runde beenden
+                    </a>
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.start_evaluation()">
+                        Auswertung starten
+                    </a>
+                `);
+            }
             break;
         case 15:  // EVALUATION
             document.getElementById("status").innerHTML = "Status: Auswertung";

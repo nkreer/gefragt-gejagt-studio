@@ -308,6 +308,13 @@ if __name__ == '__main__':
         resend_gamestate()
 
     @eel.expose
+    def start_evaluation():
+        save_game()
+        
+        game.state = GameState.EVALUATION
+        resend_gamestate()
+
+    @eel.expose
     def save_game():
         timestamp = datetime.datetime.now().__format__('%Y-%m-%dT%H_%M_%S')
 

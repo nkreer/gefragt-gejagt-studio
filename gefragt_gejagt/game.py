@@ -234,17 +234,21 @@ class Game(object):
         self.current_round = None
         self.current_player = None
         self.current_question = None
-        not_all_played = False
-
-        for player in self.current_team.players:
-            if not player.played:
-                not_all_played = True
-                break
-
-        if not_all_played:
-            self.state = GameState.GAME_STARTED
+        if self.state == GameState.FINAL_END:
+            self.current_team = None
+            self.state = GameState.PREPARATION
         else:
-            self.state = GameState.FINAL_PREPARATION
+            not_all_played = False
+
+            for player in self.current_team.players:
+                if not player.played:
+                    not_all_played = True
+                    break
+
+            if not_all_played:
+                self.state = GameState.GAME_STARTED
+            else:
+                self.state = GameState.FINAL_PREPARATION
 
     def save_to_file(self, filename):
         with open(filename, 'w', encoding='utf-8') as f:
