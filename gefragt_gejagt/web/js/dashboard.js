@@ -337,6 +337,7 @@ async function process_gamestate() {
             break;
         case 8:  // ROUND_ENDED
             document.getElementById("status").innerHTML = "Status: Runde beendet";
+            $('#timer').text("");
             if (game.current_player.qualified) {
                 endtext(true,game.current_player.name + ` hat gewonnen!
                     <br>
@@ -357,6 +358,7 @@ async function process_gamestate() {
             break;
         case 9:  // FINAL_PREPARATION
             document.getElementById("status").innerHTML = "Status: Finale Vorbereitung";
+            $('#timer').text("");
             player_table(true, true);
             if(game.current_team.qualified) {
                 final_start_message(true, false, game);
@@ -369,6 +371,7 @@ async function process_gamestate() {
             break;
         case 11:  // FINAL_BETWEEN
             document.getElementById("status").innerHTML = "Status: Finale Zwischenpause";
+            $('#timer').text("");
             final_start_message(true, true, game);
             break;
         case 12:  // FINAL_CHASER
@@ -378,15 +381,45 @@ async function process_gamestate() {
             break;
         case 13:  // FINAL_CHASER_WRONG
             document.getElementById("status").innerHTML = "Status: Finale Jäger*in Falschantwort";
+            question_message(true, game.current_question);
             break;
         case 14:  // FINAL_END
             document.getElementById("status").innerHTML = "Status: Ende";
+            $('#timer').text("");
+            if (game.current_round.won) {
+                endtext(true,game.current_team.name + ` hat gewonnen!
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.end_round()">
+                        Runde beenden
+                    </a>
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.start_evaluation()">
+                        Auswertung starten
+                    </a>
+                `);
+            } else {
+                endtext(true,game.current_team.name + ` hat verloren!
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.end_round()">
+                        Runde beenden
+                    </a>
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.start_evaluation()">
+                        Auswertung starten
+                    </a>
+                `);
+            }
             break;
         case 15:  // EVALUATION
             document.getElementById("status").innerHTML = "Status: Auswertung";
+            $('#timer').text("");
             break;
         default:
-            document.getElementById("status").innerHTML = "Status: Unbekannt "+game.state;
+            document.getElementById("status").innerHTML = "Status: Unbekannt; "+game.state;
             break;
     }
 }

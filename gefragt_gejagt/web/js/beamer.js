@@ -131,7 +131,7 @@ async function loadSlideContent(gameStateCode) {
                 var question = (await eel.get_game()()).current_question;
                 document.querySelector('.question').innerHTML = question.text;
 
-                var correctAnswerButtonOffset = Math.round(Math.random() * 3);
+                var correctAnswerButtonOffset = question.correctAnswerButton;
                 var buttons = document.querySelector('.option_grid').children;
                 for (let i = 0; i < 4; i++) {
                     if (i == correctAnswerButtonOffset) {

@@ -242,7 +242,12 @@
             <br>
             <table id="teamtable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
-                    <th><input type="button" id="random-team-btn" class="button is-primary" value="Zufälliges Team auswählen" onclick="eel.random_team()"></th>
+                    <th>
+                        <input type="button" id="random-team-btn" class="button is-primary" value="Zufälliges Team auswählen" onclick="eel.random_team()">
+                        <a class="button is-info" onclick="eel.start_evaluation()">
+                            Auswertung starten
+                        </a>
+                    </th>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Gespielt</th>
