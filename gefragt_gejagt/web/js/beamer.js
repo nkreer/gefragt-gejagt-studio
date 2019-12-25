@@ -74,8 +74,12 @@ $(async function() {
     }
 
     eel.expose(all_show_solution);
-    
-    async function all_show_solution() {
+
+    function all_show_solution() {
+        show_solution();
+    }
+
+    async function show_solution() {
         console.log('all_show_solution');
         var current_question = (await eel.get_game()()).current_question;
         document.querySelector('#correctAnswer').innerHTML = current_question.correctAnswer;
@@ -83,7 +87,11 @@ $(async function() {
 
     eel.expose(all_show_playerresponse);
 
-    async function all_show_playerresponse() {
+    function all_show_playerresponse() {
+        show_playerresponse();
+    }
+
+    async function show_playerresponse() {
         console.log('all_show_playerresponse')
         var current_question = (await eel.get_game()()).current_question;
         if(current_question.answerPlayer==0) {
@@ -99,7 +107,11 @@ $(async function() {
 
     eel.expose(all_show_chaserresponse);
 
-    async function all_show_chaserresponse() {
+    function all_show_chaserresponse() {
+        show_chaserresponse();
+    }
+
+    async function show_chaserresponse() {
         console.log('all_show_chaserresponse')
         var current_question = (await eel.get_game()()).current_question;
         if(current_question.answerChaser==0) {
