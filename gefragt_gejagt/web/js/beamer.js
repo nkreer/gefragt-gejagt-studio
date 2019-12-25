@@ -73,6 +73,46 @@ $(async function() {
         document.querySelectorAll('.fast_guess_timer').forEach(el => el.innerHTML = timeLeft);
     }
 
+    eel.expose(all_show_solution);
+    
+    async function all_show_solution() {
+        console.log('all_show_solution');
+        var current_question = (await eel.get_game()()).current_question;
+        document.querySelector('#correctAnswer').innerHTML = current_question.correctAnswer;
+    }
+
+    eel.expose(all_show_playerresponse);
+
+    async function all_show_playerresponse() {
+        console.log('all_show_playerresponse')
+        var current_question = (await eel.get_game()()).current_question;
+        if(current_question.answerPlayer==0) {
+            document.querySelector('#chasePlayerResponse').innerHTML = current_question.correctAnswer;
+            document.querySelector('#chasePlayerResponse').classList.remove('wrong');
+            document.querySelector('#chasePlayerResponse').classList.add('correct');
+        } else {
+            document.querySelector('#chasePlayerResponse').innerHTML = current_question.wrongAnswers[current_question.answerPlayer-1];
+            document.querySelector('#chasePlayerResponse').classList.remove('correct');
+            document.querySelector('#chasePlayerResponse').classList.add('wrong');
+        }
+    }
+
+    eel.expose(all_show_chaserresponse);
+
+    async function all_show_chaserresponse() {
+        console.log('all_show_chaserresponse')
+        var current_question = (await eel.get_game()()).current_question;
+        if(current_question.answerChaser==0) {
+            document.querySelector('#chaseChserResponse').innerHTML = current_question.correctAnswer;
+            document.querySelector('#chaseChserResponse').classList.remove('wrong');
+            document.querySelector('#chaseChserResponse').classList.add('correct');
+        } else {
+            document.querySelector('#chaseChserResponse').innerHTML = current_question.wrongAnswers[current_question.answerChaser-1];
+            document.querySelector('#chaseChserResponse').classList.remove('correct');
+            document.querySelector('#chaseChserResponse').classList.add('wrong');
+        }
+    }
+
     // Init
     update_beamer();
 });
@@ -145,9 +185,14 @@ async function loadSlideContent(gameStateCode) {
             console.log("Jagd Fragenstellung");
             break;
         case 7: // CHASE_SOLVE
-            document.getElementById("status").innerHTML = "Status: Jagd Auflösung";
-            question_table(true);
-            solution_card(true, game);
+            document.querySelector('#correctAnswer').innerHTML='███'
+            document.querySelector('#chasePlayerResponse').innerHTML='███'
+            document.querySelector('#chasePlayerResponse').classList.remove('correct');
+            document.querySelector('#chasePlayerResponse').classList.remove('wrong');
+            document.querySelector('#chaseChserResponse').innerHTML='███'
+            document.querySelector('#chaseChserResponse').classList.remove('correct');
+            document.querySelector('#chaseChserResponse').classList.remove('wrong');
+            console.log("Jagd Auflösung");
             break;
         case 8: // ROUND_ENDED
             document.getElementById("status").innerHTML = "Status: Runde beendet";
