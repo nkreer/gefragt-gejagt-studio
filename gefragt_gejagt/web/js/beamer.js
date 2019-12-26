@@ -37,17 +37,17 @@ class GameState {
             case this.ROUND_ENDED:
                 return 'Runde beendet'
             case this.FINAL_PREPARATION:
-                return 'Vorbereitung Finale'
+                return 'Finale'
             case this.FINAL_PLAYERS:
-                return 'Auswahl Finalspieler'
+                return 'Finale Spieler*in'
             case this.FINAL_BETWEEN:
-                return 'Frage wählen'
+                return 'Finale'
             case this.FINAL_CHASER:
-                return 'Antwort richtig'
+                return 'Finale Jäger*in'
             case this.FINAL_CHASER_WRONG:
                 return 'Antwort falsch'
             case this.FINAL_END:
-                return 'Finalrunde beendet'
+                return 'Finale beendet'
             case this.EVALUATION:
                 return 'Auswertung'
 
@@ -70,26 +70,34 @@ $(async function() {
     eel.expose(all_fast_tick);
 
     function all_fast_tick(timeOver, timeLeft) {
-        document.querySelectorAll('.fast_guess_timer').forEach(el => el.innerHTML = timeLeft);
+        document.querySelectorAll('.timer').forEach(el => el.innerHTML = timeLeft);
     }
 
-    eel.expose(all_show_solution);
+    eel.expose(all_final_tick);
+
+    function all_final_tick(timeOver, timeLeft) {
+        document.querySelectorAll('.timer').forEach(el => el.innerHTML = timeLeft);
+    }
 
     function all_show_solution() {
         show_solution();
     }
 
+    eel.expose(all_show_solution);
+
     async function show_solution() {
         console.log('all_show_solution');
         var current_question = (await eel.get_game()()).current_question;
         document.querySelector('#correctAnswer').innerHTML = current_question.correctAnswer;
+        document.querySelector('#chasePlayerResponse').classList.add('show');
+        document.querySelector('#chaseChserResponse').classList.add('show');
     }
-
-    eel.expose(all_show_playerresponse);
 
     function all_show_playerresponse() {
         show_playerresponse();
     }
+
+    eel.expose(all_show_playerresponse);
 
     async function show_playerresponse() {
         console.log('all_show_playerresponse')
@@ -105,11 +113,11 @@ $(async function() {
         }
     }
 
-    eel.expose(all_show_chaserresponse);
-
     function all_show_chaserresponse() {
         show_chaserresponse();
     }
+
+    eel.expose(all_show_chaserresponse);
 
     async function show_chaserresponse() {
         console.log('all_show_chaserresponse')
@@ -161,7 +169,11 @@ async function loadSlideContent(gameStateCode) {
         case 4: // FAST_GUESS
             console.log("Schnellraterunde");
             fastGuessTimer = setInterval(async function() {
-                var score = (await eel.get_game()()).current_player.points;
+                try {
+                    var score = (await eel.get_game()()).current_player.points;
+                } catch (e) {
+                    clearInterval(fastGuessTimer);
+                }
                 document.querySelectorAll('.fast_guess_score').forEach(el => el.innerHTML = score);
             }, 250)
             break;
@@ -169,7 +181,11 @@ async function loadSlideContent(gameStateCode) {
             if ('fastGuessTimer' in window) clearInterval(fastGuessTimer);
 
             async function get_offers() {
-                var offers = (await eel.get_game()()).current_round.offers;
+                try {
+                    var offers = (await eel.get_game()()).current_round.offers;
+                } catch (e) {
+                    clearInterval(offersIntervall);
+                }
                 document.querySelector('#high_offer').innerHTML = offers.find((el) => el.type == 0).amount;
                 document.querySelector('#normal_offer').innerHTML = offers.find((el) => el.type == 1).amount;
                 document.querySelector('#low_offer').innerHTML = offers.find((el) => el.type == 2).amount;
@@ -198,6 +214,8 @@ async function loadSlideContent(gameStateCode) {
             break;
         case 7: // CHASE_SOLVE
             document.querySelector('#correctAnswer').innerHTML='███'
+            document.querySelector('#chasePlayerResponse').classList.remove('show');
+            document.querySelector('#chaseChserResponse').classList.remove('show');
             document.querySelector('#chasePlayerResponse').innerHTML='███'
             document.querySelector('#chasePlayerResponse').classList.remove('correct');
             document.querySelector('#chasePlayerResponse').classList.remove('wrong');
@@ -207,54 +225,48 @@ async function loadSlideContent(gameStateCode) {
             console.log("Jagd Auflösung");
             break;
         case 8: // ROUND_ENDED
-            document.getElementById("status").innerHTML = "Status: Runde beendet";
-            if (game.current_player.qualified) {
-                endtext(true, game.current_player.name + ` hat gewonnen!
-                    <br>
-                    <br>
-                    <a class="button is-info" onclick="eel.end_round()">
-                    Runde beenden
-                    </a>
-                `);
-            } else {
-                endtext(true, game.current_player.name + ` hat verloren!
-                    <br>
-                    <br>
-                    <a class="button is-info" onclick="eel.end_round()">
-                    Runde beenden
-                    </a>
-                `);
-            }
+            var player=(await eel.get_game()()).current_player
+            document.querySelector('#playerWonMessage').innerHTML=player.name + ' hat ' + ((player.qualified) ? 'gewonnen' : 'verloren') + '!';
+            console.log("Runde beendet");
             break;
         case 9: // FINAL_PREPARATION
-            document.getElementById("status").innerHTML = "Status: Finale Vorbereitung";
-            player_table(true, true);
-            if (game.current_team.qualified) {
-                final_start_message(true, false, game);
-            }
+            console.log("Finale Vorbereitung");
             break;
         case 10: // FINAL_PLAYERS
-            document.getElementById("status").innerHTML = "Status: Finale Spieler*in";
-            question_table(true);
-            question_message(true, game.current_question);
+            document.querySelector('#finalQuestionPlayer').innerHTML=(await eel.get_game()()).current_question.text
+            console.log("Finale Spieler*in");
             break;
         case 11: // FINAL_BETWEEN
-            document.getElementById("status").innerHTML = "Status: Finale Zwischenpause";
-            final_start_message(true, true, game);
+            console.log("Finale Zwischenpause");
             break;
         case 12: // FINAL_CHASER
-            document.getElementById("status").innerHTML = "Status: Finale Jäger*in";
-            question_table(true);
-            question_message(true, game.current_question);
+            document.querySelector('#finalQuestionChaser').innerHTML=(await eel.get_game()()).current_question.text
+            console.log("Status: Finale Jäger*in");
             break;
         case 13: // FINAL_CHASER_WRONG
-            document.getElementById("status").innerHTML = "Status: Finale Jäger*in Falschantwort";
+            console.log("Finale Jäger*in Falschantwort");
             break;
         case 14: // FINAL_END
-            document.getElementById("status").innerHTML = "Status: Ende";
+            console.log("Ende");
             break;
         case 15: // EVALUATION
-            document.getElementById("status").innerHTML = "Status: Auswertung";
+            var game=await eel.get_game()();
+            var evaluation=game.current_round;
+            document.querySelector('#evaluationMessage').innerHTML=game.current_team.name + ' hat ' + ((evaluation.won) ? 'gewonnen' : 'verloren') + '!';
+            document.querySelector('#evaluationScorePlayer').innerHTML=evaluation.correctAnswersPlayer;
+            document.querySelector('#evaluationScoreChaser').innerHTML=evaluation.correctAnswersChaser;
+            if(evaluation.won) {
+                document.querySelector('#evaluationScorePlayer').classList.add('correct');
+                document.querySelector('#evaluationScorePlayer').classList.remove('wrong');
+                document.querySelector('#evaluationScoreChaser').classList.add('wrong');
+                document.querySelector('#evaluationScoreChaser').classList.remove('correct');
+            } else {
+                document.querySelector('#evaluationScoreChaser').classList.add('correct');
+                document.querySelector('#evaluationScoreChaser').classList.remove('wrong');
+                document.querySelector('#evaluationScorePlayer').classList.add('wrong');
+                document.querySelector('#evaluationScorePlayer').classList.remove('correct');
+            }
+            console.log("Auswertung");
             break;
         default:
             document.getElementById("status").innerHTML = "Status: Unbekannt " + game.state;

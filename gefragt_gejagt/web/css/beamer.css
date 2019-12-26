@@ -91,7 +91,7 @@ section.active {
     font-family: monospace;
 }
 
-.correct {
+.show.correct {
     background: #48c774;
     padding: .25rem;
     border-radius: .25rem;
@@ -100,7 +100,7 @@ section.active {
     border: .125rem solid #009547;
 }
 
-.wrong {
+.show.wrong {
     background: #f14668;
     color: var(--accent-color);
     padding: .25rem;
