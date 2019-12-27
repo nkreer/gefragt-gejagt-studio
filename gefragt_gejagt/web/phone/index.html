@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html class="">
+    <head>
+        <meta charset="utf-8">
+        <script src="/js/jquery-3.4.1.min.js"></script>
+        <script src="/eel.js"></script>
+        <script src="/js/common.js"></script>
+        <script src="/js/phone.js"></script>
+        <link rel="stylesheet" href="/css/bulma.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>GefragtGejagt - Handy</title>
+    </head>
+    <body>
+        <br>
+        <br>
+        <div class="container is-fluid" id="device-chooser">
+            Bitte Gerät auswählen:
+            <a onclick="phone_select_player()" class="button is-info">Spieler*in</a>
+            <a onclick="phone_select_chaser()" class="button is-info">Jäger*in</a>
+        </div>
+        <div class="container is-fluid" id="player-buttons" style="display: none;">
+            <div class="tile is-ancestor">
+                <div class="tile is-vertical is-parent">
+                    <button class="tile is-child button is-info" id="player_button_a" onclick="eel.phone_button(0, 0)">
+                        A
+                    </button>
+                    <button class="tile is-child button is-info" id="player_button_c" onclick="eel.phone_button(0, 2)">
+                        C
+                    </button>
+                </div>
+                <div class="tile is-vertical is-parent">
+                    <button class="tile is-child button is-info" id="player_button_b" onclick="eel.phone_button(0, 1)">
+                        B
+                    </button>
+                    <button class="tile is-child button is-info" id="player_button_d" onclick="eel.phone_button(0, 3)">
+                        D
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="container is-fluid" id="chaser-buttons" style="display: none;">
+            <div class="tile is-ancestor">
+                <div class="tile is-vertical is-parent">
+                    <button class="tile is-child button is-info" id="player_button_a" onclick="eel.phone_button(1, 0)">
+                        A
+                    </button>
+                    <button class="tile is-child button is-info" id="player_button_c" onclick="eel.phone_button(1, 2)">
+                        C
+                    </button>
+                </div>
+                <div class="tile is-vertical is-parent">
+                    <button class="tile is-child button is-info" id="player_button_b" onclick="eel.phone_button(1, 1)">
+                        B
+                    </button>
+                    <button class="tile is-child button is-info" id="player_button_d" onclick="eel.phone_button(1, 3)">
+                        D
+                    </button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -232,6 +232,18 @@ if __name__ == '__main__':
         resend_gamestate()
 
     @eel.expose
+    def phone_button(device, answer):
+        if game.state == GameState.CHASE_QUESTIONING:
+            question = game.current_question
+
+            if answer == question.correctAnswerButton:
+                question_answered(0, device)
+            elif answer < question.correctAnswerButton:
+                question_answered(answer + 1, device)
+            else:
+                question_answered(answer, device)
+
+    @eel.expose
     def all_show_chaserresponse():
         game.check_round_end()
         resend_gamestate()
