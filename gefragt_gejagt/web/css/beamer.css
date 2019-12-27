@@ -80,13 +80,17 @@ section.active {
     grid-gap: .5rem;
 }
 
+.smallFont {
+    font-size: .75rem;
+}
+
 .option_grid button {
     background: var(--accent-color);
     border: .125rem solid var(--main-color);
     border-radius: .25rem;
-    height: 2rem;
+    min-height: 2rem;
     color: var(--main-color);
-    font-size: .75rem;
+    font-size: .75em;
     font-weight: bold;
     font-family: monospace;
 }

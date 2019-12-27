@@ -89,6 +89,7 @@ $(async function() {
         console.log('all_show_solution');
         var current_question = (await eel.get_game()()).current_question;
         document.querySelector('#correctAnswer').innerHTML = current_question.correctAnswer;
+        if (current_question.correctAnswer.length > 50) document.querySelector('#slide7').classList.add('smallFont');
         document.querySelector('#chasePlayerResponse').classList.add('show');
         document.querySelector('#chaseChserResponse').classList.add('show');
     }
@@ -111,6 +112,7 @@ $(async function() {
             document.querySelector('#chasePlayerResponse').classList.remove('correct');
             document.querySelector('#chasePlayerResponse').classList.add('wrong');
         }
+        if (document.querySelector('#chasePlayerResponse').innerHTML.length > 50) document.querySelector('#slide7').classList.add('smallFont');
     }
 
     function all_show_chaserresponse() {
@@ -131,6 +133,7 @@ $(async function() {
             document.querySelector('#chaseChserResponse').classList.remove('correct');
             document.querySelector('#chaseChserResponse').classList.add('wrong');
         }
+        if (document.querySelector('#chaseChserResponse').innerHTML.length > 50) document.querySelector('#slide7').classList.add('smallFont');
     }
 
     // Init
@@ -207,24 +210,25 @@ async function loadSlideContent(gameStateCode) {
             break;
         case 6: // CHASE_QUESTIONING
             if ('offersIntervall' in window) clearInterval(offersIntervall);
-            async function loadQuestion() {
-                var question = (await eel.get_game()()).current_question;
-                document.querySelector('.question').innerHTML = question.text;
+            var question = (await eel.get_game()()).current_question;
+            document.querySelector('.question').innerHTML = question.text;
+            if (question.text.length > 50) document.querySelector('#slide6').classList.add('smallFont');
+            else document.querySelector('#slide6').classList.remove('smallFont');
 
-                var correctAnswerButtonOffset = question.correctAnswerButton;
-                var buttons = document.querySelector('.option_grid').children;
-                for (let i = 0; i < 4; i++) {
-                    if (i == correctAnswerButtonOffset) {
-                        buttons[i].innerHTML = question.correctAnswer;
-                    } else {
-                        buttons[i].innerHTML = question.wrongAnswers[(i < correctAnswerButtonOffset) ? i : i - 1];
-                    }
+            var correctAnswerButtonOffset = question.correctAnswerButton;
+            var buttons = document.querySelector('.option_grid').children;
+            for (let i = 0; i < 4; i++) {
+                if (i == correctAnswerButtonOffset) {
+                    buttons[i].innerHTML = question.correctAnswer;
+                } else {
+                    buttons[i].innerHTML = question.wrongAnswers[(i < correctAnswerButtonOffset) ? i : i - 1];
                 }
+                if (buttons[i].innerHTML.length > 50) document.querySelector('#slide6').classList.add('smallFont');
             }
-            loadQuestion();
             console.log("Jagd Fragenstellung");
             break;
         case 7: // CHASE_SOLVE
+            document.querySelector('#slide7').classList.remove('smallFont');
             document.querySelector('#correctAnswer').innerHTML = '███'
             document.querySelector('#chasePlayerResponse').classList.remove('show');
             document.querySelector('#chaseChserResponse').classList.remove('show');
