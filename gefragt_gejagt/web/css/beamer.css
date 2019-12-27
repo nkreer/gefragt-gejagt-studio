@@ -109,3 +109,7 @@ section.active {
     margin: .125rem;
     border: .125rem solid #b9003e;
 }
+
+audio {
+    visibility: hidden;
+}
