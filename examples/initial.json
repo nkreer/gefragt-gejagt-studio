@@ -3,106 +3,444 @@
         {
             "id": 0,
             "name": "Teamname",
+            "played": false,
+            "qualified": false,
             "players": [
                 {
                     "id": 0,
                     "name": "Plater1",
                     "level": 5,
+                    "points": 12,
                     "played": false,
-                    "points": 0,
                     "won": false,
-                    "rounds": []
+                    "qualified": false
                 }
             ]
         },
         {
             "id": 1,
             "name": "Team2name",
+            "played": false,
+            "qualified": false,
             "players": [
                 {
                     "id": 2,
                     "name": "Plater3",
                     "level": 5,
-                    "played": false,
                     "points": 0,
-                    "won": false,
-                    "rounds": []
-                },
-                {
-                    "id": 2,
-                    "name": "Player4",
-                    "level": 5,
                     "played": false,
-                    "points": 0,
                     "won": false,
-                    "rounds": []
+                    "qualified": false
                 }
             ]
         }
     ],
-    "questions": [
-        {
-            "id": 0,
+    "questions": [{
+            "id": 7,
             "type": 1,
-            "text": "Wie lautet die Frage?",
-            "correctAnswer": "So!",
-            "wrongAnswers": [],
-            "level": "5",
-            "category": "Kategorie"
+            "category": "Physik",
+            "level": "6",
+            "text": "Die Ma\u00dfeinheit f\u00fcr Energie und Arbeit hei\u00dft ...",
+            "correctAnswer": "Joule",
+            "wrongAnswers": []
         },
         {
-            "id": 1,
-            "type": 2,
-            "text": "Wie lautet diese weitere Frage?",
-            "correctAnswer": "So!",
-            "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
-            "level": "7",
-            "category": "Kategorie2"
-        },
-        {
-            "id": 2,
+            "id": 20,
             "type": 1,
-            "text": "Wie lautet die andere Frage?",
-            "correctAnswer": "So!",
-            "wrongAnswers": [],
+            "category": "Netzwerke",
+            "level": "6",
+            "text": "Auf welcher Frequenz funkt 802.11n?",
+            "correctAnswer": "2,4 GHz",
+            "wrongAnswers": []
+        },
+        {
+            "id": 22,
+            "type": 2,
+            "category": "Chaos Computer Club und Congress",
             "level": "5",
-            "category": "Kategorie"
+            "text": "Welche*r CCC-Sprecher*in ist Expert*in f\u00fcr IT-Sicherheit und hat Psychologie studiert?",
+            "correctAnswer": "Linus Neumann",
+            "wrongAnswers": [
+                "Frank Rieger",
+                "Constanze Kurz",
+                "Rena Tangens"
+            ]
         },
         {
-            "id": 3,
+            "id": 38,
             "type": 2,
-            "text": "Wie lautet diese eine weitere Frage?",
-            "correctAnswer": "So!",
-            "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
-            "level": "7",
-            "category": "Kategorie2"
+            "category": "Software",
+            "level": "9",
+            "text": "PNG verh\u00e4lt sich zu JPG wie FLAC zu \u2026",
+            "correctAnswer": "mp3",
+            "wrongAnswers": [
+                "MIDI",
+                "SVG",
+                "WAV"
+            ]
         },
         {
-            "id": 4,
+            "id": 58,
             "type": 2,
-            "text": "Wie lautet diese andere Frage?",
-            "correctAnswer": "So!",
-            "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
-            "level": "7",
-            "category": "Kategorie2"
+            "category": "Sicherheit",
+            "level": "5",
+            "text": "Wie wird eine Einrichtung bezeichnet, die einen Angreifer oder Feind vom eigentlichen Ziel ablenken soll?",
+            "correctAnswer": "Honeypot",
+            "wrongAnswers": [
+                "Trojanisches Pferd",
+                "Dropper",
+                "Faker"
+            ]
         },
         {
-            "id": 5,
-            "type": 2,
-            "text": "Wie lautet diese ganz andere Frage?",
-            "correctAnswer": "So!",
-            "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
-            "level": "7",
-            "category": "Kategorie2"
-        },
-        {
-            "id": 6,
+            "id": 68,
             "type": 1,
-            "text": "Wie lautet die Frage?",
-            "correctAnswer": "So!",
-            "wrongAnswers": [],
+            "category": "Chaos Computer Club und Congress",
+            "level": "6",
+            "text": "Gab es ein Motto beim 30c3 - Ja oder nein?",
+            "correctAnswer": "Nein",
+            "wrongAnswers": []
+        },
+        {
+            "id": 78,
+            "type": 2,
+            "category": "Politik",
+            "level": "8",
+            "text": "Die Beauftragte der Bundesregierung f\u00fcr Digitalisierung Dorothee B\u00e4r ist seit 2019 Mitglied im Aufsichtsrat welches Fu\u00dfballvereins?",
+            "correctAnswer": "FC Bayern M\u00fcnchen",
+            "wrongAnswers": [
+                "Borussia Dortmund",
+                "RasenBallsport Leipzig",
+                "FC Augsburg"
+            ]
+        },
+        {
+            "id": 84,
+            "type": 2,
+            "category": "Sonstige Hardware",
+            "level": "7",
+            "text": "Der Standard IEEE 1394 wird auch genannt...",
+            "correctAnswer": "FireWire",
+            "wrongAnswers": [
+                "AirCable",
+                "WaterLine",
+                "AetherConductor"
+            ]
+        },
+        {
+            "id": 85,
+            "type": 1,
+            "category": "Sonstige Hardware",
+            "level": "7",
+            "text": "Welche Farbe haben die bekanntesten taktilen Tastatur-Schalter mit Klickger\u00e4usch von CHERRY?",
+            "correctAnswer": "Blau",
+            "wrongAnswers": []
+        },
+        {
+            "id": 87,
+            "type": 1,
+            "category": "Hacker*innen-Kultur",
+            "level": "4",
+            "text": "Das typische, nicht-alkoholische Hacker*innen-Getr\u00e4nk",
+            "correctAnswer": "Mate",
+            "wrongAnswers": []
+        },
+        {
+            "id": 88,
+            "type": 1,
+            "category": "Programmiersprachen",
+            "level": "4",
+            "text": "PHP-Quelltext startet immer mit \"gr\u00f6\u00dfer als\" oder \"kleiner als\"?",
+            "correctAnswer": "< (kleiner als)",
+            "wrongAnswers": []
+        },
+        {
+            "id": 89,
+            "type": 1,
+            "category": "Chaos Computer Club und Congress",
+            "level": "2",
+            "text": "Wof\u00fcr steht das zweite C im Namen dieses Kongresses?",
+            "correctAnswer": "Communication",
+            "wrongAnswers": []
+        },
+        {
+            "id": 96,
+            "type": 2,
+            "category": "Software",
+            "level": "7",
+            "text": "Welchen dieser Dienste gibt es nicht in einer Version, die man auf einem eigenen Server selbst hosten kann?",
+            "correctAnswer": "Discord",
+            "wrongAnswers": [
+                "Gitlab",
+                "Zulip",
+                "Github"
+            ]
+        },
+        {
+            "id": 99,
+            "type": 1,
+            "category": "Firmen der IT",
+            "level": "7",
+            "text": "Welche deutsche Firma vertreibt Produkte wie HANA oder Marketing Cloud?",
+            "correctAnswer": "SAP",
+            "wrongAnswers": []
+        },
+        {
+            "id": 104,
+            "type": 1,
+            "category": "Mathematik",
             "level": "5",
-            "category": "Kategorie"
+            "text": "Was ist 1 XOR 0",
+            "correctAnswer": "1",
+            "wrongAnswers": []
+        },
+        {
+            "id": 108,
+            "type": 2,
+            "category": "Politik",
+            "level": "6",
+            "text": "F\u00fcr welchen dieser S\u00e4tze wurde 2019 in Deutschland jemand von einem Gericht verurteilt?",
+            "correctAnswer": "\"Auch ein medikament\u00f6ser narkosefreier Schwangerschaftsabbruch geh\u00f6rt zu den Leistungen\" (auf der Website einer Arztpraxis)",
+            "wrongAnswers": [
+                "\"Wenn wir wollen, schlagen wir euch tot\" (als Demo-Ruf)",
+                "\"Drecks Fotze\" als Kommentar auf der Facebookseite einer Politikerin",
+                "\"Ein Baum, ein Strick, ein Pressegenick\" (als Demo-Ruf)"
+            ]
+        },
+        {
+            "id": 112,
+            "type": 2,
+            "category": "Sonstige Hardware",
+            "level": "7",
+            "text": "Wozu wird ein sogenannter Bottleneck verwendet?",
+            "correctAnswer": "Gitarre spielen",
+            "wrongAnswers": [
+                "Leistung kontrollieren",
+                "Wasserk\u00fchlung",
+                "Kabelmanagement"
+            ]
+        },
+        {
+            "id": 115,
+            "type": 1,
+            "category": "Cyber",
+            "level": "8",
+            "text": "Wie hie\u00df die Maschine, die als erste eine Runde Jeopardy gegen menschliche Champions gewann?",
+            "correctAnswer": "(IBM) Watson",
+            "wrongAnswers": []
+        },
+        {
+            "id": 116,
+            "type": 2,
+            "category": "Das Innenleben des Computers",
+            "level": "3",
+            "text": "Was ist RAM?",
+            "correctAnswer": "Random-access Memory",
+            "wrongAnswers": [
+                "Rapid-access Memory",
+                "Radically-accelerated Memory",
+                "Rational Access Memory"
+            ]
+        },
+        {
+            "id": 120,
+            "type": 2,
+            "category": "Hacker*innen-Kultur",
+            "level": "5",
+            "text": "Welches dieser Projekte entstand nicht bei Jugend hackt 2019 in Berlin?",
+            "correctAnswer": "Your Climate",
+            "wrongAnswers": [
+                "Synthi",
+                "Check 1.5 degrees",
+                "FahrplanDatenGarten"
+            ]
+        },
+        {
+            "id": 127,
+            "type": 1,
+            "category": "Sicherheit",
+            "level": "4",
+            "text": "Unter welcher Rufnummer ist europaweit ein Notruf m\u00f6glich?",
+            "correctAnswer": "112",
+            "wrongAnswers": []
+        },
+        {
+            "id": 138,
+            "type": 1,
+            "category": "Netzwerke",
+            "level": "7",
+            "text": "Welche IP-Adresse steht f\u00fcr den Localhost?",
+            "correctAnswer": "127.0.0.1 oder ::1",
+            "wrongAnswers": []
+        },
+        {
+            "id": 139,
+            "type": 1,
+            "category": "Popkultur",
+            "level": "5",
+            "text": "In welchem Jahr wurde die PlayStation 4 offiziell vorgestellt?",
+            "correctAnswer": "2013",
+            "wrongAnswers": []
+        },
+        {
+            "id": 143,
+            "type": 1,
+            "category": "Das Innenleben des Computers",
+            "level": "9",
+            "text": "4bit sind ein \u2026",
+            "correctAnswer": "\u2026 nibble",
+            "wrongAnswers": []
+        },
+        {
+            "id": 144,
+            "type": 2,
+            "category": "Politik",
+            "level": "3",
+            "text": "Welche dieser Personen hat auf Twitter die wenigsten Follower?",
+            "correctAnswer": "Axel Voss (@AxelVossMdEP)",
+            "wrongAnswers": [
+                "Linus Neumann (@linuzifer)",
+                "Greta Thunberg (@GretaThunberg)",
+                "Dorothee B\u00e4r (@DoroBaer)"
+            ]
+        },
+        {
+            "id": 151,
+            "type": 1,
+            "category": "Programmiersprachen",
+            "level": "1",
+            "text": "Welche Programmiersprache steckt hinter \"PHP: Hypertext Preprocessor\"?",
+            "correctAnswer": "PHP",
+            "wrongAnswers": []
+        },
+        {
+            "id": 154,
+            "type": 1,
+            "category": "Sicherheit",
+            "level": "3",
+            "text": "Welcher Wurm verk\u00fcndete im Jahr 2000 seine Liebe f\u00fcr den Empf\u00e4nger",
+            "correctAnswer": "I Love You (oder: Loveletter)",
+            "wrongAnswers": []
+        },
+        {
+            "id": 157,
+            "type": 2,
+            "category": "Cyber",
+            "level": "7",
+            "text": "Was ist der Grund daf\u00fcr, dass das Space Shuttle nie zwischen Silvester und Neujahr flog? ",
+            "correctAnswer": "Jahreszahl",
+            "wrongAnswers": [
+                "Feuerwerk",
+                "K\u00e4lte",
+                "Erdrotation"
+            ]
+        },
+        {
+            "id": 161,
+            "type": 1,
+            "category": "Mathematik",
+            "level": "6",
+            "text": "Die Ableitung vom Sinus ist der ...",
+            "correctAnswer": "Cosinus",
+            "wrongAnswers": []
+        },
+        {
+            "id": 164,
+            "type": 2,
+            "category": "Programmiersprachen",
+            "level": "1",
+            "text": "Welcher dieser Begriffe bezeichnet keine Programmiersprache?",
+            "correctAnswer": "Ubuntu",
+            "wrongAnswers": [
+                "Python",
+                "C++",
+                "Clojure"
+            ]
+        },
+        {
+            "id": 172,
+            "type": 1,
+            "category": "Netzwerke",
+            "level": "6",
+            "text": "Wie viele IPv4 Adressen gibt es prinzipiell (ohne reservierte Bl\u00f6cke)?",
+            "correctAnswer": "4.294.967.296 | 4 Milliarden | 32bit | 2^32",
+            "wrongAnswers": []
+        },
+        {
+            "id": 237,
+            "type": 1,
+            "category": "Politik",
+            "level": "9",
+            "text": "Aus wie vielen Nullen bestand der Code f\u00fcr die Kernwaffen der USA bis 1977?",
+            "correctAnswer": "8",
+            "wrongAnswers": []
+        },
+        {
+            "id": 239,
+            "type": 1,
+            "category": "Software",
+            "level": "8",
+            "text": "Unter welchem Codenamen wurde der Mozilla Firefox bis 2002 entwickelt?",
+            "correctAnswer": "Phoenix",
+            "wrongAnswers": []
+        },
+        {
+            "id": 245,
+            "type": 1,
+            "category": "Politik",
+            "level": "6",
+            "text": "Welchem Bundesministerium ist die digitale Infrastruktur untergeordnet?",
+            "correctAnswer": "(BM f\u00fcr) Verkehr (und digitale Infrastruktur)",
+            "wrongAnswers": []
+        },
+        {
+            "id": 252,
+            "type": 1,
+            "category": "Firmen der IT",
+            "level": "7",
+            "text": "Ab welchem Jahr war die Google Glass \u00f6ffentlich zu erwerben?",
+            "correctAnswer": "2014",
+            "wrongAnswers": []
+        },
+        {
+            "id": 255,
+            "type": 2,
+            "category": "Popkultur",
+            "level": "3",
+            "text": "In welchem dieser Open-Source-Spiele kommt kein Pinguin vor?",
+            "correctAnswer": "Battle for Wesnoth",
+            "wrongAnswers": [
+                "SuperTuxKart",
+                "Extreme Tux Racer",
+                "Frozen Bubble"
+            ]
+        },
+        {
+            "id": 267,
+            "type": 1,
+            "category": "Chaos Computer Club und Congress",
+            "level": "8",
+            "text": "Wie hei\u00dft der Gewinner des Hacker Jeopardy des 34c3?",
+            "correctAnswer": "Xyrill oder niemand",
+            "wrongAnswers": []
+        },
+        {
+            "id": 281,
+            "type": 1,
+            "category": "Sonstige Hardware",
+            "level": "5",
+            "text": "Wie nannte Konrad Zuse seinen ersten Computer?",
+            "correctAnswer": "Z1",
+            "wrongAnswers": []
+        },
+        {
+            "id": 285,
+            "type": 1,
+            "category": "Internet",
+            "level": "8",
+            "text": "Wof\u00fcr steht \"SMTP\"?",
+            "correctAnswer": "Simple Mail Transfer Protocol",
+            "wrongAnswers": []
         }
     ]
 }
