@@ -78,8 +78,14 @@ async function process_gamestate() {
 
     if (game.current_team != null) {
         document.querySelector('#teamname').innerHTML = game.current_team.name;
-
-        // TODO: List Players and if the are qualified e.t.c.
+        try {
+            document.querySelector('#player1name').innerHTML = game.current_team.players[0].name;
+            document.querySelector('#player2name').innerHTML = game.current_team.players[1].name;
+            document.querySelector('#player3name').innerHTML = game.current_team.players[2].name;
+            document.querySelector('#player4name').innerHTML = game.current_team.players[3].name;
+        } catch (e) {
+            //
+        }
     }
 
     if (game.current_round != null) {
@@ -100,8 +106,21 @@ async function process_gamestate() {
 
 $(async function() {
     eel.expose(all_change_gamestate);
+
     function all_change_gamestate(x) {
         process_gamestate();
+    }
+
+    eel.expose(all_fast_tick);
+
+    function all_fast_tick(timeOver, timeLeft) {
+        document.querySelectorAll('.timer').forEach(el => el.innerHTML = timeLeft);
+    }
+
+    eel.expose(all_final_tick);
+
+    function all_final_tick(timeOver, timeLeft) {
+        document.querySelectorAll('.timer').forEach(el => el.innerHTML = timeLeft);
     }
 
     process_gamestate();
