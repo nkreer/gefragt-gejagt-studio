@@ -191,7 +191,7 @@ if __name__ == '__main__':
                         eel.all_chase_tick(seconds_played, seconds_remaining)
 
                     i += 1
-                    eel.sleep(1.0)
+                    eel.sleep(0.1)
                 if timedout:
                     eel.all_chase_timeout()
                 else:
@@ -244,9 +244,20 @@ if __name__ == '__main__':
                 question_answered(answer, device)
 
     @eel.expose
-    def all_show_chaserresponse():
-        game.check_round_end()
-        resend_gamestate()
+    def show_playerresponse():
+        eel.all_show_playerresponse()()
+
+    @eel.expose
+    def show_solution():
+        eel.all_show_solution()()
+
+    @eel.expose
+    def show_chaserresponse():
+        eel.all_show_chaserresponse()
+
+        if game.check_round_end():
+            eel.sleep(1.5)
+            resend_gamestate()
 
     @eel.expose
     def end_round():

@@ -213,8 +213,11 @@ class Game(object):
             round.won = True
             self.current_player.qualified = True
             self.state = GameState.ROUND_ENDED
+            return True
         elif (round.correctAnswersPlayer + round.playerStartOffset) <= round.correctAnswersChaser:
             self.state = GameState.ROUND_ENDED
+            return True
+        return False
 
     def setup_finalround(self, players=False):
         round = gefragt_gejagt.round.Round()

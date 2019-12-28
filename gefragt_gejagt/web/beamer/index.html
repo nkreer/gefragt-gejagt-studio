@@ -1,16 +1,103 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <script src="/js/jquery-3.4.1.min.js"></script>
-        <script src="/eel.js"></script>
-        <script src="/js/common.js"></script>
-        <script src="/js/beamer.js"></script>
-        <title>GefragtGejagt - Beamer</title>
-    </head>
-    <body>
-        <h1 id='heading'>Junghacker*innen Gefragt-Gejagt</h1>
-        <img src="/img/logo.svg">
-        <h2 id='subheading'>Herzlich Willkommen!</h2>
-    </body>
+
+<head>
+    <meta charset="utf-8">
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/eel.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/beamer.js"></script>
+    <title>GefragtGejagt - Beamer</title>
+    <link rel="stylesheet" href="/css/beamer.css" />
+</head>
+
+<body>
+    <header>
+        <div class="logo_container"><img src="/img/logo.svg"></div>
+        <h1 id="GAME_STATE">STATE</h1>
+    </header>
+
+    <section id="slide0">
+        <h1>Herzlich Willkommen!</h1>
+        <p>Jung-Hacker*innen aller Assemblies! Versammelt euch!</p>
+    </section>
+    <section id="slide1">
+        <p>Team <span id="selected_team_name">TEAM_NAME</span> beginnt.</p>
+    </section>
+    <section id="slide2">
+        <p>Welche Spieler*in beginnt?</p>
+    </section>
+    <section id="slide3">
+        <p>Spieler*in <span id="player_name">NAME</span> beginnt.</p>
+    </section>
+    <section id="slide4">
+        <p><span class='timer'>60</span> Sekunden übrig.</p>
+        <p><span id="fast_guess_score">0</span> Punkte erreicht.</p>
+    </section>
+    <section id="slide5">
+        <p>M&ouml;ge die Jagd beginnen.</p>
+        <p>
+            <h3>Angebote</h3>
+            <ul>
+                <li>Hohes Angebot: <span id="high_offer">0</span></li>
+                <li>Normales Angebot: <span id="normal_offer">0</span></li>
+                <li>Niedriges Angebot: <span id="low_offer">0</span></li>
+            </ul>
+            <!-- It won't show up which offer was selected as the screen will change in that moment anyway. -->
+        </p>
+    </section>
+    <section id="slide6">
+        <h2 class="question">QUESTION</h2>
+        <div class="option_grid">
+            <button></button><button></button><button></button><button></button>
+        </div>
+    </section>
+    <section id="slide7">
+        <h2>Richtige Antwort: <span id="correctAnswer">███</span></h2>
+        <ul>
+            <li>Spieler*in: <span id="chasePlayerResponse">███</span></li>
+            <li>Jäger*in: <span id="chaseChserResponse">███</span></li>
+        </ul>
+    </section>
+    <section id="slide8">
+        <h2 id="playerWonMessage">PLAYER hat WON!</h2>
+    </section>
+    <section id="slide9">
+        <h2>Spieler*innen werden gewählt.</h2>
+    </section>
+    <section id="slide10">
+        <h2 id="finalQuestionPlayer">QUESTION</h2>
+        <p><span class='timer'>60</span> Sekunden übrig.</p>
+    </section>
+    <section id="slide11">
+        <h2>Nächste Frage...</h1>
+    </section>
+    <section id="slide12">
+        <h2 id="finalQuestionChaser">Möge die Jagd beginnen!</h2>
+        <p><span class='timer'>60</span> Sekunden übrig.</p>
+    </section>
+    <section id="slide13">
+        <h2>Weiß es die Spieler*in besser?</h2>
+    </section>
+    <section id="slide14">
+        <h1>Bitte warten...</h1>
+    </section>
+    <section id="slide15">
+        <h2 id="evaluationMessage">MESSAGE</h2>
+        <ul>
+            <li>Punkte Spieler*in: <span id="evaluationScorePlayer" class="show">0</span></li>
+            <li>Punkte Jäger*in: <span id="evaluationScoreChaser" class="show">0</span></li>
+        </ul>
+    </section>
+    <audio id="success" aria-hidden="true" preload="auto">
+        <source src="/audio/success.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="error" aria-hidden="true" preload="auto">
+        <source src="/audio/error.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="waiting" aria-hidden="true" preload="auto">
+        <source src="/audio/waiting.mp3" type="audio/mpeg">
+    </audio>
+</body>
+
 </html>
