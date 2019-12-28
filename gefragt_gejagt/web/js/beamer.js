@@ -92,6 +92,7 @@ $(async function() {
         if (current_question.correctAnswer.length > 50) document.querySelector('#slide7').classList.add('smallFont');
         document.querySelector('#chasePlayerResponse').classList.add('show');
         document.querySelector('#chaseChserResponse').classList.add('show');
+        setStairs();
     }
 
     function all_show_playerresponse() {
@@ -206,11 +207,13 @@ async function loadSlideContent(gameStateCode) {
                 document.querySelector('#low_offer').innerHTML = offers.find((el) => el.type == 2).amount;
             }
             offersIntervall = setInterval(get_offers, 250);
+            setStairs();
             console.log("Jagd Vorbereitung");
             break;
         case 6: // CHASE_QUESTIONING
             if ('offersIntervall' in window) clearInterval(offersIntervall);
-            var question = (await eel.get_game()()).current_question;
+            var game = await eel.get_game()();
+            var question = game.current_question;
             document.querySelector('.question').innerHTML = question.text;
             if (question.text.length > 50) document.querySelector('#slide6').classList.add('smallFont');
             else document.querySelector('#slide6').classList.remove('smallFont');
@@ -225,6 +228,8 @@ async function loadSlideContent(gameStateCode) {
                 }
                 if (buttons[i].innerHTML.length > 50) document.querySelector('#slide6').classList.add('smallFont');
             }
+            document.querySelector('#stairs').classList.add('show');
+            setStairs();
             console.log("Jagd Fragenstellung");
             break;
         case 7: // CHASE_SOLVE
@@ -238,6 +243,7 @@ async function loadSlideContent(gameStateCode) {
             document.querySelector('#chaseChserResponse').innerHTML = '███'
             document.querySelector('#chaseChserResponse').classList.remove('correct');
             document.querySelector('#chaseChserResponse').classList.remove('wrong');
+            document.querySelector('#stairs').classList.add('show');
             console.log("Jagd Auflösung");
             break;
         case 8: // ROUND_ENDED
@@ -295,4 +301,14 @@ async function loadSlideContent(gameStateCode) {
             console.log("Status: Unbekannt " + game.state);
             break;
     }
+    if (gameStateCode != 6 && gameStateCode != 7) document.querySelector('#stairs').classList.remove('show');
+}
+
+async function setStairs() {
+    var stairs = document.querySelector('#stairs');
+    Array.from(stairs.children).forEach(el => el.innerHTML = [] + []); // Yes, this shit is a null-string...
+    var round = (await eel.get_game()()).current_round;
+    var playerOffset = (7 - round.questionsLeftForPlayer) - 1; //Offset starts at 0
+    stairs.children[playerOffset].innerHTML = "Spieler*in";
+    if (round.correctAnswersChaser > 0) stairs.children[round.correctAnswersChaser - 1].innerHTML = "Jäger*in";
 }
