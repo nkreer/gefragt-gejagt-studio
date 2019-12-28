@@ -52,6 +52,7 @@ class Game(object):
         self.current_round: Round = None
         self.current_player: Player = None
         self.current_question: Question = None
+        self.last_question: Question = None
         self.state: GameState = GameState.PREPARATION
 
     def load_json_state(self, filename=None):
@@ -72,6 +73,9 @@ class Game(object):
         if obj.get('current_question'):
             self.current_question = self.get_question_by_id(
                 obj['current_question']['id'])
+        if obj.get('last_question'):
+            self.last_question = self.get_question_by_id(
+                obj['last_question']['id'])
 
         if obj.get('rounds'):
             self.rounds = gefragt_gejagt.round.load(obj['rounds'], self)
@@ -191,6 +195,8 @@ class Game(object):
             return(random.choice(self.questions))
 
     def choose_question(self, question: Question):
+        self.last_question = self.current_question
+
         if self.state >= GameState.CHASE_PREPARATION and self.state <= GameState.CHASE_SOLVE:
             self.state = GameState.CHASE_QUESTIONING
         question.played = True
@@ -286,4 +292,8 @@ class Game(object):
             game_obj['current_question'] = self.current_question.save()
         else:
             game_obj['current_question'] = None
+        if self.last_question:
+            game_obj['last_question'] = self.last_question.save()
+        else:
+            game_obj['last_question'] = None
         return game_obj

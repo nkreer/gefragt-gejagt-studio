@@ -18,7 +18,7 @@
                     <div class="tile is-parent">
                         <article class="tile is-child box">
                             <p class="subtitle">Aktuelle Frage:</p>
-                            <p class="title">Wie lautet diese ganz andere Frage?</p>
+                            <p class="title" id='question-text'>platzhalter</p>
                             <div class="content">
 
                             </div>
@@ -29,10 +29,7 @@
                             <div class="tile is-parent">
                                 <article class="tile is-child notification is-danger">
                                     <p class="title">Team</p>
-                                    <p class="subtitle">Teamname</p>
-                                    <div class="content">
-                                        Punkte: 54
-                                    </div>
+                                    <p class="subtitle" id='teamname'>platzhalter</p>
                                 </article>
                             </div>
                             <div class="tile">
@@ -53,23 +50,65 @@
                                 <div class="tile is-parent">
                                     <article class="tile is-child notification is-info">
                                         <p class="title">Aktuelle Runde</p>
-                                        <p class="subtitle">Aktueller Status: Frage Auflösung</p>
+                                        <p class="subtitle">
+                                            <b>
+                                                Aktueller Status:
+                                            </b>
+                                            <span id='state'>
+                                                platzhalter
+                                            </span>
+                                        </p>
                                         <div class="content">
-                                            Typ: Spieler*innenrunde
+                                            <b>
+                                                Typ:
+                                            </b>
+                                            <span id="roundtype">platzhalter</span>
+                                            <br>
+                                            <b>
+                                                Richtige Antworten Spieler*in:
+                                            </b>
+                                            <span id='correctAnswersPlayer'>platzhalter</span>
+                                            <br>
+                                            <b>
+                                                Richtige Antworten Jäger*in:
+                                            </b>
+                                            <span id='correctAnswersChaser'>platzhalter</span>
                                         </div>
                                     </article>
                                 </div>
                             </div>
                         </div>
-                        <div class="tile is-parent">
+                        <div class="tile is-vertical is-parent">
+                            <article class="tile is-child notification is-danger">
+                                <p class="subtitle">Letzte Frage:</p>
+                                <p class="title" id="lastquestion-text">platzhalter</p>
+                                <div class="content">
+
+                                </div>
+                            </article>
                             <article class="tile is-child notification is-success">
                                 <div class="content">
                                     <p class="title">Weitere Statistiken</p>
-                                    <p class="subtitle">Aktueller Status: Frage Auflösung</p>
+                                    <p class="subtitle"><b>
+                                        Aktueller Status:
+                                    </b>
+                                    <span id='state2'>
+                                        Bla
+                                    </span></p>
                                     <div class="content">
-                                        Simple-Fragen übrig: 5
+                                        <b>
+                                            Simple-Fragen übrig:
+                                        </b>
+                                        <span id="simpleQuestionsLeft">
+                                            platzhalter
+                                        </span>
                                         <br>
-                                        Jagd-Fragen übrig: 5
+                                        <b>
+                                            Jagd-Fragen übrig:
+                                        </b>
+                                        <span id="chaseQuestionsLeft">
+                                            platzhalter
+                                        </span>
                                     </div>
                                 </div>
                             </article>
