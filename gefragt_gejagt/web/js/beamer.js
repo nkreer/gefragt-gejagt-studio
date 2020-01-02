@@ -148,7 +148,12 @@ $(async function () {
     eel.expose(play_debugging_music);
 
     function play_debugging_music() {
-        document.querySelector("#waiting").play();
+        if(document.querySelector("#waiting").currentTime==0) {
+            document.querySelector("#waiting").play();
+        } else {
+            document.querySelector("#waiting").pause();
+            document.querySelector("#waiting").load()
+        }
     }
 
     // Init
@@ -161,6 +166,8 @@ async function update_beamer() {
     document.querySelector("#GAME_STATE").innerHTML = gameState.title(gameStateCode)
 
     document.querySelectorAll('section').forEach(el => (el.id != 'slide' + gameStateCode) ? el.classList.remove('active') : el.classList.add('active'))
+
+    document.querySelector("#waiting").loop=true; // ONLY works in Mozilla Firefox' gecko engine
 
     loadSlideContent(gameStateCode)
 }

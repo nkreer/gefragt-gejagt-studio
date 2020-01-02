@@ -54,6 +54,7 @@ class Game(object):
         self.current_question: Question = None
         self.last_question: Question = None
         self.state: GameState = GameState.PREPARATION
+        self.clients=[]
 
     def load_json_state(self, filename=None):
         if filename is None:
