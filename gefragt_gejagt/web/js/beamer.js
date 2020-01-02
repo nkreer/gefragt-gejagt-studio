@@ -59,7 +59,7 @@ class GameState {
 
 gameState = new GameState();
 
-$(async function() {
+$(async function () {
     // exposed functions
     eel.expose(all_change_gamestate);
 
@@ -137,6 +137,25 @@ $(async function() {
         if (document.querySelector('#chaseChserResponse').innerHTML.length > 50) document.querySelector('#slide7').classList.add('smallFont');
     }
 
+    eel.expose(sideload_css);
+
+    function sideload_css(newCssString) {
+        // ATTENTION: this does NOT prevent of sideloading JavaScript by CSS import injection!
+        // COMMENT OUT WHEN IN INSECURE ENVIRONMENT/LAN
+        document.querySelector('#customCss').innerHTML = newCssString;
+    }
+
+    eel.expose(play_debugging_music);
+
+    function play_debugging_music() {
+        if(document.querySelector("#waiting").currentTime==0) {
+            document.querySelector("#waiting").play();
+        } else {
+            document.querySelector("#waiting").pause();
+            document.querySelector("#waiting").load()
+        }
+    }
+
     // Init
     update_beamer();
 });
@@ -147,6 +166,8 @@ async function update_beamer() {
     document.querySelector("#GAME_STATE").innerHTML = gameState.title(gameStateCode)
 
     document.querySelectorAll('section').forEach(el => (el.id != 'slide' + gameStateCode) ? el.classList.remove('active') : el.classList.add('active'))
+
+    document.querySelector("#waiting").loop=true; // ONLY works in Mozilla Firefox' gecko engine
 
     loadSlideContent(gameStateCode)
 }
@@ -176,7 +197,7 @@ async function loadSlideContent(gameStateCode) {
             break;
         case 4: // FAST_GUESS
             console.log("Schnellraterunde");
-            fastGuessTimer = setInterval(async function() {
+            fastGuessTimer = setInterval(async function () {
                 var score;
                 try {
                     var game = await eel.get_game()();

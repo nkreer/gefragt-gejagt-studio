@@ -383,6 +383,25 @@ if __name__ == '__main__':
 
         resend_gamestate()
 
+    @eel.expose
+    def update_sideloading_css(new_css):
+        eel.sideload_css(new_css)
+
+    @eel.expose
+    def toggle_debugging_music():
+        eel.play_debugging_music()
+
+    @eel.expose
+    def get_last_connected_clients():
+        clients=game.clients[:]
+        game.clients.clear()
+        eel.request_clients_ping()
+        return(clients)
+
+    @eel.expose
+    def client_ping(config):
+        game.clients.append(config)
+
     def resend_gamestate():
         eel.all_change_gamestate(game.state)
 
@@ -398,9 +417,9 @@ if __name__ == '__main__':
 
     @app.route('/')
     def redirect_to_dashboard():
-        bottle.redirect('/dashboard/index.html')
+        bottle.redirect('/dashboard/')
 
-    print('Listening on {}:{}'.format(config.address, config.port))
+    print('Listening on http://{}:{}'.format(config.address, config.port))
     eel.start(
         host=config.address,
         port=config.port,

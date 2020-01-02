@@ -10,7 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>GefragtGejagt - Dashboard</title>
     </head>
-    <body class="has-navbar-fixed-top">
+    <body class="has-navbar-fixed-top" style="display: flex;flex-direction: column;">
         <nav class="navbar is-fixed-top header" role="navigation" aria-label="main navigation">
             <div class="container">
                 <div class="navbar-brand">
@@ -291,5 +291,15 @@
             </table>
             <p id="endtext" style="display: none;"></p>
         </div>
+        <div class="container" style="margin-top:60%">
+            <h2 style="font-weight: bold;">Debugging-Funktionen</h2>
+            <span class="navbar-item"><b style="margin-right: .5rem;">Clienten online: </b> <span><span id="beamerClients"></span> Beamer, <span id="phoneClients"></span> Handy(s), <span id="moderationClients"></span> Moderation, <span id="dashboardsClients"></span> Dashboard</span></span>
+            <br/>
+            <button class="button is-info" onclick="eel.toggle_debugging_music()">Debugging-Musik</button>
+            <button class="button is-info" onclick="sideloadCustomCss()">Eigenes CSS laden</button>
+            <textarea id="customCssInput" class="textarea" placeholder=":root {
+    color: white;
+}" rows="10"></textarea>
+          </div>
     </body>
 </html>
