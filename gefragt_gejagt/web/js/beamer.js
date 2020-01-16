@@ -87,7 +87,7 @@ $(async function () {
 
     async function show_solution() {
         console.log('all_show_solution');
-        var current_question = (await eel.get_game()()).current_question;
+        var current_question = (await eel.get_game(token)()).current_question;
         document.querySelector('#correctAnswer').innerHTML = current_question.correctAnswer;
         if (current_question.correctAnswer.length > 50) document.querySelector('#slide7').classList.add('smallFont');
         document.querySelector('#chasePlayerResponse').classList.add('show');
@@ -103,7 +103,7 @@ $(async function () {
 
     async function show_playerresponse() {
         console.log('all_show_playerresponse')
-        var current_question = (await eel.get_game()()).current_question;
+        var current_question = (await eel.get_game(token)()).current_question;
         if (current_question.answerPlayer == 0) {
             document.querySelector('#chasePlayerResponse').innerHTML = current_question.correctAnswer;
             document.querySelector('#chasePlayerResponse').classList.remove('wrong');
@@ -124,7 +124,7 @@ $(async function () {
 
     async function show_chaserresponse() {
         console.log('all_show_chaserresponse')
-        var current_question = (await eel.get_game()()).current_question;
+        var current_question = (await eel.get_game(token)()).current_question;
         if (current_question.answerChaser == 0) {
             document.querySelector('#chaseChserResponse').innerHTML = current_question.correctAnswer;
             document.querySelector('#chaseChserResponse').classList.remove('wrong');
@@ -161,7 +161,7 @@ $(async function () {
 });
 
 async function update_beamer() {
-    gameStateCode = await eel.game_state()();
+    gameStateCode = await eel.game_state(token)();
 
     document.querySelector("#GAME_STATE").innerHTML = gameState.title(gameStateCode)
 
@@ -185,7 +185,7 @@ async function loadSlideContent(gameStateCode) {
             break;
         case gameState.TEAM_CHOSEN: // TEAM_CHOSEN
             document.querySelector('.logo_container').classList.remove('fullscreen');
-            document.querySelector('#selected_team_name').innerHTML = (await eel.get_game()()).current_team.name
+            document.querySelector('#selected_team_name').innerHTML = (await eel.get_game(token)()).current_team.name
             console.log("Team ausgewählt");
             break;
         case 2: // GAME_STARTED
@@ -193,14 +193,14 @@ async function loadSlideContent(gameStateCode) {
             break;
         case 3: // PLAYER_CHOSEN
             console.log("Spieler ausgewählt");
-            document.querySelector('#player_name').innerHTML = (await eel.get_game()()).current_player.name
+            document.querySelector('#player_name').innerHTML = (await eel.get_game(token)()).current_player.name
             break;
         case 4: // FAST_GUESS
             console.log("Schnellraterunde");
             fastGuessTimer = setInterval(async function () {
                 var score;
                 try {
-                    var game = await eel.get_game()();
+                    var game = await eel.get_game(token)();
                     if (game.state != 4) throw (new Error());
                     score = game.current_player.points;
                 } catch (e) {
@@ -218,7 +218,7 @@ async function loadSlideContent(gameStateCode) {
 
             async function get_offers() {
                 try {
-                    var offers = (await eel.get_game()()).current_round.offers;
+                    var offers = (await eel.get_game(token)()).current_round.offers;
                 } catch (e) {
                     clearInterval(offersIntervall);
                     return;
@@ -233,7 +233,7 @@ async function loadSlideContent(gameStateCode) {
             break;
         case 6: // CHASE_QUESTIONING
             if ('offersIntervall' in window) clearInterval(offersIntervall);
-            var game = await eel.get_game()();
+            var game = await eel.get_game(token)();
             var question = game.current_question;
             document.querySelector('.question').innerHTML = question.text;
             if (question.text.length > 50) document.querySelector('#slide6').classList.add('smallFont');
@@ -268,7 +268,7 @@ async function loadSlideContent(gameStateCode) {
             console.log("Jagd Auflösung");
             break;
         case 8: // ROUND_ENDED
-            var player = (await eel.get_game()()).current_player
+            var player = (await eel.get_game(token)()).current_player
             document.querySelector((player.qualified) ? '#success' : '#error').play();
             document.querySelector('#playerWonMessage').innerHTML = player.name + ' hat ' + ((player.qualified) ? 'gewonnen' : 'verloren') + '!';
             console.log("Runde beendet");
@@ -277,7 +277,7 @@ async function loadSlideContent(gameStateCode) {
             console.log("Finale Vorbereitung");
             break;
         case 10: // FINAL_PLAYERS
-            document.querySelector('#finalQuestionPlayer').innerHTML = (await eel.get_game()()).current_question.text
+            document.querySelector('#finalQuestionPlayer').innerHTML = (await eel.get_game(token)()).current_question.text
             console.log("Finale Spieler*in");
             break;
         case 11: // FINAL_BETWEEN
@@ -285,7 +285,7 @@ async function loadSlideContent(gameStateCode) {
             console.log("Finale Zwischenpause");
             break;
         case 12: // FINAL_CHASER
-            document.querySelector('#finalQuestionChaser').innerHTML = (await eel.get_game()()).current_question.text
+            document.querySelector('#finalQuestionChaser').innerHTML = (await eel.get_game(token)()).current_question.text
             console.log("Status: Finale Jäger*in");
             break;
         case 13: // FINAL_CHASER_WRONG
@@ -297,7 +297,7 @@ async function loadSlideContent(gameStateCode) {
             console.log("Ende");
             break;
         case 15: // EVALUATION
-            var game = await eel.get_game()();
+            var game = await eel.get_game(token)();
             var evaluation = game.current_round;
             document.querySelector('#evaluationMessage').innerHTML = game.current_team.name + ' hat ' + ((evaluation.won) ? 'gewonnen' : 'verloren') + '!';
             document.querySelector('#evaluationScorePlayer').innerHTML = evaluation.correctAnswersPlayer;
@@ -328,7 +328,7 @@ async function loadSlideContent(gameStateCode) {
 async function setStairs() {
     var stairs = document.querySelector('#stairs');
     Array.from(stairs.children).forEach(el => el.innerHTML = [] + []); // Yes, this shit is a null-string...
-    var round = (await eel.get_game()()).current_round;
+    var round = (await eel.get_game(token)()).current_round;
     var playerOffset = (7 - round.questionsLeftForPlayer) - 1; //Offset starts at 0
     stairs.children[playerOffset].innerHTML = "Spieler*in";
     if (round.correctAnswersChaser > 0) stairs.children[round.correctAnswersChaser - 1].innerHTML = "Jäger*in";

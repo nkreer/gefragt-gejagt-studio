@@ -55,6 +55,13 @@ class Game(object):
         self.last_question: Question = None
         self.state: GameState = GameState.PREPARATION
         self.clients=[]
+        self.token = random.randint(1,99999)
+    
+    def check_token(self, token):
+        return(token==self.token)
+    
+    def set_token(self, new_token):
+        self.token=new_token
 
     def load_json_state(self, filename=None):
         if filename is None:
@@ -141,7 +148,7 @@ class Game(object):
                     players.append(player)
         return random.choice(players)
 
-    def reset_player():
+    def reset_player(self):
         self.state = GameState.GAME_STARTED
         self.current_player = None
 

@@ -4,7 +4,7 @@ async function team_table(visible) {
         tbl.style.display = "";
 
         $("#teamtable tbody tr :visible").remove();
-        let teams = await eel.list_teams()()
+        let teams = await eel.list_teams(token)()
         for (var i = 0; i < teams.length; i++) {
             var team = teams[i];
             var row = tbl.insertRow(tbl.rows.length);
@@ -14,7 +14,7 @@ async function team_table(visible) {
             row.insertCell(-1).innerHTML = team.name;
             row.insertCell(-1).innerHTML = team.played;
             var playerNames = '';
-            team.players.forEach(function (player) {
+            team.players.forEach(function(player) {
                 playerNames += player.name;
                 playerNames += ', '
             });
@@ -30,7 +30,7 @@ async function question_table(visible, include_all) {
     if (visible) {
         tbl.style.display = "";
 
-        let game = await eel.get_game()()
+        let game = await eel.get_game(token)()
         $("#questiontable tbody tr :visible").remove();
         for (var i = 0; i < game.questions.length; i++) {
             var question = game.questions[i];
@@ -63,7 +63,7 @@ async function question_table(visible, include_all) {
             row.insertCell(-1).innerHTML = question.correctAnswer;
 
             var wrongAnswers = '';
-            question.wrongAnswers.forEach(function (wrongAnswer) {
+            question.wrongAnswers.forEach(function(wrongAnswer) {
                 wrongAnswers += wrongAnswer;
                 wrongAnswers += ', '
             });
@@ -84,7 +84,7 @@ async function player_table(visible, rename_buttons) {
         button.style.display = "";
 
         $("#playertable tbody tr :visible").remove();
-        let game = await eel.get_game()()
+        let game = await eel.get_game(token)()
         for (var i = 0; i < game.current_team.players.length; i++) {
             var player = game.current_team.players[i];
             var row = tbl.insertRow(tbl.rows.length);
@@ -185,7 +185,7 @@ function final_start_message(visible, chaser, game) {
     if (visible) {
         if (!chaser) {
             var playerNames = '';
-            game.current_team.players.forEach(function (player) {
+            game.current_team.players.forEach(function(player) {
                 if (player.qualified) {
                     playerNames += player.name;
                     playerNames += ', ';
@@ -267,7 +267,7 @@ function set_offer(input_nr) {
 }
 
 async function load_filenames() {
-    let files = await eel.get_files()();
+    let files = await eel.get_files(token)();
     $("#file-picker option").remove();
 
     files = files.reverse();
@@ -284,7 +284,7 @@ function send_load_game() {
 }
 
 async function process_gamestate() {
-    let game = await eel.get_game()();
+    let game = await eel.get_game(token)();
 
     team_table(false);
     team_message(false);
@@ -298,44 +298,44 @@ async function process_gamestate() {
     final_start_message(false);
 
     switch (game.state) {
-        case 0:  // PREPARATION
+        case 0: // PREPARATION
             document.getElementById("status").innerHTML = "Status: Vorbereitung";
             team_table(true);
             break;
-        case 1:  // TEAM_CHOSEN
+        case 1: // TEAM_CHOSEN
             document.getElementById("status").innerHTML = "Status: Team ausgewählt";
             team_table(true);
             team_message(true, game.current_team.name);
             break;
-        case 2:  // GAME_STARTED
+        case 2: // GAME_STARTED
             document.getElementById("status").innerHTML = "Status: Spiel gestartet";
             player_table(true, false);
             break;
-        case 3:  // PLAYER_CHOSEN
+        case 3: // PLAYER_CHOSEN
             document.getElementById("status").innerHTML = "Status: Spieler ausgewählt";
             player_table(true, false);
             player_message(true, game.current_player.name);
             break;
-        case 4:  // FAST_GUESS
+        case 4: // FAST_GUESS
             document.getElementById("status").innerHTML = "Status: Schnellraterunde";
             question_table(true);
             question_message(true, game.current_question);
             break;
-        case 5:  // CHASE_PREPARATION
+        case 5: // CHASE_PREPARATION
             document.getElementById("status").innerHTML = "Status: Jagd Vorbereitung";
             offer_card(true, game);
             break;
-        case 6:  // CHASE_QUESTIONING
+        case 6: // CHASE_QUESTIONING
             document.getElementById("status").innerHTML = "Status: Jagd Fragenstellung";
             question_table(true);
             question_message(true, game.current_question);
             break;
-        case 7:  // CHASE_SOLVE
+        case 7: // CHASE_SOLVE
             document.getElementById("status").innerHTML = "Status: Jagd Auflösung";
             question_table(true);
             solution_card(true, game);
             break;
-        case 8:  // ROUND_ENDED
+        case 8: // ROUND_ENDED
             document.getElementById("status").innerHTML = "Status: Runde beendet";
             $('#timer').text("");
             if (game.current_player.qualified) {
@@ -356,7 +356,7 @@ async function process_gamestate() {
                 `);
             }
             break;
-        case 9:  // FINAL_PREPARATION
+        case 9: // FINAL_PREPARATION
             document.getElementById("status").innerHTML = "Status: Finale Vorbereitung";
             $('#timer').text("");
             player_table(true, true);
@@ -364,26 +364,26 @@ async function process_gamestate() {
                 final_start_message(true, false, game);
             }
             break;
-        case 10:  // FINAL_PLAYERS
+        case 10: // FINAL_PLAYERS
             document.getElementById("status").innerHTML = "Status: Finale Spieler*in";
             question_table(true);
             question_message(true, game.current_question);
             break;
-        case 11:  // FINAL_BETWEEN
+        case 11: // FINAL_BETWEEN
             document.getElementById("status").innerHTML = "Status: Finale Zwischenpause";
             $('#timer').text("");
             final_start_message(true, true, game);
             break;
-        case 12:  // FINAL_CHASER
+        case 12: // FINAL_CHASER
             document.getElementById("status").innerHTML = "Status: Finale Jäger*in";
             question_table(true);
             question_message(true, game.current_question);
             break;
-        case 13:  // FINAL_CHASER_WRONG
+        case 13: // FINAL_CHASER_WRONG
             document.getElementById("status").innerHTML = "Status: Finale Jäger*in Falschantwort";
             question_message(true, game.current_question);
             break;
-        case 14:  // FINAL_END
+        case 14: // FINAL_END
             document.getElementById("status").innerHTML = "Status: Ende";
             $('#timer').text("");
             if (game.current_round.won) {
@@ -414,7 +414,7 @@ async function process_gamestate() {
                 `);
             }
             break;
-        case 15:  // EVALUATION
+        case 15: // EVALUATION
             document.getElementById("status").innerHTML = "Status: Auswertung";
             $('#timer').text("");
             break;
@@ -425,69 +425,81 @@ async function process_gamestate() {
 }
 
 function sideloadCustomCss() {
-    var css=document.querySelector('#customCssInput').value;
+    var css = document.querySelector('#customCssInput').value;
     eel.update_sideloading_css(css)();
 }
 
-$(async function () {
+$(async function() {
 
     // exposed functions
     eel.expose(dashboard_set_heading);
+
     function dashboard_set_heading(x) {
         $('#heading').text(x);
     }
 
     eel.expose(all_change_gamestate);
+
     function all_change_gamestate(x) {
         process_gamestate();
     }
 
     eel.expose(dashboard_set_url);
+
     function dashboard_set_url(url) {
         window.location.href = url;
     }
 
     eel.expose(all_fast_tick);
+
     function all_fast_tick(time_played, time_remaining) {
         $('#timer').text(time_remaining + " Sekunden verbleibend");
     }
 
     eel.expose(all_fast_timeout);
+
     function all_fast_timeout(time) {
         $('#timer').text("");
     }
 
     eel.expose(all_chase_tick);
+
     function all_chase_tick(time_played, time_remaining) {
         $('#timer').text(time_remaining + " Sekunden verbleibend");
     }
 
     eel.expose(all_chase_timeout);
+
     function all_chase_timeout(time) {
         $('#timer').text("");
     }
 
     eel.expose(all_chase_both_answered);
+
     function all_chase_both_answered(time) {
         $('#timer').text("");
     }
 
     eel.expose(all_final_tick);
+
     function all_final_tick(time_played, time_remaining) {
         $('#timer').text(time_remaining + " Sekunden verbleibend");
     }
 
     eel.expose(all_final_pause);
+
     function all_final_pause(time_played, time_remaining) {
         $('#timer').text("Frage pausiert; " + time_remaining + " Sekunden verbleibend");
     }
 
     eel.expose(all_final_timeout);
+
     function all_final_timeout(time) {
         $('#timer').text("");
     }
 
     eel.expose(all_new_question);
+
     function all_new_question() {
         //nothing
     }
@@ -505,10 +517,10 @@ $(async function () {
         }
         clients.forEach(
             (client) => numbers[client.type]++)
-            document.querySelector('#beamerClients').innerHTML=numbers.beamer;
-            document.querySelector('#phoneClients').innerHTML=numbers.phone;
-            document.querySelector('#moderationClients').innerHTML=numbers.statistics;
-            document.querySelector('#dashboardsClients').innerHTML=numbers.dashboard;
+        document.querySelector('#beamerClients').innerHTML = numbers.beamer;
+        document.querySelector('#phoneClients').innerHTML = numbers.phone;
+        document.querySelector('#moderationClients').innerHTML = numbers.statistics;
+        document.querySelector('#dashboardsClients').innerHTML = numbers.dashboard;
     }
     clientsIntervall = setInterval(listClients, 2500);
     listClients()

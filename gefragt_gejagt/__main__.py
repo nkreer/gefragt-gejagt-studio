@@ -53,15 +53,21 @@ if __name__ == '__main__':
 
     # Exposed Functions
     @eel.expose
-    def list_teams():
+    def list_teams(token):
+        if not game.check_token(token):
+            return
         return gefragt_gejagt.team.save(game.teams)
 
     @eel.expose
-    def game_state():
+    def game_state(token):
+        if not game.check_token(token):
+            return
         return game.state
 
     @eel.expose
-    def get_game():
+    def get_game(token):
+        if not game.check_token(token):
+            return
         return game.save()
 
     @eel.expose
@@ -350,10 +356,16 @@ if __name__ == '__main__':
                 "save-{}.json".format(timestamp)))
 
     @eel.expose
-    def get_files():
+    def get_files(token):
+        if not game.check_token(token):
+            return
         path = os.path.dirname(config.file)
         return [f for f in os.listdir(path) if os.path.isfile(
             os.path.join(path, f)) and f[-5:] == '.json']
+
+    @eel.expose
+    def check_token(token):
+        return game.check_token(token)
 
     @eel.expose
     def load_game(file):
@@ -420,6 +432,7 @@ if __name__ == '__main__':
         bottle.redirect('/dashboard/')
 
     print('Listening on http://{}:{}'.format(config.address, config.port))
+    print('Game access token: '+str(game.token))
     eel.start(
         host=config.address,
         port=config.port,

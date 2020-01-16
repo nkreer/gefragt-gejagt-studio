@@ -1,13 +1,15 @@
 // exposed functions
 eel.expose(all_set_url);
+
 function all_set_url(url) {
     window.location.href = url;
 }
 eel.expose(request_clients_ping);
+
 function request_clients_ping() {
-    var id=eel._guid;
-    var type=location.pathname.substr(1,location.pathname.indexOf('/',1)-1)
-    eel.client_ping({id:id,type:type})
+    var id = eel._guid;
+    var type = location.pathname.substr(1, location.pathname.indexOf('/', 1) - 1)
+    eel.client_ping({ id: id, type: type })
 }
 
 function set_modal(status, id) {
@@ -40,3 +42,22 @@ eelReconnectionIntervall = setInterval(() => {
         }
     }
 }, 1000)
+
+function requestToken() {
+    token = localStorage.getItem('token')
+    if (token == null) {
+        token = prompt('Bitte Token eingeben:') * 1;
+        localStorage.setItem('token', token);
+    }
+    checkToken(token * 1);
+}
+
+async function checkToken(token) {
+    var tokenCorrect = await eel.check_token(token)();
+    if (tokenCorrect != true) {
+        localStorage.removeItem('token');
+        location.reload();
+    }
+}
+
+requestToken();
