@@ -80,13 +80,113 @@ section.active {
     grid-gap: .5rem;
 }
 
+.smallFont {
+    font-size: .75rem;
+}
+
 .option_grid button {
     background: var(--accent-color);
     border: .125rem solid var(--main-color);
     border-radius: .25rem;
-    height: 2rem;
+    min-height: 2rem;
     color: var(--main-color);
-    font-size: .75rem;
+    font-size: .75em;
     font-weight: bold;
     font-family: monospace;
+}
+
+.show.correct {
+    background: #48c774;
+    padding: .25rem;
+    border-radius: .25rem;
+    display: inline-block;
+    margin: .125rem;
+    border: .125rem solid #009547;
+}
+
+.show.wrong {
+    background: #f14668;
+    color: var(--accent-color);
+    padding: .25rem;
+    border-radius: .25rem;
+    display: inline-block;
+    margin: .125rem;
+    border: .125rem solid #b9003e;
+}
+
+audio {
+    visibility: hidden;
+}
+
+#stairs {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 3rem;
+    right: 3rem;
+    align-items: center;
+}
+
+#stairs:not(.show) {
+    display: none;
+}
+
+#stairs.show~section {
+    margin-right: 8rem;
+}
+
+#stairs span {
+    height: .875rem;
+    display: block;
+    background: var(--accent-color);
+    border-top-left-radius: .125rem;
+    border-top-right-radius: .125rem;
+    box-sizing: border-box;
+    font-size: .5em;
+    text-align: center;
+    transition: background .5s ease-in-out;
+}
+
+#stairs span:not(:last-child) {
+    border-bottom: .125rem solid var(--main-color);
+}
+
+#stairs span:last-child {
+    border-bottom-left-radius: .125rem;
+    border-bottom-right-radius: .125rem;
+}
+
+#stairs span:nth-child(1) {
+    width: 3rem;
+}
+
+#stairs span:nth-child(2) {
+    width: 3.5rem;
+}
+
+#stairs span:nth-child(3) {
+    width: 4rem;
+}
+
+#stairs span:nth-child(4) {
+    width: 4.5rem;
+}
+
+#stairs span:nth-child(5) {
+    width: 5rem;
+}
+
+#stairs span:nth-child(6) {
+    width: 5.5rem;
+}
+
+#stairs span:nth-child(7) {
+    width: 6rem;
+}
+
+#stairs span:not(:empty) {
+    background: var(--main-color);
+    color: var(--accent-color);
+    border-bottom: none;
+    padding: .125rem;
 }

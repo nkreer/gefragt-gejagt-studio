@@ -9,6 +9,7 @@
     <script src="/js/beamer.js"></script>
     <title>GefragtGejagt - Beamer</title>
     <link rel="stylesheet" href="/css/beamer.css" />
+    <style id="customCss"></style>
 </head>
 
 <body>
@@ -16,6 +17,16 @@
         <div class="logo_container"><img src="/img/logo.svg"></div>
         <h1 id="GAME_STATE">STATE</h1>
     </header>
+
+    <div id="stairs">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
     <section id="slide0">
         <h1>Herzlich Willkommen!</h1>
@@ -31,8 +42,8 @@
         <p>Spieler*in <span id="player_name">NAME</span> beginnt.</p>
     </section>
     <section id="slide4">
-        <p><span class='fast_guess_timer'>60</span> Sekunden übrig.</p>
-        <p><span class="fast_guess_score">0</span> Punkte erreicht.</p>
+        <p><span class='timer'>60</span> Sekunden übrig.</p>
+        <p><span id="fast_guess_score">0</span> Punkte erreicht.</p>
     </section>
     <section id="slide5">
         <p>M&ouml;ge die Jagd beginnen.</p>
@@ -53,32 +64,51 @@
         </div>
     </section>
     <section id="slide7">
-        <h1>Herzlich Willkommen!</h1>
+        <h2>Richtige Antwort: <span id="correctAnswer">███</span></h2>
+        <ul>
+            <li>Spieler*in: <span id="chasePlayerResponse">███</span></li>
+            <li>Jäger*in: <span id="chaseChserResponse">███</span></li>
+        </ul>
     </section>
     <section id="slide8">
-        <h1>Herzlich Willkommen!</h1>
+        <h2 id="playerWonMessage">PLAYER hat WON!</h2>
     </section>
     <section id="slide9">
-        <h1>Herzlich Willkommen!</h1>
+        <h2>Spieler*innen werden gewählt.</h2>
     </section>
     <section id="slide10">
-        <h1>Herzlich Willkommen!</h1>
+        <h2 id="finalQuestionPlayer">QUESTION</h2>
+        <p><span class='timer'>60</span> Sekunden übrig.</p>
     </section>
     <section id="slide11">
-        <h1>Herzlich Willkommen!</h1>
+        <h2>Nächste Frage...</h1>
     </section>
     <section id="slide12">
-        <h1>Herzlich Willkommen!</h1>
+        <h2 id="finalQuestionChaser">Möge die Jagd beginnen!</h2>
+        <p><span class='timer'>60</span> Sekunden übrig.</p>
     </section>
     <section id="slide13">
-        <h1>Herzlich Willkommen!</h1>
+        <h2>Weiß es die Spieler*in besser?</h2>
     </section>
     <section id="slide14">
-        <h1>Herzlich Willkommen!</h1>
+        <h1>Bitte warten...</h1>
     </section>
     <section id="slide15">
-        <h1>Herzlich Willkommen!</h1>
+        <h2 id="evaluationMessage">MESSAGE</h2>
+        <ul>
+            <li>Punkte Spieler*in: <span id="evaluationScorePlayer" class="show">0</span></li>
+            <li>Punkte Jäger*in: <span id="evaluationScoreChaser" class="show">0</span></li>
+        </ul>
     </section>
+    <audio id="success" aria-hidden="true" preload="auto">
+        <source src="/audio/success.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="error" aria-hidden="true" preload="auto">
+        <source src="/audio/error.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="waiting" aria-hidden="true" preload="auto">
+        <source src="/audio/waiting.mp3" type="audio/mpeg">
+    </audio>
 </body>
 
 </html>

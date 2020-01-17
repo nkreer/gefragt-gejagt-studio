@@ -52,7 +52,9 @@ class Game(object):
         self.current_round: Round = None
         self.current_player: Player = None
         self.current_question: Question = None
+        self.last_question: Question = None
         self.state: GameState = GameState.PREPARATION
+        self.clients=[]
 
     def load_json_state(self, filename=None):
         if filename is None:
@@ -72,12 +74,19 @@ class Game(object):
         if obj.get('current_question'):
             self.current_question = self.get_question_by_id(
                 obj['current_question']['id'])
+        if obj.get('last_question'):
+            self.last_question = self.get_question_by_id(
+                obj['last_question']['id'])
 
         if obj.get('rounds'):
             self.rounds = gefragt_gejagt.round.load(obj['rounds'], self)
             if obj.get('current_round'):
                 self.current_round = self.get_round_by_id(
                     obj['current_round']['id'])
+
+                if len(
+                        self.current_round.finalTime) > 0 and not self.current_round.finalTime[-1].get('end'):
+                    self.state = GameState.FINAL_CHASER_WRONG
 
     def get_team_by_id(self, id) -> Team:
         for team in self.teams:
@@ -150,8 +159,7 @@ class Game(object):
         self.state = GameState.CHASE_PREPARATION
         self.current_question = None
 
-    def random_question(self) -> Question:
-        # TODO: Fallback if no questions left
+    def random_question(self, level=None) -> Question:
         if self.state >= GameState.CHASE_PREPARATION and self.state <= GameState.CHASE_SOLVE:
             round_questiontype = gefragt_gejagt.question.QuestionType.CHASE
         else:
@@ -160,11 +168,36 @@ class Game(object):
         questions = []
         for question in self.questions:
             if not question.played and question.type == round_questiontype:
-                questions.append(question)
-        question = random.choice(questions)
-        return question
+                if not level or level - 2 <= question.level <= level + 2:
+                    questions.append(question)
+        try:
+            question = random.choice(questions)
+            return question
+        except:
+            if level:
+                print("No question within levelrange available. Choosing another one...")
+                return self.random_question()
+            elif self.state == GameState.FAST_GUESS:
+                print("No more question available. Ending fast round...")
+                self.fast_thread = False
+            elif GameState.CHASE_PREPARATION <= self.state <= GameState.CHASE_SOLVE:
+                print("No more question available. Ending chase round...")
+                self.current_round.won = True
+                self.current_player.qualified = True
+                self.state = GameState.ROUND_ENDED
+            elif GameState.FINAL_PLAYERS:
+                print("No more question available. Ending final player round...")
+                self.final_player_thread = False
+            elif GameState.FINAL_CHASER:
+                print("No more question available. Ending final chaser round...")
+                self.final_chaser_thread = False
+                game.current_round.won = True
+                game.state = GameState.FINAL_END
+            return(random.choice(self.questions))
 
     def choose_question(self, question: Question):
+        self.last_question = self.current_question
+
         if self.state >= GameState.CHASE_PREPARATION and self.state <= GameState.CHASE_SOLVE:
             self.state = GameState.CHASE_QUESTIONING
         question.played = True
@@ -187,8 +220,11 @@ class Game(object):
             round.won = True
             self.current_player.qualified = True
             self.state = GameState.ROUND_ENDED
+            return True
         elif (round.correctAnswersPlayer + round.playerStartOffset) <= round.correctAnswersChaser:
             self.state = GameState.ROUND_ENDED
+            return True
+        return False
 
     def setup_finalround(self, players=False):
         round = gefragt_gejagt.round.Round()
@@ -208,17 +244,21 @@ class Game(object):
         self.current_round = None
         self.current_player = None
         self.current_question = None
-        not_all_played = False
-
-        for player in self.current_team.players:
-            if not player.played:
-                not_all_played = True
-                break
-
-        if not_all_played:
-            self.state = GameState.GAME_STARTED
+        if self.state == GameState.FINAL_END:
+            self.current_team = None
+            self.state = GameState.PREPARATION
         else:
-            self.state = GameState.FINAL_PREPARATION
+            not_all_played = False
+
+            for player in self.current_team.players:
+                if not player.played:
+                    not_all_played = True
+                    break
+
+            if not_all_played:
+                self.state = GameState.GAME_STARTED
+            else:
+                self.state = GameState.FINAL_PREPARATION
 
     def save_to_file(self, filename):
         with open(filename, 'w', encoding='utf-8') as f:
@@ -253,4 +293,8 @@ class Game(object):
             game_obj['current_question'] = self.current_question.save()
         else:
             game_obj['current_question'] = None
+        if self.last_question:
+            game_obj['last_question'] = self.last_question.save()
+        else:
+            game_obj['last_question'] = None
         return game_obj

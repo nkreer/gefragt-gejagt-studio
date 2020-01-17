@@ -10,7 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>GefragtGejagt - Dashboard</title>
     </head>
-    <body class="has-navbar-fixed-top">
+    <body class="has-navbar-fixed-top" style="display: flex;flex-direction: column;">
         <nav class="navbar is-fixed-top header" role="navigation" aria-label="main navigation">
             <div class="container">
                 <div class="navbar-brand">
@@ -222,9 +222,9 @@
                     </div>
                 </div>
                 <footer class="card-footer">
-                    <a class="card-footer-item" onclick="eel.all_show_playerresponse();">Spielerantwort anzeigen</a>
-                    <a class="card-footer-item" onclick="eel.all_show_solution();">Lösung anzeigen</a>
-                    <a class="card-footer-item" onclick="eel.all_show_chaserresponse();">Jägerantwort anzeigen</a>
+                    <a class="card-footer-item" onclick="eel.show_playerresponse();">Spielerantwort anzeigen</a>
+                    <a class="card-footer-item" onclick="eel.show_solution();">Lösung anzeigen</a>
+                    <a class="card-footer-item" onclick="eel.show_chaserresponse();">Jägerantwort anzeigen</a>
                 </footer>
             </div>
             <div class="card column is-half" id="final-start-message" style="display: none;">
@@ -242,7 +242,12 @@
             <br>
             <table id="teamtable" class="table is-striped is-hoverable is-fullwidth" style="display: none;">
                 <thead>
-                    <th><input type="button" id="random-team-btn" class="button is-primary" value="Zufälliges Team auswählen" onclick="eel.random_team()"></th>
+                    <th>
+                        <input type="button" id="random-team-btn" class="button is-primary" value="Zufälliges Team auswählen" onclick="eel.random_team()">
+                        <a class="button is-info" onclick="eel.start_evaluation()">
+                            Auswertung starten
+                        </a>
+                    </th>
                     <th>ID</th>
                     <th>Name</th>
                     <th>Gespielt</th>
@@ -286,5 +291,15 @@
             </table>
             <p id="endtext" style="display: none;"></p>
         </div>
+        <div class="container" style="margin-top:60%">
+            <h2 style="font-weight: bold;">Debugging-Funktionen</h2>
+            <span class="navbar-item"><b style="margin-right: .5rem;">Clienten online: </b> <span><span id="beamerClients"></span> Beamer, <span id="phoneClients"></span> Handy(s), <span id="moderationClients"></span> Moderation, <span id="dashboardsClients"></span> Dashboard</span></span>
+            <br/>
+            <button class="button is-info" onclick="eel.toggle_debugging_music()">Debugging-Musik</button>
+            <button class="button is-info" onclick="sideloadCustomCss()">Eigenes CSS laden</button>
+            <textarea id="customCssInput" class="textarea" placeholder=":root {
+    color: white;
+}" rows="10"></textarea>
+          </div>
     </body>
 </html>

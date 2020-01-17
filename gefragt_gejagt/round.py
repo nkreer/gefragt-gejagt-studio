@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import List, Dict
 from enum import IntEnum, unique
 
@@ -27,7 +28,7 @@ class Round(object):
         self.id: int
         self.won: bool = False
         self.type: RoundType = RoundType.PLAYER
-        self.time: int
+        self.finalTime: List[Dict] = []
         self.player: Player = None
         self.team: Team = None
         self.questions: List[Question] = []
@@ -56,6 +57,8 @@ class Round(object):
                     question.type == gefragt_gejagt.question.QuestionType.CHASE or (
                     self.team is not None and question.type == gefragt_gejagt.question.QuestionType.SIMPLE)):
                 count += 1
+            elif self.team is not None and question.type == gefragt_gejagt.question.QuestionType.SIMPLE and question.answerPlayer == 0 and question.answerChaser is not None:
+                count -= 1
         return count
 
     @property
@@ -88,6 +91,24 @@ class Round(object):
         return self.correctAnswersChaser >= (
             self.playerStartOffset +
             self.correctAnswersPlayer)
+
+    @property
+    def timePassed(self):
+        lastStarted = None
+        passedTime = datetime.timedelta()
+
+        if not len(self.finalTime):
+            return 0
+        for timespan in self.finalTime:
+            if not timespan.get('end'):
+                lastStarted = timespan['start']
+            else:
+                passedTime += timespan['end'] - timespan['start']
+
+        if lastStarted:
+            return passedTime + (datetime.datetime.now() - lastStarted)
+        else:
+            return passedTime
 
     def setup_offers(self, points: int):
         high_offer = offer.Offer()
@@ -129,6 +150,15 @@ class Round(object):
                 questions.append(question)
             self.questions = questions
 
+        if obj.get('finalTime'):
+            for span in obj.get('finalTime'):
+                if span.get('end'):
+                    self.finalTime.append({'start': datetime.datetime.fromisoformat(
+                        span['start']), 'end': datetime.datetime.fromisoformat(span['end'])})
+                else:
+                    self.finalTime.append(
+                        {'start': datetime.datetime.fromisoformat(span['start'])})
+
     def save(self) -> Dict:
         round_obj = {}
         round_obj['id'] = self.id
@@ -148,6 +178,16 @@ class Round(object):
         round_obj['playerStartOffset'] = self.playerStartOffset
         round_obj['questionsLeftForPlayer'] = self.questionsLeftForPlayer
         round_obj['correctionOffset'] = self.correctionOffset
+
+        round_obj['finalTime'] = []
+        for span in self.finalTime:
+            if span.get('end'):
+                round_obj['finalTime'].append(
+                    {'start': span['start'].__str__(), 'end': span['end'].__str__()})
+            else:
+                round_obj['finalTime'].append(
+                    {'start': span['start'].__str__()})
+
         return round_obj
 
 

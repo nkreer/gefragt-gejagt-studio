@@ -12,15 +12,6 @@
                     "points": 0,
                     "won": false,
                     "rounds": []
-                },
-                {
-                    "id": 1,
-                    "name": "Player2",
-                    "level": 5,
-                    "played": false,
-                    "points": 0,
-                    "won": false,
-                    "rounds": []
                 }
             ]
         },
@@ -103,6 +94,15 @@
             "wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
             "level": "7",
             "category": "Kategorie2"
+        },
+        {
+            "id": 6,
+            "type": 1,
+            "text": "Wie lautet die Frage?",
+            "correctAnswer": "So!",
+            "wrongAnswers": [],
+            "level": "5",
+            "category": "Kategorie"
         }
     ]
 }

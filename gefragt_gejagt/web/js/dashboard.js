@@ -9,16 +9,16 @@ async function team_table(visible) {
             var team = teams[i];
             var row = tbl.insertRow(tbl.rows.length);
 
-            row.insertCell(-1).innerHTML = "<input type='button' id='choose_team"+team.id+"' class='button is-link' onclick='eel.choose_team("+team.id+")' value='Spielen'>";
+            row.insertCell(-1).innerHTML = "<input type='button' id='choose_team" + team.id + "' class='button is-link' onclick='eel.choose_team(" + team.id + ")' value='Spielen'>";
             row.insertCell(-1).innerHTML = team.id;
             row.insertCell(-1).innerHTML = team.name;
             row.insertCell(-1).innerHTML = team.played;
             var playerNames = '';
-            team.players.forEach(function(player){
+            team.players.forEach(function (player) {
                 playerNames += player.name;
                 playerNames += ', '
             });
-            row.insertCell(-1).innerHTML = playerNames.slice(0,-2);
+            row.insertCell(-1).innerHTML = playerNames.slice(0, -2);
         }
     } else {
         tbl.style.display = "none";
@@ -46,7 +46,7 @@ async function question_table(visible, include_all) {
             }
             var row = tbl.insertRow(-1);
 
-            row.insertCell(-1).innerHTML = "<input type='button' id='choose_question"+question.id+"' class='button is-link' onclick='eel.choose_question("+question.id+")' value='Spielen'>";
+            row.insertCell(-1).innerHTML = "<input type='button' id='choose_question" + question.id + "' class='button is-link' onclick='eel.choose_question(" + question.id + ")' value='Spielen'>";
             row.insertCell(-1).innerHTML = question.id;
             switch (question.type) {
                 case 1:
@@ -63,11 +63,11 @@ async function question_table(visible, include_all) {
             row.insertCell(-1).innerHTML = question.correctAnswer;
 
             var wrongAnswers = '';
-            question.wrongAnswers.forEach(function(wrongAnswer){
+            question.wrongAnswers.forEach(function (wrongAnswer) {
                 wrongAnswers += wrongAnswer;
                 wrongAnswers += ', '
             });
-            row.insertCell(-1).innerHTML = wrongAnswers.slice(0,-2);
+            row.insertCell(-1).innerHTML = wrongAnswers.slice(0, -2);
         }
     } else {
         tbl.style.display = "none";
@@ -90,9 +90,9 @@ async function player_table(visible, rename_buttons) {
             var row = tbl.insertRow(tbl.rows.length);
 
             if (rename_buttons == true) {
-                row.insertCell(-1).innerHTML = "<input type='button' id='choose_player"+player.id+"' class='button is-link' onclick='eel.choose_player("+player.id+")' value='De-/Qualifizieren'>";
+                row.insertCell(-1).innerHTML = "<input type='button' id='choose_player" + player.id + "' class='button is-link' onclick='eel.choose_player(" + player.id + ")' value='De-/Qualifizieren'>";
             } else {
-                row.insertCell(-1).innerHTML = "<input type='button' id='choose_player"+player.id+"' class='button is-link' onclick='eel.choose_player("+player.id+")' value='Spielen'>";
+                row.insertCell(-1).innerHTML = "<input type='button' id='choose_player" + player.id + "' class='button is-link' onclick='eel.choose_player(" + player.id + ")' value='Spielen'>";
             }
             row.insertCell(-1).innerHTML = player.id;
             row.insertCell(-1).innerHTML = player.name;
@@ -155,17 +155,17 @@ function question_message(visible, question) {
         var buttons2 = '';
         if (question.type == 1) {
             // FAST
-            var buttons = '<a onclick="eel.question_answered(0)" class="card-footer-item">'+question.correctAnswer+'</a><a onclick="eel.question_answered(1)" class="card-footer-item is-warning">Falche Antwort</a>'
+            var buttons = '<a onclick="eel.question_answered(0)" class="card-footer-item">' + question.correctAnswer + '</a><a onclick="eel.question_answered(1)" class="card-footer-item is-warning">Falche Antwort</a>'
 
             message.children[3].display = "none";
         } else {
             // NORMAL
-            var buttons = '<p class="card-footer-item">Spieler</p><a onclick="eel.question_answered(0,0)" class="card-footer-item">'+question.correctAnswer+'</a>';
-            var buttons2 = '<p class="card-footer-item">Jäger</p><a onclick="eel.question_answered(0,1)" class="card-footer-item">'+question.correctAnswer+'</a>';
+            var buttons = '<p class="card-footer-item">Spieler</p><a onclick="eel.question_answered(0,0)" class="card-footer-item">' + question.correctAnswer + '</a>';
+            var buttons2 = '<p class="card-footer-item">Jäger</p><a onclick="eel.question_answered(0,1)" class="card-footer-item">' + question.correctAnswer + '</a>';
             for (var i = 0; i < question.wrongAnswers.length; i++) {
                 var answer = question.wrongAnswers[i];
-                buttons += '<a onclick="eel.question_answered('+ (i+1) +',0)" class="card-footer-item">'+answer+'</a>'
-                buttons2 += '<a onclick="eel.question_answered('+ (i+1) +',1)" class="card-footer-item">'+answer+'</a>'
+                buttons += '<a onclick="eel.question_answered(' + (i + 1) + ',0)" class="card-footer-item">' + answer + '</a>'
+                buttons2 += '<a onclick="eel.question_answered(' + (i + 1) + ',1)" class="card-footer-item">' + answer + '</a>'
             }
             message.children[3].style.display = "";
         }
@@ -185,19 +185,19 @@ function final_start_message(visible, chaser, game) {
     if (visible) {
         if (!chaser) {
             var playerNames = '';
-            game.current_team.players.forEach(function(player){
+            game.current_team.players.forEach(function (player) {
                 if (player.qualified) {
                     playerNames += player.name;
                     playerNames += ', ';
                 }
             });
-            message.children[1].innerHTML = 'Mit ' + playerNames.slice(0,-2);
+            message.children[1].innerHTML = 'Mit ' + playerNames.slice(0, -2);
 
             button.setAttribute('onclick', "eel.start_final_game()")
         } else {
             message.children[0].children[0].innerHTML = 'Finalrunde; Jäger*in';
             message.children[1].innerHTML = 'Spielstand, Spieler: ' + (game.current_round.playerStartOffset +
-                  game.current_round.correctAnswersPlayer);
+                game.current_round.correctAnswersPlayer);
 
             button.setAttribute('onclick', "eel.start_final_chaser()")
         }
@@ -227,24 +227,24 @@ function solution_card(visible, game) {
     // offer-high-points
     if (visible) {
         card.style.display = "";
-        card.children[1].children[0].innerHTML = "<strong>Frage:</strong> "+game.current_question.text+"<br><br>";
-        card.children[1].children[0].innerHTML += "<strong>Richtige Antwort:</strong> "+game.current_question.correctAnswer+"<br>";
+        card.children[1].children[0].innerHTML = "<strong>Frage:</strong> " + game.current_question.text + "<br><br>";
+        card.children[1].children[0].innerHTML += "<strong>Richtige Antwort:</strong> " + game.current_question.correctAnswer + "<br>";
         if (game.current_question.answerPlayer == 0) {
             var playerAnswerText = game.current_question.correctAnswer;
             var playerAnswerRating = '<span class="tag is-success">Richtig</span>';
         } else {
-            var playerAnswerText = game.current_question.wrongAnswers[game.current_question.answerPlayer-1];
+            var playerAnswerText = game.current_question.wrongAnswers[game.current_question.answerPlayer - 1];
             var playerAnswerRating = '<span class="tag is-danger">Falsch</span>';
         }
-        card.children[1].children[0].innerHTML += "<strong>Spielerantwort:</strong> "+playerAnswerText+" "+playerAnswerRating+"<br>";
+        card.children[1].children[0].innerHTML += "<strong>Spielerantwort:</strong> " + playerAnswerText + " " + playerAnswerRating + "<br>";
         if (game.current_question.answerChaser == 0) {
             var chaserAnswerText = game.current_question.correctAnswer;
             var chaserAnswerRating = '<span class="tag is-success">Richtig</span>';
         } else {
-            var chaserAnswerText = game.current_question.wrongAnswers[game.current_question.answerChaser-1];
+            var chaserAnswerText = game.current_question.wrongAnswers[game.current_question.answerChaser - 1];
             var chaserAnswerRating = '<span class="tag is-danger">Falsch</span>';
         }
-        card.children[1].children[0].innerHTML += "<strong>Jägerantwort:</strong> "+chaserAnswerText+"  "+chaserAnswerRating+"<br>";
+        card.children[1].children[0].innerHTML += "<strong>Jägerantwort:</strong> " + chaserAnswerText + "  " + chaserAnswerRating + "<br>";
     } else {
         card.style.display = "none";
     }
@@ -339,7 +339,7 @@ async function process_gamestate() {
             document.getElementById("status").innerHTML = "Status: Runde beendet";
             $('#timer').text("");
             if (game.current_player.qualified) {
-                endtext(true,game.current_player.name + ` hat gewonnen!
+                endtext(true, game.current_player.name + ` hat gewonnen!
                     <br>
                     <br>
                     <a class="button is-info" onclick="eel.end_round()">
@@ -347,7 +347,7 @@ async function process_gamestate() {
                     </a>
                 `);
             } else {
-                endtext(true,game.current_player.name + ` hat verloren!
+                endtext(true, game.current_player.name + ` hat verloren!
                     <br>
                     <br>
                     <a class="button is-info" onclick="eel.end_round()">
@@ -360,7 +360,7 @@ async function process_gamestate() {
             document.getElementById("status").innerHTML = "Status: Finale Vorbereitung";
             $('#timer').text("");
             player_table(true, true);
-            if(game.current_team.qualified) {
+            if (game.current_team.qualified) {
                 final_start_message(true, false, game);
             }
             break;
@@ -381,22 +381,55 @@ async function process_gamestate() {
             break;
         case 13:  // FINAL_CHASER_WRONG
             document.getElementById("status").innerHTML = "Status: Finale Jäger*in Falschantwort";
+            question_message(true, game.current_question);
             break;
         case 14:  // FINAL_END
             document.getElementById("status").innerHTML = "Status: Ende";
             $('#timer').text("");
+            if (game.current_round.won) {
+                endtext(true, game.current_team.name + ` hat gewonnen!
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.end_round()">
+                        Runde beenden
+                    </a>
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.start_evaluation()">
+                        Auswertung starten
+                    </a>
+                `);
+            } else {
+                endtext(true, game.current_team.name + ` hat verloren!
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.end_round()">
+                        Runde beenden
+                    </a>
+                    <br>
+                    <br>
+                    <a class="button is-info" onclick="eel.start_evaluation()">
+                        Auswertung starten
+                    </a>
+                `);
+            }
             break;
         case 15:  // EVALUATION
             document.getElementById("status").innerHTML = "Status: Auswertung";
             $('#timer').text("");
             break;
         default:
-            document.getElementById("status").innerHTML = "Status: Unbekannt; "+game.state;
+            document.getElementById("status").innerHTML = "Status: Unbekannt; " + game.state;
             break;
     }
 }
 
-$(async function() {
+function sideloadCustomCss() {
+    var css=document.querySelector('#customCssInput').value;
+    eel.update_sideloading_css(css)();
+}
+
+$(async function () {
 
     // exposed functions
     eel.expose(dashboard_set_heading);
@@ -461,4 +494,22 @@ $(async function() {
 
     // onload functionallity
     process_gamestate();
+
+    async function listClients() {
+        clients = await eel.get_last_connected_clients()();
+        var numbers = {
+            beamer: 0,
+            phone: 0,
+            statistics: 0,
+            dashboard: 0,
+        }
+        clients.forEach(
+            (client) => numbers[client.type]++)
+            document.querySelector('#beamerClients').innerHTML=numbers.beamer;
+            document.querySelector('#phoneClients').innerHTML=numbers.phone;
+            document.querySelector('#moderationClients').innerHTML=numbers.statistics;
+            document.querySelector('#dashboardsClients').innerHTML=numbers.dashboard;
+    }
+    clientsIntervall = setInterval(listClients, 2500);
+    listClients()
 });

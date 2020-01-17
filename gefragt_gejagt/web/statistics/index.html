@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html class="">
+
+<head>
+    <meta charset="utf-8">
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/eel.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/statistics.js"></script>
+    <link rel="stylesheet" href="/css/bulma.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GefragtGejagt - Statistik</title>
+</head>
+
+<body>
+    <div class="container is-fluid">
+        <br>
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical">
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <p class="subtitle">Aktuelle Frage:</p>
+                        <p class="title" id='question-text'>platzhalter</p>
+                        <div class="content">
+
+                        </div>
+                    </article>
+                </div>
+                <div class="tile is-ancestor">
+                    <div class="tile is-vertical is-8">
+                        <div class="tile is-parent">
+                            <article class="tile is-child notification is-danger">
+                                <p class="title">Team</p>
+                                <p class="subtitle" id='teamname'>platzhalter</p>
+                            </article>
+                        </div>
+                        <div class="tile">
+                            <div class="tile is-parent is-vertical">
+                                <article class="tile is-child notification is-warning">
+                                    <p class="title">Spieler*in 1: <span id="player1name"></span></p>
+                                </article>
+                                <article class="tile is-child notification is-warning">
+                                    <p class="title">Spieler*in 2: <span id="player2name"></span></p>
+                                </article>
+                                <article class="tile is-child notification is-warning">
+                                    <p class="title">Spieler*in 3: <span id="player3name"></span></p>
+                                </article>
+                                <article class="tile is-child notification is-warning">
+                                    <p class="title">Spieler*in 4: <span id="player4name"></span></p>
+                                </article>
+                            </div>
+                            <div class="tile is-parent">
+                                <article class="tile is-child notification is-info">
+                                    <p class="title">Aktuelle Runde</p>
+                                    <p class="subtitle">
+                                        <b>
+                                                Aktueller Status:
+                                            </b>
+                                        <span id='state'>
+                                                platzhalter
+                                            </span>
+                                    </p>
+                                    <div class="content">
+                                        <b>
+                                                Typ:
+                                            </b>
+                                        <span id="roundtype">platzhalter</span>
+                                        <br>
+                                        <b>Jagd-Fragen</b>
+                                        <b>
+                                                Richtige Antworten Spieler*in:
+                                            </b>
+                                        <span id='correctAnswersPlayer'>platzhalter</span>
+                                        <br>
+                                        <b>
+                                                Richtige Antworten Jäger*in:
+                                            </b>
+                                        <span id='correctAnswersChaser'>platzhalter</span>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tile is-vertical is-parent">
+                        <article class="tile is-child notification is-danger">
+                            <p class="subtitle">Zeit übrig:</p>
+                            <p class="title timer">platzhalter</p>
+                            <div class="content">
+
+                            </div>
+                        </article>
+                        <article class="tile is-child notification is-success">
+                            <div class="content">
+                                <p class="title">Weitere Statistiken</p>
+                                <p class="subtitle"><b>
+                                        Aktueller Status:
+                                    </b>
+                                    <span id='state2'>
+                                        Bla
+                                    </span></p>
+                                <div class="content">
+                                    <b>
+                                            Simple-Fragen übrig:
+                                        </b>
+                                    <span id="simpleQuestionsLeft">
+                                            platzhalter
+                                        </span>
+                                    <br>
+                                    <b>
+                                            Jagd-Fragen übrig:
+                                        </b>
+                                    <span id="chaseQuestionsLeft">
+                                            platzhalter
+                                        </span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

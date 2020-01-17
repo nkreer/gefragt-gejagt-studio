@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 from typing import List, Dict
 from enum import IntEnum, unique
 
@@ -22,6 +23,7 @@ class Question(object):
         self.level: int
         self.text: str
         self.correctAnswer: str
+        self.correctAnswerButton: int
         self.wrongAnswers: List[str] = []
         self.category: str
         self.played: bool = False
@@ -31,9 +33,10 @@ class Question(object):
     def load(self, obj: dict):
         self.id = obj['id']
         self.type = obj['type']
-        self.level = obj['level']
+        self.level = int(obj['level'])
         self.text = obj['text']
         self.correctAnswer = obj['correctAnswer']
+        self.correctAnswerButton = obj.get('correctAnswerButton')
         self.wrongAnswers = obj.get('wrongAnswers', [])
         self.category = obj.get('category', '')
         self.played = obj.get('played', False)
@@ -47,6 +50,10 @@ class Question(object):
         question_obj['level'] = self.level
         question_obj['text'] = self.text
         question_obj['correctAnswer'] = self.correctAnswer
+        if not self.correctAnswerButton:
+            self.correctAnswerButton = random.randint(
+                0, len(self.wrongAnswers))
+        question_obj['correctAnswerButton'] = self.correctAnswerButton
         question_obj['wrongAnswers'] = self.wrongAnswers
         question_obj['category'] = self.category
         question_obj['played'] = self.played
