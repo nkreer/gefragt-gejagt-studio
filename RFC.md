@@ -60,7 +60,8 @@ Es werden nur 3 Antwortmöglichkeiten gespielt, wenn das level der Spielenden mi
 		"correctAnswer": "So!",
 		"wrongAnswers": ["So nicht!", "So auch nicht!", "So schonmal gar nicht! ;)"],
 		"level": "7",	// value from 1-10
-		"category": "Kategorie"
+		"category": "Kategorie",
+		"annotation": "e.g. an explanation of the correct answer"
 	},
 ],
 ```
